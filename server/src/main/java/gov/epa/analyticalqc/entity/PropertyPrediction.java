@@ -7,7 +7,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,18 +25,19 @@ public class PropertyPrediction {
     @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
+    @OneToOne
 	@JoinColumn(name="substance_id")
+    @JsonBackReference
 	private Substance substance;
 
     @Column(name="bp_degc")
-    private Double bpDegC;
+    private Double bp;
 
     @Column(name="mp_degc")
-    private Double mpDegC;
+    private Double mp;
 
     @Column(name="vp_mmhg")
-    private Double vpMmhg;
+    private Double vp;
 
     @Column(name="logp")
     private Double logP;
