@@ -78,7 +78,7 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <workingDirectory>../client</workingDirectory>
+                            <workingDirectory>src/client</workingDirectory>
                             <executable>npm</executable>
                             <arguments>
                                 <argument>run</argument>
@@ -104,7 +104,7 @@
                             <outputDirectory>target/classes/static</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>../client/dist</directory>
+                                    <directory>src/client/dist</directory>
                                     <filtering>true</filtering>
                                 </resource>
                             </resources>
