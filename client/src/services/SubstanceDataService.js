@@ -8,6 +8,10 @@ class SubstanceDataService {
   get(id) {
     return http.get(`substances/${id}`);
   }
+
+  getDetail(id) {
+    return http.get(`substances/${id}/detail`);
+  }
 }
 
 export default new SubstanceDataService();

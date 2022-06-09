@@ -35,4 +35,59 @@ public class Experiment {
     @Column(name="experiment_date")
     private Date experimentDate;
 
+    private String study;
+
+    private String timepoint;
+
+    @Column(name="ms_detector")
+    private String msDetector;
+
+    private Integer plate;
+
+    private String batch;
+
+    private String well;
+
+    private String row;
+
+    private Integer col;
+
+    private String grade;
+
+    private String purity;
+
+    @Column(name="purity_fraction")
+    private Double purityFraction;
+
+    @Column(name="expected_conc")
+    private Double expectedConc;
+
+    @Column(name="nmr_conc")
+    private Double nmrConc;
+
+    @Column(name="measured_conc")
+    private Double measuredConc;
+
+    @Column(name="pass_fail")
+    private String passFail;
+
+    @Column(name="pass_fail_backup")
+    private String passFailBackup;
+
+    private String comment;
+
+    private String notes;
+
+    @Column(name="orig_id")
+    private Integer origId;
+
+    @Column(name="orig_files_id")
+    private Integer origFilesId;
+
+    @Column(name="orig_files_content_id")
+    private Integer origFilesContentId;
+
+    @Column(name="is_tripod")
+    private Integer isTripod;
+
 }

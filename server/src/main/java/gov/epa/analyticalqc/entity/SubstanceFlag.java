@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -13,27 +15,22 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name="substances")
+@Table(name="substance_flags")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
-public class Substance {
+public class SubstanceFlag {
     
     @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
 
-    private String dtxsid;
+    @ManyToOne
+	@JoinColumn(name="substance_id")
+	private Substance substance;
 
-    @Column(name="preferred_name")
-    private String preferredName;
+    @ManyToOne
+	@JoinColumn(name="flag_id")
+	private Flag flag;
 
-    private String casrn;
-
-    @Column(name="mol_formula")
-    private String molFormula;
-
-    @Column(name="mol_weight")
-    private Double molWeight;
-
-    @Column(name="pubchem_cid")
-    private Long pubchemCid;
-
+    @Column(name="validated")
+    private Boolean validated;
+    
 }

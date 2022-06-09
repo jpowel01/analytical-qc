@@ -15,6 +15,11 @@ const routes = [
     name: "substances",
     component: () => import("../components/SubstanceList.vue"),
   },
+  {
+    path: "/substances/:id",
+    name: "substance-details",
+    component: () => import("../components/Substance.vue"),
+  },
 ];
 
 const router = new VueRouter({

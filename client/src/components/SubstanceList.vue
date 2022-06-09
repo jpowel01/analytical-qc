@@ -1,22 +1,53 @@
 <template>
-  <v-container>
+  <v-container fluid fill-height>
     <v-row>
       <v-col>
+        <div class="ma-2">
+          <v-text-field
+            v-model="state.search"
+            append-icon="mdi-magnify"
+            label="Search"
+            single-line
+            hide-details
+          />
+        </div>
         <v-data-table
           :headers="headers"
           :items="substances"
-          :loading="state.loading"
-        >
-            <template v-slot:header.structure />
-            <template v-slot:item.structure="{ item }">
-                <v-img :src="`${DASHBOARD_IMAGE_URL}/${item.dtxsid}`" max-height="150" max-width="150" />
-            </template>
-            <template v-slot:item.dtxsid="{ item }">
-                <a :href="`${DASHBOARD_DETAILS_URL}/${item.dtxsid}`">{{ item.dtxsid }}</a>
-            </template>
-            <template v-slot:item.pubchemCid="{ item }">
-                <a :href="`${PUBCHEM_CID_URL}/${item.pubchemCid}`">{{ item.pubchemCid }}</a>
-            </template>
+          :search="state.search">
+          <template v-slot:item.detail="{ item }">
+            <v-btn
+              :to="'/substances/' + item.id"
+              class="ma-2"
+              dark
+              small
+              fab
+              color="primary"
+            >
+              <v-icon>
+                mdi-eye
+              </v-icon>
+            </v-btn>
+          </template>
+          <template v-slot:item.structure="{ item }">
+            <v-img 
+              max-height="150" max-width="150"
+              :src="`${DASHBOARD_IMAGE_URL}/${item.dtxsid}`" />
+          </template>
+          <template v-slot:item.dtxsid="{ item }">
+            <a 
+              target="_blank"
+              rel="noreferrer noopener"
+              :href="`${DASHBOARD_DETAILS_URL}/${item.dtxsid}`"
+            >{{ item.dtxsid }}</a><v-icon x-small class="ml-1">mdi-open-in-new</v-icon>
+          </template>
+          <template v-slot:item.pubchemCid="{ item }">
+            <a 
+              target="_blank"
+              rel="noreferrer noopener"
+              :href="`${PUBCHEM_CID_URL}/${item.pubchemCid}`"
+            >{{ item.pubchemCid }}</a><v-icon x-small class="ml-1">mdi-open-in-new</v-icon>
+          </template>
         </v-data-table>
       </v-col>
     </v-row>
@@ -25,7 +56,11 @@
 
 <script>
 import SubstanceDataService from "../services/SubstanceDataService";
-import {DASHBOARD_DETAILS_URL, DASHBOARD_IMAGE_URL, PUBCHEM_CID_URL} from "@/main";
+import {
+  DASHBOARD_DETAILS_URL,
+  DASHBOARD_IMAGE_URL,
+  PUBCHEM_CID_URL,
+} from "@/main";
 
 export default {
   name: "substances",
@@ -34,16 +69,19 @@ export default {
     return {
       substances: [],
       headers: [
-        { text: "Structure", value: "structure", sortable: false, width: "1%" },
-        { text: "DTXSID", value: "dtxsid", sortable: false },
-        { text: "Preferred Name", value: "preferredName", sortable: false },
-        { text: "CASRN", value: "casrn", sortable: false },
-        { text: "Molecular Formula", value: "molFormula", sortable: false },
-        { text: "Molecular Weight", value: "molWeight", sortable: false },
-        { text: "PubChem CID", value: "pubchemCid", sortable: false },
+        { text: "", value: "detail", sortable: false, width: "1%" },
+        { text: "", value: "structure", sortable: false, width: "1%" },
+        { text: "DTXSID", value: "dtxsid", sortable: true, },
+        { text: "Preferred Name", value: "preferredName", sortable: true, },
+        { text: "CASRN", value: "casrn", sortable: true },
+        { text: "Mol. Formula", value: "molFormula", sortable: true, },
+        { text: "Mol. Weight", value: "molWeight", sortable: true, },
+        { text: "PubChem CID", value: "pubchemCid", sortable: true, },
       ],
+
       state: {
         loading: false,
+        search: "",
       },
     };
   },
@@ -73,14 +111,10 @@ export default {
         });
       this.state.loading = false;
     },
-
-    refreshList() {
-      this.retrieveSubstances();
-    },
   },
 
   mounted() {
     this.retrieveSubstances();
-  },
+  }
 };
 </script>

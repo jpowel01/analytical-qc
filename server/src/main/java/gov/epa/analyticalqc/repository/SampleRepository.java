@@ -13,7 +13,7 @@ public interface SampleRepository extends JpaRepository<Sample, Integer> {
 
     Optional<Sample> findByNcgcId(String ncgcId);
 
-    Optional<Sample> findByTox21Id(Integer tox21Id);
+    Optional<Sample> findByTox21Id(Long tox21Id);
 
     Optional<Sample> findByBottleBarcode(String bottleBarcode);
 
