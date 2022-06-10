@@ -17,7 +17,6 @@ import gov.epa.analyticalqc.repository.SubstanceFlagRepository;
 
 @RestController
 @RequestMapping("/api/substance-flags")
-@CrossOrigin("http://localhost:8081")
 public class SubstanceFlagController {
     
     @Autowired SubstanceFlagRepository substanceFlagRepository;

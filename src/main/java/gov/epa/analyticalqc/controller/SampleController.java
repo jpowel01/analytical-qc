@@ -18,7 +18,6 @@ import gov.epa.analyticalqc.repository.SampleRepository;
 
 @RestController
 @RequestMapping("/api/samples")
-@CrossOrigin("http://localhost:8081")
 public class SampleController {
     
     @Autowired SampleRepository sampleRepository;

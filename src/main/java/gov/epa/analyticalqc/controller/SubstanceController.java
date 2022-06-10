@@ -34,7 +34,6 @@ import gov.epa.analyticalqc.repository.SubstanceRepository;
 
 @RestController
 @RequestMapping("/api/substances")
-@CrossOrigin("http://localhost:8081")
 public class SubstanceController {
     
     @Autowired SubstanceRepository substanceRepository;
