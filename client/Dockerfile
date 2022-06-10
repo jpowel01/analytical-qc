@@ -2,13 +2,13 @@
 FROM node:lts-alpine as build-stage
 WORKDIR /app
 COPY package*.json ./
-COPY nginx.conf /etc/nginx/nginx.conf
 RUN npm install
 COPY . .
 RUN npm run build
 
 # production stage
 FROM nginx:stable-alpine as production-stage
+COPY nginx.conf /etc/nginx/nginx.conf
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["nginx", "-c", "/etc/nginx/nginx.conf", "-g", "daemon off;"]
