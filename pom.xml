@@ -119,7 +119,7 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>target/classes/static</outputDirectory>
+							<outputDirectory>arc/main/resources/static</outputDirectory>
 							<resources>
 								<resource>
 									<directory>src/client/dist</directory>
