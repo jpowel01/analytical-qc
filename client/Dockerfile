@@ -2,7 +2,7 @@
 FROM node:lts-alpine as build-stage
 WORKDIR /app
 COPY package*.json ./
-ENV SERVER_URL=http://localhost:9091
+COPY nginx.conf /etc/nginx/nginx.conf
 RUN npm install
 COPY . .
 RUN npm run build
