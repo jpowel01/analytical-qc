@@ -5,22 +5,31 @@ services:
       context: ./server
     image: gsincl01/analytical-qc-server
     container_name: analytical-qc-server
-    ports:
-      - 9091:9090
+    environment:
+      DB_HOST: jdbc:postgresql://ccte-postgres-res.dmap-prod.aws.epa.gov
+      DB_PORT: 5432
+      DB_NAME: res_gsincl01_qsar
+      DB_USER: app_qsar
+      DB_PASS: P#BM8&TEEdg@Aj#r
+      DB_SCHEMA: sbox_analytical_qc
+    expose:
+      - "9090"
     networks:
-      - frontback 
+      - server-client 
 
-  front:
+  client:
     build: ./client
     image: gsincl01/analytical-qc-client
     container_name: analytical-qc-client
+    environment:
+      SERVER_URL: http://analytical-qc-server:9090
     ports:
       - 81:80
     depends_on:
       - server
     networks: 
-      - frontback     
+      - server-client     
   
 networks: 
-  frontback:
+  server-client:
     driver: bridge
