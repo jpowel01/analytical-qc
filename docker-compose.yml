@@ -5,11 +5,6 @@ services:
       context: ./server
     image: gsincl01/analytical-qc-server
     container_name: analytical-qc-server
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://ccte-postgres-res.dmap-prod.aws.epa.gov:5432/res_gsincl01_qsar
-      SPRING_DATASOURCE_USERNAME: app_qsar
-      SPRING_DATASOURCE_PASSWORD: P#BM8&TEEdg@Aj#r
-      SPRING_DEFAULT_SCHEMA: sbox_analytical_qc
     expose:
       - "9090"
     networks:
@@ -19,8 +14,6 @@ services:
     build: ./client
     image: gsincl01/analytical-qc-client
     container_name: analytical-qc-client
-    environment:
-      SERVER_URL: http://analytical-qc-server:9090
     ports:
       - 81:80
     depends_on:
