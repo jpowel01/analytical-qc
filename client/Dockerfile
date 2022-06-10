@@ -2,7 +2,7 @@
 FROM node:lts-alpine as build-stage
 WORKDIR /app
 COPY package*.json ./
-ENV SERVER_URL=http://analytical-qc-server:9090
+ENV SERVER_URL=http://localhost:9091
 RUN npm install
 COPY . .
 RUN npm run build

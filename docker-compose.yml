@@ -5,10 +5,8 @@ services:
       context: ./server
     image: gsincl01/analytical-qc-server
     container_name: analytical-qc-server
-    expose:
-      - "9090"
-    networks:
-      - server-client 
+    ports:
+      - 9091:9090 
 
   client:
     build: ./client
@@ -18,9 +16,3 @@ services:
       - 81:80
     depends_on:
       - server
-    networks: 
-      - server-client     
-  
-networks: 
-  server-client:
-    driver: bridge
