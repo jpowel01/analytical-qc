@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  server:
+    build: 
+      context: ./server
+    image: gsincl01/analytical-qc-server
+    container_name: analytical-qc-server
+    ports:
+      - 9090:9091
+    networks:
+      - frontback 
+
+  front:
+    build: ./client
+    image: gsincl01/analytical-qc-client
+    container_name: analytical-qc-client
+    ports:
+      - 8080:8081
+    depends_on:
+      - back
+    networks: 
+      - frontback     
+  
+networks: 
+  frontback:
+    driver: bridge
