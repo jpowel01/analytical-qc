@@ -9,9 +9,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://ccte-postgres-res.dmap-prod.aws.epa.gov:5432/res_gsincl01_qsar
       SPRING_DATASOURCE_USERNAME: app_qsar
       SPRING_DATASOURCE_PASSWORD: P#BM8&TEEdg@Aj#r
-      SPRING_DATASOURCE_DRIVER: org.postgresql.Driver
-      SCHEMA: sbox_analytical_qc
-      DIALECT: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_DEFAULT_SCHEMA: sbox_analytical_qc
     expose:
       - "9090"
     networks:
