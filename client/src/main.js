@@ -5,7 +5,7 @@ import vuetify from "./plugins/vuetify";
 
 Vue.config.productionTip = false;
 
-export const SERVER_URL = "http://localhost:9091/api";
+export const SERVER_URL = "http://v2626umcth819.rtord.epa.gov:9091/api";
 export const DASHBOARD_DETAILS_URL =
   "https://comptox.epa.gov/dashboard/chemical/details";
 export const DASHBOARD_IMAGE_URL =
