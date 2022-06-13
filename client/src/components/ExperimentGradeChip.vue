@@ -8,7 +8,7 @@
         v-bind="attrs"
         v-on="on"
       >
-        <strong>{{ grade.grade }}</strong>
+        <strong>{{ grade.name }}</strong>
       </v-chip>
     </template>
     <span>{{ grade.description }}</span>
@@ -31,12 +31,12 @@ export default {
   },
 
   mounted() {
-    this.color = ColorByGrade.colorByGrade(this.grade.grade, this.useTripodColors);
+    this.color = ColorByGrade.colorByGrade(this.grade.name, this.useTripodColors);
   },
 
   watch: {
     useTripodColors() {
-      this.color = ColorByGrade.colorByGrade(this.grade.grade, this.useTripodColors);
+      this.color = ColorByGrade.colorByGrade(this.grade.name, this.useTripodColors);
     }
   }
 };
