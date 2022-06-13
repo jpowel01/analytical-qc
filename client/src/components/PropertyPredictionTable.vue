@@ -21,7 +21,7 @@
           </td>
         </tr>
         <tr>
-          <th scope="row">Octanol-Water Partition Coefficient (logP)</th>
+          <th scope="row">Octanol-Water Partition Coefficient (logK<sub>ow</sub>)</th>
           <td>{{ propertyPrediction.logP.toPrecision(2) }}</td>
         </tr>
       </tbody>

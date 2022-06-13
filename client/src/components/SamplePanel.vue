@@ -9,30 +9,24 @@
             <div class="mx-2" v-if="t0Grade || t4Grade || call">
             <div v-if="t0Grade" class="mx-1 d-inline-flex align-center">
                 <span class="text-body-1 text--secondary">T0: </span>
-                <GradeChip
-                    :grade="t0Grade.grade.grade"
-                    :description="t0Grade.grade.description"
-                    showValidation="true"
-                    :validated="t0Grade.validated"
+                <EditableChip
+                    :data="t0Grade"
                     :use-tripod-colors="useTripodColors"
+                    :service="SampleGradeDataService"
                     />
             </div>
             <div v-if="t4Grade" class="mx-1 d-inline-flex align-center">
                 <span class="text-body-1 text--secondary">T4: </span>
-                <GradeChip
-                    :grade="t4Grade.grade.grade"
-                    :description="t4Grade.grade.description"
-                    showValidation="true"
-                    :validated="t4Grade.validated"
+                <EditableChip
+                    :data="t4Grade"
                     :use-tripod-colors="useTripodColors"
+                    :service="SampleGradeDataService"
                     />
             </div>
             <div v-if="call" class="mx-1 d-inline-flex align-center">
                 <span class="text-body-1 text--secondary">Call: </span>
                 <CallChip
-                    :call="call.call.call"
-                    :description="call.call.description"
-                    :validated="call.validated"
+                    :call="call.call"
                     />
             </div>
         </div>
@@ -55,11 +49,10 @@
         </template>
 
         <template v-slot:item.experiment.grade="{ item }">
-          <GradeChip
+          <ExperimentGradeChip
             v-for="grade in item.grades"
             :key="grade.id"
-            :grade="grade.grade"
-            :description="grade.description"
+            :grade="grade"
             :use-tripod-colors="useTripodColors"
           />
         </template>
@@ -89,16 +82,19 @@
 </template>
 
 <script>
-import GradeChip from "./GradeChip";
+import ExperimentGradeChip from "./ExperimentGradeChip";
+import EditableChip from "./EditableChip";
 import CallChip from "./CallChip";
 import SampleDataService from "../services/SampleDataService";
+import SampleGradeDataService from "../services/SampleGradeDataService";
 import { PUBCHEM_SID_URL } from "@/main";
 
 export default {
     props: ['sample', 'experiments', 'useTripodColors'],
 
     components: {
-        GradeChip,
+        ExperimentGradeChip,
+        EditableChip,
         CallChip,
     },
 
@@ -106,6 +102,10 @@ export default {
     PUBCHEM_SID_URL() {
       return PUBCHEM_SID_URL;
     },
+
+    SampleGradeDataService() {
+      return SampleGradeDataService;
+    }
   },
 
   data() {

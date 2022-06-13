@@ -19,7 +19,7 @@ public class Grade {
     @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
 
-    private String grade;
+    private String name;
 
     private String description;
 

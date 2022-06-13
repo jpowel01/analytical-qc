@@ -19,7 +19,7 @@ public class Call {
     @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
 
-    private String call;
+    private String name;
 
     private String description;
 

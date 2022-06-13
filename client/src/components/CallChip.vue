@@ -2,21 +2,21 @@
   <v-tooltip top>
     <template v-slot:activator="{ on, attrs }">
       <v-chip
-        :color="colorByCall(call)"
+        :color="colorByCall(call.name)"
         :outlined="!validated"
         :text-color="
-          validated ? 'white' : colorByCall(call)
+          validated ? 'white' : colorByCall(call.name)
         "
         class="ma-1"
         v-bind="attrs"
         v-on="on"
       >
-        <strong>{{ call }}</strong>
+        <strong>{{ call.name }}</strong>
       </v-chip>
     </template>
     <span v-if="validated">Validated call: </span>
     <span v-else>Automatic call: </span>
-    <span>{{ description }}</span>
+    <span>{{ call.description }}</span>
   </v-tooltip>
 </template>
 
@@ -24,7 +24,6 @@
 export default {
   props: [
     "call",
-    "description",
     "validated",
   ],
 

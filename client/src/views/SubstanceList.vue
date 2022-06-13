@@ -1,15 +1,16 @@
 <template>
   <v-container fluid>
-    <v-row>
-      <v-col>
-        <div class="ma-2">
-          <v-text-field
-            label="Search"
-            append-icon="mdi-magnify"
-            v-model="state.search"
-          ></v-text-field>
-        </div>
-      </v-col>
+    <v-row class="ma-2">
+      <div class="text-h4">Substances</div>
+      <v-spacer />
+      <v-text-field
+        label="Search"
+        append-icon="mdi-magnify"
+        v-model="state.search"
+        solo
+        clearable
+        hide-details
+      ></v-text-field>
     </v-row>
     <v-row>
       <v-col>
@@ -103,6 +104,7 @@ export default {
       deep: true,
     },
     "state.search"() {
+      this.state.options.page = 1;
       this.retrieveSubstances();
     }
   },

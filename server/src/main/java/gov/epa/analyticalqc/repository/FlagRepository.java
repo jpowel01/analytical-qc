@@ -10,6 +10,4 @@ public interface FlagRepository extends JpaRepository<Flag, Integer> {
 
     Optional<Flag> findById(Integer id);
 
-    Optional<Flag> findByFlag(String flag);
-
 }

@@ -5,29 +5,24 @@
       <div class="mx-2" v-if="t0Grade || t4Grade || call">
         <div v-if="t0Grade" class="mx-1 d-inline-flex align-center">
           <span class="text--secondary">T0: </span>
-          <GradeChip
-            :grade="t0Grade.grade.grade"
-            :description="t0Grade.grade.description"
-            showValidation="true"
-            :validated="t0Grade.validated"
-            :use-tripod-colors="useTripodColors"
+          <EditableChip
+            :data="t0Grade"
+            :use-tripod-colors="state.useTripodColors"
+            :service="SubstanceGradeDataService"
             />
         </div>
         <div v-if="t4Grade" class="mx-1 d-inline-flex align-center">
           <span class="text--secondary">T4: </span>
-          <GradeChip
-          :grade="t4Grade.grade.grade"
-          :description="t4Grade.grade.description"
-          showValidation="true"
-          :validated="t4Grade.validated"
-          :use-tripod-colors="useTripodColors"
+          <EditableChip
+          :data="t4Grade"
+          :use-tripod-colors="state.useTripodColors"
+          :service="SubstanceGradeDataService"
           />
         </div>
         <div v-if="call" class="mx-1 d-inline-flex align-center">
           <span class="text--secondary">Call: </span>
           <CallChip
-          :call="call.call.call"
-          :description="call.call.description"
+          :call="call.call"
           :validated="call.validated"
           />
         </div>
@@ -49,16 +44,6 @@
           <span v-if="flag.validated">Validated flag</span>
           <span v-else>Automatic flag</span>
         </v-tooltip>
-
-        <GradeChip
-          v-for="grade in substanceGrades"
-          :key="grade.id"
-          :grade="grade.grade.grade"
-          :description="grade.grade.description"
-          show-validation="true"
-          :validated="grade.validated"
-          :use-tripod-colors="state.useTripodColors"
-        />
       </div>
       <v-spacer />
       <v-btn
@@ -132,18 +117,19 @@
 import GradeDataService from "../services/GradeDataService";
 import CallDataService from "../services/CallDataService";
 import SubstanceDataService from "../services/SubstanceDataService";
-import GradeChip from "../components/GradeChip";
+import EditableChip from "../components/EditableChip";
 import CallChip from "../components/CallChip";
 import SubstanceInfoTable from "../components/SubstanceInfoTable";
 import PropertyPredictionTable from "../components/PropertyPredictionTable";
 import SamplePanel from "../components/SamplePanel";
+import SubstanceGradeDataService from "../services/SubstanceGradeDataService"
 import { DASHBOARD_IMAGE_URL } from "@/main";
 
 export default {
   name: "substance-detail",
 
   components: {
-    GradeChip,
+    EditableChip,
     CallChip,
     SubstanceInfoTable,
     PropertyPredictionTable,
@@ -172,6 +158,10 @@ export default {
     DASHBOARD_IMAGE_URL() {
       return DASHBOARD_IMAGE_URL;
     },
+
+    SubstanceGradeDataService() {
+      return SubstanceGradeDataService;
+    }
   },
 
   methods: {

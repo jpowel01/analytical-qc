@@ -10,6 +10,4 @@ public interface CallRepository extends JpaRepository<Call, Integer> {
 
     Optional<Call> findById(Integer id);
 
-    Optional<Call> findByCall(String call);
-
 }

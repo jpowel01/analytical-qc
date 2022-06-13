@@ -19,7 +19,7 @@ public class Flag {
     @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
 
-    private String flag;
+    private String name;
 
     private String description;
 
