@@ -11,22 +11,30 @@
                 <span class="text-body-1 text--secondary">T0: </span>
                 <EditableChip
                     :data="t0Grade"
+                    type="grade"
                     :use-tripod-colors="useTripodColors"
                     :service="SampleGradeDataService"
+                    @deleted="retrieveSampleGrades(sample.id)"
                     />
             </div>
             <div v-if="t4Grade" class="mx-1 d-inline-flex align-center">
                 <span class="text-body-1 text--secondary">T4: </span>
                 <EditableChip
                     :data="t4Grade"
+                    type="grade"
                     :use-tripod-colors="useTripodColors"
                     :service="SampleGradeDataService"
+                    @deleted="retrieveSampleGrades(sample.id)"
                     />
             </div>
             <div v-if="call" class="mx-1 d-inline-flex align-center">
                 <span class="text-body-1 text--secondary">Call: </span>
-                <CallChip
-                    :call="call.call"
+                <EditableChip
+                    :data="call"
+                    type="call"
+                    :use-tripod-colors="useTripodColors"
+                    :service="SampleCallDataService"
+                    @deleted="retrieveSampleCall(sample.id)"
                     />
             </div>
         </div>
@@ -84,9 +92,9 @@
 <script>
 import ExperimentGradeChip from "./ExperimentGradeChip";
 import EditableChip from "./EditableChip";
-import CallChip from "./CallChip";
 import SampleDataService from "../services/SampleDataService";
 import SampleGradeDataService from "../services/SampleGradeDataService";
+import SampleCallDataService from "../services/SampleCallDataService";
 import { PUBCHEM_SID_URL } from "@/main";
 
 export default {
@@ -95,7 +103,6 @@ export default {
     components: {
         ExperimentGradeChip,
         EditableChip,
-        CallChip,
     },
 
   computed: {
@@ -105,6 +112,10 @@ export default {
 
     SampleGradeDataService() {
       return SampleGradeDataService;
+    },
+
+    SampleCallDataService() {
+      return SampleCallDataService;
     }
   },
 
@@ -158,7 +169,7 @@ export default {
           console.log(response.data);
         })
         .catch((e) => {
-            this.t0Grade = null;
+          this.t0Grade = null;
           this.t4Grade = null;
           console.log(e);
         });

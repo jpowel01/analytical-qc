@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import ColorByGrade from "../services/ColorByGrade"
+import ColorByName from "../services/ColorByName"
 
 export default {
   props: [
@@ -30,13 +30,19 @@ export default {
     }
   },
 
+  methods: {
+    recolor() {
+      this.color = ColorByName.colorByName(this.grade.name, this.useTripodColors);
+    },
+  },
+
   mounted() {
-    this.color = ColorByGrade.colorByGrade(this.grade.name, this.useTripodColors);
+    this.recolor();
   },
 
   watch: {
     useTripodColors() {
-      this.color = ColorByGrade.colorByGrade(this.grade.name, this.useTripodColors);
+      this.recolor();
     }
   }
 };

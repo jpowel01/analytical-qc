@@ -1,13 +1,14 @@
-class ColorByGrade {
-    colorByGrade(name, useTripodColors) {
+class ColorByName {
+    colorByName(name, useTripodColors) {
         return useTripodColors
-          ? this.colorByGradeTripod(name)
-          : this.colorByGradeDefault(name);
+          ? this.colorByNameTripod(name)
+          : this.colorByNameDefault(name);
     }
   
-    colorByGradeDefault(grade) {
-        switch (grade) {
+    colorByNameDefault(name) {
+        switch (name) {
             case "A":
+            case "S":
                 return "green";
             case "B":
                 return "yellow darken-1";
@@ -17,6 +18,8 @@ class ColorByGrade {
             case "Fc":
             case "Fns":
             case "F":
+            case "T":
+            case "L":
                 return "red";
             case "Ac":
                 return "green lighten-2";
@@ -30,17 +33,19 @@ class ColorByGrade {
                 return "purple";
             case "U":
             case "W":
+            case "X":
                 return "grey";
             default:
                 return "grey";
         }
     }
   
-    colorByGradeTripod(grade) {
-        switch (grade) {
+    colorByNameTripod(name) {
+        switch (name) {
             case "A":
             case "B":
             case "C":
+            case "S":
                 return "green";
             case "Ac":
             case "Bc":
@@ -48,6 +53,8 @@ class ColorByGrade {
             case "Fc":
             case "Fns":
             case "F":
+            case "T":
+            case "L":
                 return "red";
             case "Z":
             case "D":
@@ -57,6 +64,7 @@ class ColorByGrade {
             case "M":
                 return "blue";
             case "U":
+            case "X":
                 return "grey";
             default:
                 return "grey";
@@ -64,4 +72,4 @@ class ColorByGrade {
     }
 }
 
-export default new ColorByGrade();
+export default new ColorByName();

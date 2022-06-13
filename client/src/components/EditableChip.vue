@@ -11,12 +11,12 @@
             v-bind="attrs"
             v-on="{ ...tooltip, ...menu }"
           >
-            <strong>{{ data.grade.name }}</strong>
+            <strong>{{ name }}</strong>
           </v-chip>
         </template>
-        <span v-if="data.validated">Validated grade: </span>
-        <span v-else>Automatic grade: </span>
-        <span>{{ data.grade.description }}</span>
+        <span v-if="data.validated">Validated: </span>
+        <span v-else>Automatic: </span>
+        <span>{{ description }}</span>
       </v-tooltip>
     </template>
     <v-list>
@@ -26,16 +26,20 @@
           <v-checkbox v-model="data.validated" @click="validate" />
         </v-list-item-action>
       </v-list-item>
+      <v-list-item>
+        <v-list-item-title @click="deleteData">Delete</v-list-item-title>
+      </v-list-item>
     </v-list>
   </v-menu>
 </template>
 
 <script>
-import ColorByGrade from "../services/ColorByGrade"
+import ColorByName from "../services/ColorByName"
 
 export default {
   props: [
     "data",
+    "type",
     "service",
     "useTripodColors",
   ],
@@ -43,22 +47,47 @@ export default {
   data() {
     return {
       color: "",
+      name: "",
+      description: "",
     }
   },
 
   methods: {
     validate() {
       this.service.put(this.data.id, this.data);
+    },
+
+    deleteData() {
+      this.service.delete(this.data.id);
+      this.$emit("deleted");
+    },
+
+    recolor() {
+      this.color = ColorByName.colorByName(this.name, this.useTripodColors);
+    },
+
+    reparse() {
+      if (this.type === "grade") {
+        this.name = this.data.grade.name;
+        this.description = this.data.grade.description;
+      } else if (this.type === "call") {
+        this.name = this.data.call.name;
+        this.description = this.data.call.description;
+      } if (this.type === "flag") {
+        this.name = this.data.flag.description;
+        this.description = this.data.flag.description;
+      }
     }
   },
 
   mounted() {
-    this.color = ColorByGrade.colorByGrade(this.data.grade.name, this.useTripodColors);
+    this.reparse();
+    this.recolor();
   },
 
   watch: {
     useTripodColors() {
-      this.color = ColorByGrade.colorByGrade(this.data.grade.name, this.useTripodColors);
+      this.recolor();
     }
   }
 };

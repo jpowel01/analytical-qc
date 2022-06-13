@@ -1,49 +1,50 @@
 <template>
   <v-container fluid v-if="substanceDetail.substance">
-    <v-row class="ma-2">
+    <v-row class="ma-2" align="center">
       <div class="text-h4 mr-2">{{ substanceDetail.substance.preferredName }}</div>
-      <div class="mx-2" v-if="t0Grade || t4Grade || call">
+      <div class="mx-2" v-if="t0Grade || t4Grade || call || substanceFlags">
         <div v-if="t0Grade" class="mx-1 d-inline-flex align-center">
           <span class="text--secondary">T0: </span>
           <EditableChip
             :data="t0Grade"
+            type="grade"
             :use-tripod-colors="state.useTripodColors"
             :service="SubstanceGradeDataService"
+            @deleted="retrieveSubstanceGrades($route.params.id)"
             />
         </div>
         <div v-if="t4Grade" class="mx-1 d-inline-flex align-center">
           <span class="text--secondary">T4: </span>
           <EditableChip
+          type="grade"
           :data="t4Grade"
           :use-tripod-colors="state.useTripodColors"
           :service="SubstanceGradeDataService"
+          @deleted="retrieveSubstanceGrades($route.params.id)"
           />
         </div>
         <div v-if="call" class="mx-1 d-inline-flex align-center">
           <span class="text--secondary">Call: </span>
-          <CallChip
-          :call="call.call"
-          :validated="call.validated"
+          <EditableChip
+          :data="call"
+          type="call"
+          :use-tripod-colors="state.useTripodColors"
+          :service="SubstanceCallDataService"
+          @deleted="retrieveSubstanceCall($route.params.id)"
           />
         </div>
-      </div>
-      <div v-if="substanceFlags" class="mx-2">
-        <v-tooltip top v-for="flag in substanceFlags" :key="flag.flag.id">
-          <template v-slot:activator="{ on, attrs }">
-            <v-chip
-              color="purple"
-              :text-color="flag.validated ? 'white' : 'purple'"
-              :outlined="!flag.validated"
-              class="ma-1"
-              v-bind="attrs"
-              v-on="on"
-            >
-              {{ flag.flag.description }}
-            </v-chip>
-          </template>
-          <span v-if="flag.validated">Validated flag</span>
-          <span v-else>Automatic flag</span>
-        </v-tooltip>
+        <div v-if="substanceFlags" class="mx-1 d-inline-flex align-center">
+        <EditableChip
+          v-for="sf in substanceFlags"
+          :key="sf.id"
+          :data="sf"
+          type="flag"
+          :use-tripod-colors="state.useTripodColors"
+          :service="SubstanceFlagDataService"
+          @deleted="retrieveSubstanceFlags($route.params.id)"
+        />
+        </div>
+        <EditDialog />
       </div>
       <v-spacer />
       <v-btn
@@ -118,11 +119,13 @@ import GradeDataService from "../services/GradeDataService";
 import CallDataService from "../services/CallDataService";
 import SubstanceDataService from "../services/SubstanceDataService";
 import EditableChip from "../components/EditableChip";
-import CallChip from "../components/CallChip";
+import EditDialog from "../components/EditDialog";
 import SubstanceInfoTable from "../components/SubstanceInfoTable";
 import PropertyPredictionTable from "../components/PropertyPredictionTable";
 import SamplePanel from "../components/SamplePanel";
-import SubstanceGradeDataService from "../services/SubstanceGradeDataService"
+import SubstanceGradeDataService from "../services/SubstanceGradeDataService";
+import SubstanceCallDataService from "../services/SubstanceCallDataService";
+import SubstanceFlagDataService from "../services/SubstanceFlagDataService";
 import { DASHBOARD_IMAGE_URL } from "@/main";
 
 export default {
@@ -130,10 +133,10 @@ export default {
 
   components: {
     EditableChip,
-    CallChip,
     SubstanceInfoTable,
     PropertyPredictionTable,
-    SamplePanel
+    SamplePanel,
+    EditDialog
   },
 
   data() {
@@ -161,6 +164,14 @@ export default {
 
     SubstanceGradeDataService() {
       return SubstanceGradeDataService;
+    },
+
+    SubstanceCallDataService() {
+      return SubstanceCallDataService;
+    },
+
+    SubstanceFlagDataService() {
+      return SubstanceFlagDataService;
     }
   },
 
