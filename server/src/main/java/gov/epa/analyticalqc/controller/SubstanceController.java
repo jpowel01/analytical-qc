@@ -6,35 +6,41 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import gov.epa.analyticalqc.dto.ExperimentDetail;
 import gov.epa.analyticalqc.dto.ExperimentDto;
 import gov.epa.analyticalqc.dto.PropertyPredictionDto;
 import gov.epa.analyticalqc.dto.SampleDetail;
 import gov.epa.analyticalqc.dto.SampleDto;
 import gov.epa.analyticalqc.dto.SubstanceDetail;
-import gov.epa.analyticalqc.dto.SubstanceFlagDto;
-import gov.epa.analyticalqc.entity.Experiment;
-import gov.epa.analyticalqc.entity.PropertyPrediction;
-import gov.epa.analyticalqc.entity.Sample;
+import gov.epa.analyticalqc.entity.Grade;
 import gov.epa.analyticalqc.entity.Substance;
+import gov.epa.analyticalqc.entity.SubstanceCall;
 import gov.epa.analyticalqc.entity.SubstanceFlag;
+import gov.epa.analyticalqc.entity.SubstanceGrade;
+import gov.epa.analyticalqc.repository.ExperimentGradeRepository;
 import gov.epa.analyticalqc.repository.ExperimentRepository;
 import gov.epa.analyticalqc.repository.PropertyPredictionRepository;
 import gov.epa.analyticalqc.repository.SampleRepository;
+import gov.epa.analyticalqc.repository.SubstanceCallRepository;
 import gov.epa.analyticalqc.repository.SubstanceFlagRepository;
+import gov.epa.analyticalqc.repository.SubstanceGradeRepository;
 import gov.epa.analyticalqc.repository.SubstanceRepository;
 
 @RestController
 @RequestMapping("/api/substances")
-@CrossOrigin(origins = "http://v2626umcth819.rtord.epa.gov:81")
 public class SubstanceController {
     
     @Autowired SubstanceRepository substanceRepository;
@@ -42,10 +48,20 @@ public class SubstanceController {
     @Autowired SubstanceFlagRepository substanceFlagRepository;
     @Autowired PropertyPredictionRepository propertyPredictionRepository;
     @Autowired ExperimentRepository experimentRepository;
+    @Autowired ExperimentGradeRepository experimentGradeRepository;
+    @Autowired SubstanceGradeRepository substanceGradeRepository;
+    @Autowired SubstanceCallRepository substanceCallRepository;
 
     @GetMapping()
-    public ResponseEntity<List<Substance>> getAllSubstances() {
-        return new ResponseEntity<>(substanceRepository.findAll(), HttpStatus.OK);
+    public ResponseEntity<Page<Substance>> getAllSubstances(@RequestParam(name="search", required=false) String search,
+        @RequestParam(name="pageNo", defaultValue="0") Integer pageNo, 
+        @RequestParam(name="pageSize", defaultValue="100") Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("id").ascending());
+        if (search != null) {
+            return new ResponseEntity<>(substanceRepository.findByPreferredNameContainingIgnoreCase(search, pageable), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(substanceRepository.findAll(pageable), HttpStatus.OK);
+        }
     }
 
     @GetMapping("/{id}")
@@ -65,25 +81,22 @@ public class SubstanceController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Substance not found");
         } else {
             Substance substance = findSubstance.get();
-            PropertyPrediction propertyPrediction = propertyPredictionRepository.findBySubstanceId(id).orElse(null);
-            List<SubstanceFlag> substanceFlags = substanceFlagRepository.findBySubstanceId(id);
-            List<Sample> samples = sampleRepository.findBySubstanceId(id);
-
-            PropertyPredictionDto propertyPredictionDto = null;
-            if (propertyPrediction != null) {
-                propertyPredictionDto = new PropertyPredictionDto(propertyPrediction);
-            }
+            PropertyPredictionDto propertyPrediction = propertyPredictionRepository.findDtoBySubstanceId(id).orElse(null);
+            List<SampleDto> samples = sampleRepository.findDtoBySubstanceId(id);
 
             List<SampleDetail> sampleDetails = new ArrayList<SampleDetail>();
-            for (Sample sample:samples) {
-                List<Experiment> experiments = experimentRepository.findBySampleId(sample.getId());
-                sampleDetails.add(new SampleDetail(new SampleDto(sample), experiments.stream().map(e -> new ExperimentDto(e)).collect(Collectors.toList())));
+            for (SampleDto sample:samples) {
+                List<ExperimentDto> experiments = experimentRepository.findDtoBySampleId(sample.getId());
+                List<ExperimentDetail> experimentDetails = new ArrayList<ExperimentDetail>();
+                for (ExperimentDto experiment:experiments) {
+                    List<Grade> grades = experimentGradeRepository.findByExperimentId(experiment.getId()).stream().map(eg -> eg.getGrade()).collect(Collectors.toList());
+                    experimentDetails.add(new ExperimentDetail(experiment, grades));
+                }
+
+                sampleDetails.add(new SampleDetail(sample, experimentDetails));
             }
 
-            SubstanceDetail substanceDetail = new SubstanceDetail(substance, 
-                substanceFlags.stream().map(sf -> new SubstanceFlagDto(sf)).collect(Collectors.toList()), 
-                propertyPredictionDto, 
-                sampleDetails);
+            SubstanceDetail substanceDetail = new SubstanceDetail(substance, propertyPrediction, sampleDetails);
             return new ResponseEntity<>(substanceDetail, HttpStatus.OK);
         }
     }
@@ -105,6 +118,26 @@ public class SubstanceController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Substance not found");
         } else {
             return new ResponseEntity<>(findSubstance.get(), HttpStatus.OK);
+        }
+    }
+
+    @GetMapping("/{id}/flags")
+    public ResponseEntity<List<SubstanceFlag>> getSubstanceFlagsBySubstanceId(@PathVariable("id") Integer id) {
+        return new ResponseEntity<>(substanceFlagRepository.findBySubstanceId(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/grades")
+    public ResponseEntity<List<SubstanceGrade>> getSubstanceGradesBySubstanceId(@PathVariable("id") Integer id) {
+        return new ResponseEntity<>(substanceGradeRepository.findBySubstanceId(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/call")
+    public ResponseEntity<SubstanceCall> getSubstanceCallBySubstanceId(@PathVariable("id") Integer id) {
+        Optional<SubstanceCall> findSubstanceCall = substanceCallRepository.findBySubstanceId(id);
+        if (findSubstanceCall.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Substance call not found");
+        } else {
+            return new ResponseEntity<>(findSubstanceCall.get(), HttpStatus.OK);
         }
     }
 

@@ -1,16 +1,14 @@
 package gov.epa.analyticalqc.dto;
 
-import java.sql.Date;
+import java.util.Date;
 
-import gov.epa.analyticalqc.entity.Experiment;
 import gov.epa.analyticalqc.entity.File;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Value;
 
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@Value
 public class ExperimentDto {
+
+    private Integer id;
 
 	private File file;
     
@@ -59,32 +57,5 @@ public class ExperimentDto {
     private Integer origFilesContentId;
 
     private Integer isTripod;
-
-    public ExperimentDto(Experiment experiment) {
-        this.setFile(experiment.getFile());
-        this.setExperimentDate(experiment.getExperimentDate());
-        this.setStudy(experiment.getStudy());
-        this.setTimepoint(experiment.getTimepoint());
-        this.setMsDetector(experiment.getMsDetector());
-        this.setPlate(experiment.getPlate());
-        this.setBatch(experiment.getBatch());
-        this.setWell(experiment.getWell());
-        this.setRow(experiment.getRow());
-        this.setCol(experiment.getCol());
-        this.setGrade(experiment.getGrade());
-        this.setPurity(experiment.getPurity());
-        this.setPurityFraction(experiment.getPurityFraction());
-        this.setExpectedConc(experiment.getExpectedConc());
-        this.setNmrConc(experiment.getNmrConc());
-        this.setMeasuredConc(experiment.getMeasuredConc());
-        this.setPassFail(experiment.getPassFail());
-        this.setPassFailBackup(experiment.getPassFailBackup());
-        this.setComment(experiment.getComment());
-        this.setNotes(experiment.getNotes());
-        this.setOrigId(experiment.getOrigId());
-        this.setOrigFilesId(experiment.getOrigFilesId());
-        this.setOrigFilesContentId(experiment.getOrigFilesContentId());
-        this.setIsTripod(experiment.getIsTripod());
-    }
 
 }

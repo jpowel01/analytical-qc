@@ -1,12 +1,11 @@
 package gov.epa.analyticalqc.entity;
 
-import java.util.Date;
-
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -15,25 +14,21 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name="files")
+@Table(name="sample_calls")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
-public class File {
+public class SampleCall {
     
     @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name="file_name")
-    private String fileName;
+    @ManyToOne
+	@JoinColumn(name="sample_id")
+	private Sample sample;
 
-    @Column(name="file_date")
-    private Date fileDate;
+    @ManyToOne
+	@JoinColumn(name="call_id")
+	private Call call;
 
-    private String text;
-
-    private String hash;
-
-    private byte[] content;
-
-    private Long bytecount;
+    private Boolean validated;
     
 }

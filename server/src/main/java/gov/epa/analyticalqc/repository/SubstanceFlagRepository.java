@@ -10,6 +10,4 @@ public interface SubstanceFlagRepository extends JpaRepository<SubstanceFlag, In
 
     List<SubstanceFlag> findBySubstanceId(Integer substanceId);
 
-    List<SubstanceFlag> findByFlagId(Integer flagId);
-
 }

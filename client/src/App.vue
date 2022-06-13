@@ -4,9 +4,7 @@
       <v-icon>mdi-checkbox-multiple-marked</v-icon>
       <div class="text-h6 ma-2">Analytical QC</div>
       <v-spacer />
-      <v-btn to="/substances" text>
-        Substances
-      </v-btn>
+      <v-btn to="/substances" text> Substances </v-btn>
     </v-app-bar>
 
     <v-main>

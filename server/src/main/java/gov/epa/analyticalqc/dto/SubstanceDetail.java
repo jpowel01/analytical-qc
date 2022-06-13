@@ -13,8 +13,6 @@ public class SubstanceDetail {
 
     private Substance substance;
 
-    private List<SubstanceFlagDto> substanceFlags;
-
     private PropertyPredictionDto propertyPrediction;
 
     private List<SampleDetail> sampleDetails;

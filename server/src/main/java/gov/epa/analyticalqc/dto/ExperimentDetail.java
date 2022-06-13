@@ -2,16 +2,17 @@ package gov.epa.analyticalqc.dto;
 
 import java.util.List;
 
+import gov.epa.analyticalqc.entity.Grade;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
-public class SampleDetail {
+public class ExperimentDetail {
 
-    private SampleDto sample;
+    private ExperimentDto experiment;
 
-    private List<ExperimentDetail> experiments;
+    private List<Grade> grades;
 
 }

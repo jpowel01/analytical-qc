@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,14 +13,19 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import gov.epa.analyticalqc.entity.Sample;
+import gov.epa.analyticalqc.entity.SampleCall;
+import gov.epa.analyticalqc.entity.SampleGrade;
+import gov.epa.analyticalqc.repository.SampleCallRepository;
+import gov.epa.analyticalqc.repository.SampleGradeRepository;
 import gov.epa.analyticalqc.repository.SampleRepository;
 
 @RestController
 @RequestMapping("/api/samples")
-@CrossOrigin(origins = "http://v2626umcth819.rtord.epa.gov:81")
 public class SampleController {
     
     @Autowired SampleRepository sampleRepository;
+    @Autowired SampleGradeRepository sampleGradeRepository;
+    @Autowired SampleCallRepository sampleCallRepository;
 
     @GetMapping()
     public ResponseEntity<List<Sample>> getAllSamples() {
@@ -65,6 +69,21 @@ public class SampleController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sample not found");
         } else {
             return new ResponseEntity<>(findSample.get(), HttpStatus.OK);
+        }
+    }
+
+    @GetMapping("/{id}/grades")
+    public ResponseEntity<List<SampleGrade>> getSampleGradesBySampleId(@PathVariable("id") Integer id) {
+        return new ResponseEntity<>(sampleGradeRepository.findBySampleId(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/call")
+    public ResponseEntity<SampleCall> getSampleCallBySampleId(@PathVariable("id") Integer id) {
+        Optional<SampleCall> findSampleCall = sampleCallRepository.findBySampleId(id);
+        if (findSampleCall.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sample call not found");
+        } else {
+            return new ResponseEntity<>(findSampleCall.get(), HttpStatus.OK);
         }
     }
 
