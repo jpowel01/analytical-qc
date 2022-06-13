@@ -27,7 +27,10 @@
         </v-list-item-action>
       </v-list-item>
       <v-list-item>
-        <v-list-item-title @click="deleteData">Delete</v-list-item-title>
+        <v-list-item-title>Delete</v-list-item-title>
+        <v-list-item-action>
+          <v-icon @click="deleteData">mdi-delete</v-icon>
+        </v-list-item-action>
       </v-list-item>
     </v-list>
   </v-menu>
