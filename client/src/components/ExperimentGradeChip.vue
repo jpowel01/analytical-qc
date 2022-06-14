@@ -21,29 +21,10 @@ import ColorByName from "../services/ColorByName";
 export default {
   props: ["grade", "useTripodColors"],
 
-  data() {
-    return {
-      color: "",
-    };
-  },
-
-  methods: {
-    recolor() {
-      this.color = ColorByName.colorByName(
-        this.grade.name,
-        this.useTripodColors
-      );
-    },
-  },
-
-  mounted() {
-    this.recolor();
-  },
-
-  watch: {
-    useTripodColors() {
-      this.recolor();
-    },
+  computed: {
+    color() {
+      return ColorByName.colorByName(this.grade.name, this.useTripodColors);
+    }
   },
 };
 </script>

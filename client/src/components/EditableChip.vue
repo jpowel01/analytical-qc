@@ -23,16 +23,16 @@
       </v-tooltip>
     </template>
     <v-list>
-      <v-list-item>
+      <v-list-item v-if="!data.validated" @click="$emit('validated')">
         <v-list-item-title>Validate</v-list-item-title>
         <v-list-item-action>
-          <v-checkbox v-model="data.validated" @click="validate" />
+          <v-icon>mdi-check</v-icon>
         </v-list-item-action>
       </v-list-item>
-      <v-list-item>
-        <v-list-item-title>Delete</v-list-item-title>
+      <v-list-item @click="$emit('deleted')">
+        <v-list-item-title >Delete</v-list-item-title>
         <v-list-item-action>
-          <v-icon @click="deleteData">mdi-delete</v-icon>
+          <v-icon>mdi-delete</v-icon>
         </v-list-item-action>
       </v-list-item>
     </v-list>
@@ -43,42 +43,32 @@
 import ColorByName from "../services/ColorByName";
 
 export default {
-  props: ["data", "type", "service", "useTripodColors", "title"],
+  props: ["data", "type", "useTripodColors", "title"],
 
-  emits: ["deleted"],
+  emits: ["validated", "deleted"],
 
   data() {
     return {
-      color: "",
       name: "",
       description: "",
     };
   },
 
+  computed: {
+    color() {
+      return ColorByName.colorByName(this.name, this.useTripodColors);
+    }
+  },
+
   methods: {
-    validate() {
-      this.service.put(this.data.id, this.data);
-    },
-
-    deleteData() {
-      this.service.delete(this.data.id);
-      this.data = null;
-      this.$emit("deleted");
-    },
-
-    recolor() {
-      this.color = ColorByName.colorByName(this.name, this.useTripodColors);
-    },
-
-    reparse() {
+    parse() {
       if (this.type === "grade") {
         this.name = this.data.grade.name;
         this.description = this.data.grade.description;
       } else if (this.type === "call") {
         this.name = this.data.call.name;
         this.description = this.data.call.description;
-      }
-      if (this.type === "flag") {
+      } else if (this.type === "flag") {
         this.name = this.data.flag.description;
         this.description = this.data.flag.description;
       }
@@ -86,14 +76,7 @@ export default {
   },
 
   mounted() {
-    this.reparse();
-    this.recolor();
-  },
-
-  watch: {
-    useTripodColors() {
-      this.recolor();
-    },
+    this.parse();
   },
 };
 </script>

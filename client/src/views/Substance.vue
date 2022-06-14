@@ -4,32 +4,35 @@
       <div class="text-h4 mr-2">
         {{ substanceDetail.substance.preferredName }}
       </div>
-      <div class="mx-2" v-if="t0Grade || t4Grade || call || substanceFlags">
-        <div v-if="t0Grade" class="mx-1 d-inline-flex align-center">
+      <div class="mx-2" v-if="substanceGradeT0 || substanceGradeT4 || substanceCall || substanceFlags">
+        <div v-if="substanceGradeT0" class="mx-1 d-inline-flex align-center">
           <EditableChip
-            :data="t0Grade"
+            :data="substanceGradeT0"
             type="grade"
             title="T0"
             :use-tripod-colors="state.useTripodColors"
-            :service="SubstanceGradeDataService"
+            @validated="onValidate(substanceGradeT0, SubstanceGradeDataService)"
+            @deleted="onDelete(substanceGradeT0, SubstanceGradeDataService)"
           />
         </div>
-        <div v-if="t4Grade" class="mx-1 d-inline-flex align-center">
+        <div v-if="substanceGradeT4" class="mx-1 d-inline-flex align-center">
           <EditableChip
+            :data="substanceGradeT4"
             type="grade"
             title="T4"
-            :data="t4Grade"
             :use-tripod-colors="state.useTripodColors"
-            :service="SubstanceGradeDataService"
+            @validated="onValidate(substanceGradeT4, SubstanceGradeDataService)"
+            @deleted="onDelete(substanceGradeT4, SubstanceGradeDataService)"
           />
         </div>
-        <div v-if="call" class="mx-1 d-inline-flex align-center">
+        <div v-if="substanceCall" class="mx-1 d-inline-flex align-center">
           <EditableChip
-            :data="call"
+            :data="substanceCall"
             type="call"
             title="Call"
             :use-tripod-colors="state.useTripodColors"
-            :service="SubstanceCallDataService"
+            @validated="onValidate(substanceCall, SubstanceCallDataService)"
+            @deleted="onDelete(substanceCall, SubstanceCallDataService)"
           />
         </div>
         <div v-if="substanceFlags" class="mx-1 d-inline-flex align-center">
@@ -39,10 +42,19 @@
             :data="sf"
             type="flag"
             :use-tripod-colors="state.useTripodColors"
-            :service="SubstanceFlagDataService"
+            @validated="onValidate(sf, SubstanceFlagDataService)"
+            @deleted="onDelete(sf, SubstanceFlagDataService)"
           />
         </div>
-        <EditDialog />
+        <EditDialog
+          :grades="grades"
+          :calls="calls"
+          :existingT0="t0"
+          :existingT4="t4"
+          :existing-call="call"
+          :grade-service="SubstanceGradeDataService"
+          :call-service="SubstanceCallDataService"
+        />
       </div>
       <v-spacer />
       <v-btn
@@ -157,9 +169,9 @@ export default {
     return {
       substanceDetail: null,
       substanceFlags: [],
-      t0Grade: null,
-      t4Grade: null,
-      call: null,
+      substanceGradeT0: null,
+      substanceGradeT4: null,
+      substanceCall: null,
 
       grades: [],
       calls: [],
@@ -191,6 +203,16 @@ export default {
   },
 
   methods: {
+    async onValidate(data, service) {
+      data.validated = true;
+      data = await service.put(data.id, data);
+    },
+
+    async onDelete(data, service) {
+      data = await service.delete(data.id);
+      this.refreshEditable(this.substanceDetail.substance.id)
+    },
+
     retrieveSubstanceDetail(query, type) {
       return SubstanceDataService.getDetailAlternate(query, type);
     },
@@ -200,43 +222,46 @@ export default {
       let response = await SubstanceDataService.getFlags(id);
       if (response) {
         this.substanceFlags = response.data;
-        console.log(response.data);
       }
     },
 
     async retrieveSubstanceGrades(id) {
-      this.t0Grade = null;
-      this.t4Grade = null;
+      this.substanceGradeT0 = null;
+      this.substanceGradeT4 = null;
       let response = await SubstanceDataService.getGrades(id);
       if (response) {
-        response.data.forEach((grade) => {
-          if (grade.t0_t4) {
-            this.t4Grade = grade;
+        response.data.forEach((resp) => {
+          if (resp.t0_t4) {
+            this.substanceGradeT4 = resp;
           } else {
-            this.t0Grade = grade;
+            this.substanceGradeT0 = resp;
           }
         });
       }
     },
 
     async retrieveSubstanceCall(id) {
-      this.call = null;
+      this.substanceCall = null;
       let response = await SubstanceDataService.getCall(id);
       if (response) {
-        this.call = response.data;
+        this.substanceCall = response.data;
       }
     },
 
     async refresh(query, type) {
       this.state.missingImage = false;
+      this.substanceDetail = null;
       let response = await this.retrieveSubstanceDetail(query, type);
       if (response) {
         this.substanceDetail = response.data;
-        let id = this.substanceDetail.substance.id;
-        this.retrieveSubstanceFlags(id);
-        this.retrieveSubstanceGrades(id);
-        this.retrieveSubstanceCall(id);
+        this.refreshEditable(this.substanceDetail.substance.id);
       }
+    },
+
+    refreshEditable(id) {
+      this.retrieveSubstanceFlags(id);
+      this.retrieveSubstanceGrades(id);
+      this.retrieveSubstanceCall(id);
     },
 
     retrieveGradesAndCalls() {
@@ -244,28 +269,19 @@ export default {
         .then((response) => {
           this.grades = response.data;
           console.log(response.data);
-        })
-        .catch((e) => {
-          console.log(e);
         });
       CallDataService.getAll()
         .then((response) => {
           this.calls = response.data;
           console.log(response.data);
-        })
-        .catch((e) => {
-          console.log(e);
         });
     },
   },
 
   watch: {
-    "$route.params.query"() {
+    "$route.params"() {
       this.refresh(this.$route.params.query, this.$route.params.type);
-    },
-    "$route.params.type"() {
-      this.refresh(this.$route.params.query, this.$route.params.type);
-    },
+    }
   },
 
   mounted() {
