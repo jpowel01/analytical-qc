@@ -24,7 +24,7 @@ export default {
   computed: {
     color() {
       return ColorByName.colorByName(this.grade.name, this.useTripodColors);
-    }
+    },
   },
 };
 </script>

@@ -4,7 +4,15 @@
       <div class="text-h4 mr-2">
         {{ substanceDetail.substance.preferredName }}
       </div>
-      <div class="mx-2" v-if="substanceGradeT0 || substanceGradeT4 || substanceCall || substanceFlags">
+      <div
+        class="mx-2"
+        v-if="
+          substanceGradeT0 ||
+          substanceGradeT4 ||
+          substanceCall ||
+          substanceFlags
+        "
+      >
         <div v-if="substanceGradeT0" class="mx-1 d-inline-flex align-center">
           <EditableChip
             :data="substanceGradeT0"
@@ -210,7 +218,7 @@ export default {
 
     async onDelete(data, service) {
       data = await service.delete(data.id);
-      this.refreshEditable(this.substanceDetail.substance.id)
+      this.refreshEditable(this.substanceDetail.substance.id);
     },
 
     retrieveSubstanceDetail(query, type) {
@@ -265,23 +273,21 @@ export default {
     },
 
     retrieveGradesAndCalls() {
-      GradeDataService.getAll()
-        .then((response) => {
-          this.grades = response.data;
-          console.log(response.data);
-        });
-      CallDataService.getAll()
-        .then((response) => {
-          this.calls = response.data;
-          console.log(response.data);
-        });
+      GradeDataService.getAll().then((response) => {
+        this.grades = response.data;
+        console.log(response.data);
+      });
+      CallDataService.getAll().then((response) => {
+        this.calls = response.data;
+        console.log(response.data);
+      });
     },
   },
 
   watch: {
     "$route.params"() {
       this.refresh(this.$route.params.query, this.$route.params.type);
-    }
+    },
   },
 
   mounted() {

@@ -14,7 +14,9 @@
         <div :class="titleClass" v-else>No sample number</div>
         <div
           class="mx-2"
-          v-if="(sampleGradeT0 || sampleGradeT4 || sampleCall) && !sample.withdrawn"
+          v-if="
+            (sampleGradeT0 || sampleGradeT4 || sampleCall) && !sample.withdrawn
+          "
         >
           <div v-if="sampleGradeT0" class="mx-1 d-inline-flex align-center">
             <EditableChip
@@ -81,7 +83,9 @@
       </v-data-table>
       <div class="text-caption text--secondary my-2">
         <span class="mx-1" v-if="sample.tox21Id"
-          ><strong>Tox21 ID:</strong> Tox21_{{ sample.tox21Id }} ({{ library }})</span
+          ><strong>Tox21 ID:</strong> Tox21_{{ sample.tox21Id }} ({{
+            library
+          }})</span
         >
         <span class="mx-1" v-if="sample.ncgcId"
           ><strong>NCGC ID:</strong> {{ sample.ncgcId }}</span
@@ -196,7 +200,7 @@ export default {
 
     async onDelete(data, service) {
       data = await service.delete(data.id);
-      this.refresh(this.sample.id)
+      this.refresh(this.sample.id);
     },
 
     async retrieveSampleGrades(id) {

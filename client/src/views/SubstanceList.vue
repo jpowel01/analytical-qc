@@ -21,9 +21,9 @@
           :server-items-length="totalSubstances"
           :loading="state.loading"
         >
-          <template v-slot:item.detail="{ item }">
+          <template v-slot:item.id="{ value }">
             <v-btn
-              :to="'/substances/id/' + item.id"
+              :to="`/substances/id/${value}`"
               class="ma-2"
               dark
               small
@@ -40,20 +40,20 @@
               :src="`${DASHBOARD_IMAGE_URL}/${item.dtxsid}`"
             />
           </template>
-          <template v-slot:item.dtxsid="{ item }">
+          <template v-slot:item.dtxsid="{ value }">
             <a
               target="_blank"
               rel="noreferrer noopener"
-              :href="`${DASHBOARD_DETAILS_URL}/${item.dtxsid}`"
-              >{{ item.dtxsid }}</a
+              :href="`${DASHBOARD_DETAILS_URL}/${value}`"
+              >{{ value }}</a
             ><v-icon x-small class="ml-1">mdi-open-in-new</v-icon>
           </template>
-          <template v-slot:item.pubchemCid="{ item }">
+          <template v-slot:item.pubchemCid="{ value }">
             <a
               target="_blank"
               rel="noreferrer noopener"
-              :href="`${PUBCHEM_CID_URL}/${item.pubchemCid}`"
-              >{{ item.pubchemCid }}</a
+              :href="`${PUBCHEM_CID_URL}/${value}`"
+              >{{ value }}</a
             ><v-icon x-small class="ml-1">mdi-open-in-new</v-icon>
           </template>
         </v-data-table>
@@ -77,8 +77,9 @@ export default {
     return {
       substances: [],
       totalSubstances: 0,
+
       headers: [
-        { text: "", value: "detail", sortable: false, width: "1%" },
+        { text: "", value: "id", sortable: false, width: "1%" },
         { text: "", value: "structure", sortable: false, width: "1%" },
         { text: "DTXSID", value: "dtxsid", sortable: false },
         { text: "Preferred Name", value: "preferredName", sortable: false },

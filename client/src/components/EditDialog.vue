@@ -1,7 +1,5 @@
 <template>
-  <v-dialog 
-    v-model="dialog"
-    max-width="800px">
+  <v-dialog v-model="dialog" max-width="800px">
     <template v-slot:activator="{ on, attrs }">
       <v-icon class="ma-1" v-on="on" v-bind="attrs">mdi-plus-circle</v-icon>
     </template>
@@ -19,12 +17,17 @@
                 item-value="name"
                 label="T0"
                 return-object
-                persistent-hint>
+                persistent-hint
+              >
                 <template v-slot:item="data">
                   <template>
                     <v-list-item-content>
-                      <v-list-item-title v-html="data.item.name"></v-list-item-title>
-                      <v-list-item-subtitle v-html="data.item.description"></v-list-item-subtitle>
+                      <v-list-item-title
+                        v-html="data.item.name"
+                      ></v-list-item-title>
+                      <v-list-item-subtitle
+                        v-html="data.item.description"
+                      ></v-list-item-subtitle>
                     </v-list-item-content>
                   </template>
                 </template>
@@ -39,12 +42,17 @@
                 item-value="name"
                 label="T4"
                 return-object
-                persistent-hint>
+                persistent-hint
+              >
                 <template v-slot:item="data">
                   <template>
                     <v-list-item-content>
-                      <v-list-item-title v-html="data.item.name"></v-list-item-title>
-                      <v-list-item-subtitle v-html="data.item.description"></v-list-item-subtitle>
+                      <v-list-item-title
+                        v-html="data.item.name"
+                      ></v-list-item-title>
+                      <v-list-item-subtitle
+                        v-html="data.item.description"
+                      ></v-list-item-subtitle>
                     </v-list-item-content>
                   </template>
                 </template>
@@ -59,7 +67,15 @@
 
 <script>
 export default {
-  props: ["grades", "calls", "existingT0", "existingT4", "existingCall", "gradeService", "callService"],
+  props: [
+    "grades",
+    "calls",
+    "existingT0",
+    "existingT4",
+    "existingCall",
+    "gradeService",
+    "callService",
+  ],
 
   data() {
     return {

@@ -30,7 +30,7 @@
         </v-list-item-action>
       </v-list-item>
       <v-list-item @click="$emit('deleted')">
-        <v-list-item-title >Delete</v-list-item-title>
+        <v-list-item-title>Delete</v-list-item-title>
         <v-list-item-action>
           <v-icon>mdi-delete</v-icon>
         </v-list-item-action>
@@ -57,7 +57,7 @@ export default {
   computed: {
     color() {
       return ColorByName.colorByName(this.name, this.useTripodColors);
-    }
+    },
   },
 
   methods: {
