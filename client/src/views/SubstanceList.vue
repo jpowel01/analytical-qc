@@ -106,7 +106,7 @@ export default {
     "state.search"() {
       this.state.options.page = 1;
       this.retrieveSubstances();
-    }
+    },
   },
 
   computed: {

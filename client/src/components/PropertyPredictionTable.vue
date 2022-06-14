@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title>OPERA Predicted Properties</v-card-title>
+    <v-card-title>Predicted Properties</v-card-title>
     <v-simple-table>
       <tbody>
         <tr>
@@ -21,8 +21,27 @@
           </td>
         </tr>
         <tr>
-          <th scope="row">Octanol-Water Partition Coefficient (logK<sub>ow</sub>)</th>
+          <th scope="row">
+            Octanol-Water Partition Coefficient (logK<sub>ow</sub>)
+          </th>
           <td>{{ propertyPrediction.logP.toPrecision(2) }}</td>
+        </tr>
+        <tr>
+          <th scope="row">LCMS Amenability</th>
+          <td>
+            <AmenabilityChip
+              v-if="propertyPrediction.lcmsAmenNeg"
+              charge="ESI-"
+              threshold="0.5"
+              :prob="propertyPrediction.lcmsAmenNeg"
+            />
+            <AmenabilityChip
+              v-if="propertyPrediction.lcmsAmenPos"
+              charge="ESI+"
+              threshold="0.5"
+              :prob="propertyPrediction.lcmsAmenPos"
+            />
+          </td>
         </tr>
       </tbody>
     </v-simple-table>
@@ -30,7 +49,13 @@
 </template>
 
 <script>
+import AmenabilityChip from "./AmenabilityChip";
+
 export default {
   props: ["propertyPrediction"],
+
+  components: {
+    AmenabilityChip,
+  },
 };
 </script>

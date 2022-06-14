@@ -37,5 +37,11 @@ public class PropertyPrediction {
 
     @Column(name="logp")
     private Double logP;
+
+    @Column(name="lcms_amen_neg")
+    private Double lcmsAmenNeg;
+
+    @Column(name="lcms_amen_pos")
+    private Double lcmsAmenPos;
     
 }

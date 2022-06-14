@@ -1,7 +1,9 @@
 <template>
   <v-container fluid v-if="substanceDetail.substance">
     <v-row class="ma-2" align="center">
-      <div class="text-h4 mr-2">{{ substanceDetail.substance.preferredName }}</div>
+      <div class="text-h4 mr-2">
+        {{ substanceDetail.substance.preferredName }}
+      </div>
       <div class="mx-2" v-if="t0Grade || t4Grade || call || substanceFlags">
         <div v-if="t0Grade" class="mx-1 d-inline-flex align-center">
           <span class="text--secondary">T0: </span>
@@ -11,38 +13,38 @@
             :use-tripod-colors="state.useTripodColors"
             :service="SubstanceGradeDataService"
             @deleted="retrieveSubstanceGrades($route.params.id)"
-            />
+          />
         </div>
         <div v-if="t4Grade" class="mx-1 d-inline-flex align-center">
           <span class="text--secondary">T4: </span>
           <EditableChip
-          type="grade"
-          :data="t4Grade"
-          :use-tripod-colors="state.useTripodColors"
-          :service="SubstanceGradeDataService"
-          @deleted="retrieveSubstanceGrades($route.params.id)"
+            type="grade"
+            :data="t4Grade"
+            :use-tripod-colors="state.useTripodColors"
+            :service="SubstanceGradeDataService"
+            @deleted="retrieveSubstanceGrades($route.params.id)"
           />
         </div>
         <div v-if="call" class="mx-1 d-inline-flex align-center">
           <span class="text--secondary">Call: </span>
           <EditableChip
-          :data="call"
-          type="call"
-          :use-tripod-colors="state.useTripodColors"
-          :service="SubstanceCallDataService"
-          @deleted="retrieveSubstanceCall($route.params.id)"
+            :data="call"
+            type="call"
+            :use-tripod-colors="state.useTripodColors"
+            :service="SubstanceCallDataService"
+            @deleted="retrieveSubstanceCall($route.params.id)"
           />
         </div>
         <div v-if="substanceFlags" class="mx-1 d-inline-flex align-center">
-        <EditableChip
-          v-for="sf in substanceFlags"
-          :key="sf.id"
-          :data="sf"
-          type="flag"
-          :use-tripod-colors="state.useTripodColors"
-          :service="SubstanceFlagDataService"
-          @deleted="retrieveSubstanceFlags($route.params.id)"
-        />
+          <EditableChip
+            v-for="sf in substanceFlags"
+            :key="sf.id"
+            :data="sf"
+            type="flag"
+            :use-tripod-colors="state.useTripodColors"
+            :service="SubstanceFlagDataService"
+            @deleted="retrieveSubstanceFlags($route.params.id)"
+          />
         </div>
         <EditDialog />
       </div>
@@ -99,15 +101,14 @@
           v-model="state.useTripodColors"
           :label="(state.useTripodColors ? 'Tripod' : 'Default') + ' colors'"
         ></v-switch>
-        <v-expansion-panels 
-          multiple>
-          <SamplePanel 
+        <v-expansion-panels multiple>
+          <SamplePanel
             v-for="sampleDetail in substanceDetail.sampleDetails"
             :key="sampleDetail.sample.id"
             :sample="sampleDetail.sample"
             :experiments="sampleDetail.experiments"
             :use-tripod-colors="state.useTripodColors"
-            />
+          />
         </v-expansion-panels>
       </v-col>
     </v-row>
@@ -136,7 +137,7 @@ export default {
     SubstanceInfoTable,
     PropertyPredictionTable,
     SamplePanel,
-    EditDialog
+    EditDialog,
   },
 
   data() {
@@ -172,7 +173,7 @@ export default {
 
     SubstanceFlagDataService() {
       return SubstanceFlagDataService;
-    }
+    },
   },
 
   methods: {
@@ -205,13 +206,13 @@ export default {
         .then((response) => {
           this.t0Grade = null;
           this.t4Grade = null;
-          response.data.forEach(grade => {
-                if (grade.t0_t4) {
-                    this.t4Grade = grade;
-                } else {
-                    this.t0Grade = grade;
-                }
-            })
+          response.data.forEach((grade) => {
+            if (grade.t0_t4) {
+              this.t4Grade = grade;
+            } else {
+              this.t0Grade = grade;
+            }
+          });
           console.log(response.data);
         })
         .catch((e) => {

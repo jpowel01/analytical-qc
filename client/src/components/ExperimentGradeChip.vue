@@ -16,23 +16,23 @@
 </template>
 
 <script>
-import ColorByName from "../services/ColorByName"
+import ColorByName from "../services/ColorByName";
 
 export default {
-  props: [
-    "grade",
-    "useTripodColors",
-  ],
+  props: ["grade", "useTripodColors"],
 
   data() {
     return {
       color: "",
-    }
+    };
   },
 
   methods: {
     recolor() {
-      this.color = ColorByName.colorByName(this.grade.name, this.useTripodColors);
+      this.color = ColorByName.colorByName(
+        this.grade.name,
+        this.useTripodColors
+      );
     },
   },
 
@@ -43,7 +43,7 @@ export default {
   watch: {
     useTripodColors() {
       this.recolor();
-    }
-  }
+    },
+  },
 };
 </script>

@@ -37,22 +37,17 @@
 </template>
 
 <script>
-import ColorByName from "../services/ColorByName"
+import ColorByName from "../services/ColorByName";
 
 export default {
-  props: [
-    "data",
-    "type",
-    "service",
-    "useTripodColors",
-  ],
+  props: ["data", "type", "service", "useTripodColors"],
 
   data() {
     return {
       color: "",
       name: "",
       description: "",
-    }
+    };
   },
 
   methods: {
@@ -76,11 +71,12 @@ export default {
       } else if (this.type === "call") {
         this.name = this.data.call.name;
         this.description = this.data.call.description;
-      } if (this.type === "flag") {
+      }
+      if (this.type === "flag") {
         this.name = this.data.flag.description;
         this.description = this.data.flag.description;
       }
-    }
+    },
   },
 
   mounted() {
@@ -91,7 +87,7 @@ export default {
   watch: {
     useTripodColors() {
       this.recolor();
-    }
-  }
+    },
+  },
 };
 </script>

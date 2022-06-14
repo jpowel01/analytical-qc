@@ -6,7 +6,9 @@ class SubstanceDataService {
   }
 
   searchPaged(str, no, size) {
-    return http.get("substances", { params: { search: str, pageNo: no, pageSize: size } });
+    return http.get("substances", {
+      params: { search: str, pageNo: no, pageSize: size },
+    });
   }
 
   get(id) {

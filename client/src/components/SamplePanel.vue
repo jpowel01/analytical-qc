@@ -1,44 +1,59 @@
 <template>
   <v-expansion-panel>
     <v-expansion-panel-header class="text-h6">
-        <v-row align="center">
-            <div class="ma-2" v-if="sample.tox21Id">Tox21_{{ sample.tox21Id }}</div>
-            <div class="ma-2" v-else-if="sample.ncgcId">{{ sample.ncgcId }}</div>
-            <div class="ma-2" v-else-if="sample.bottleBarcode">{{ sample.bottleBarcode }}</div>
-            <div class="ma-2" v-else>No sample number</div>
-            <div class="mx-2" v-if="t0Grade || t4Grade || call">
-            <div v-if="t0Grade" class="mx-1 d-inline-flex align-center">
-                <span class="text-body-1 text--secondary">T0: </span>
-                <EditableChip
-                    :data="t0Grade"
-                    type="grade"
-                    :use-tripod-colors="useTripodColors"
-                    :service="SampleGradeDataService"
-                    @deleted="retrieveSampleGrades(sample.id)"
-                    />
-            </div>
-            <div v-if="t4Grade" class="mx-1 d-inline-flex align-center">
-                <span class="text-body-1 text--secondary">T4: </span>
-                <EditableChip
-                    :data="t4Grade"
-                    type="grade"
-                    :use-tripod-colors="useTripodColors"
-                    :service="SampleGradeDataService"
-                    @deleted="retrieveSampleGrades(sample.id)"
-                    />
-            </div>
-            <div v-if="call" class="mx-1 d-inline-flex align-center">
-                <span class="text-body-1 text--secondary">Call: </span>
-                <EditableChip
-                    :data="call"
-                    type="call"
-                    :use-tripod-colors="useTripodColors"
-                    :service="SampleCallDataService"
-                    @deleted="retrieveSampleCall(sample.id)"
-                    />
-            </div>
+      <v-row align="center">
+        <div :class="titleClass" v-if="sample.tox21Id">
+          Tox21_{{ sample.tox21Id }}
         </div>
-        </v-row>
+        <div :class="titleClass" v-else-if="sample.ncgcId">
+          {{ sample.ncgcId }}
+        </div>
+        <div :class="titleClass" v-else-if="sample.bottleBarcode">
+          {{ sample.bottleBarcode }}
+        </div>
+        <div :class="titleClass" v-else>No sample number</div>
+        <div
+          class="mx-2"
+          v-if="(t0Grade || t4Grade || call) && !sample.withdrawn"
+        >
+          <div v-if="t0Grade" class="mx-1 d-inline-flex align-center">
+            <span class="text-body-1 text--secondary">T0: </span>
+            <EditableChip
+              :data="t0Grade"
+              type="grade"
+              :use-tripod-colors="useTripodColors"
+              :service="SampleGradeDataService"
+              @deleted="retrieveSampleGrades(sample.id)"
+            />
+          </div>
+          <div v-if="t4Grade" class="mx-1 d-inline-flex align-center">
+            <span class="text-body-1 text--secondary">T4: </span>
+            <EditableChip
+              :data="t4Grade"
+              type="grade"
+              :use-tripod-colors="useTripodColors"
+              :service="SampleGradeDataService"
+              @deleted="retrieveSampleGrades(sample.id)"
+            />
+          </div>
+          <div v-if="call" class="mx-1 d-inline-flex align-center">
+            <span class="text-body-1 text--secondary">Call: </span>
+            <EditableChip
+              :data="call"
+              type="call"
+              :use-tripod-colors="useTripodColors"
+              :service="SampleCallDataService"
+              @deleted="retrieveSampleCall(sample.id)"
+            />
+          </div>
+        </div>
+        <div class="mx-2" v-else-if="sample.withdrawn">
+          <ExperimentGradeChip
+            :use-tripod-colors="useTripodColors"
+            :grade="{ name: 'W', description: 'Sample Withdrawn' }"
+          />
+        </div>
+      </v-row>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
       <v-data-table
@@ -98,12 +113,12 @@ import SampleCallDataService from "../services/SampleCallDataService";
 import { PUBCHEM_SID_URL } from "@/main";
 
 export default {
-    props: ['sample', 'experiments', 'useTripodColors'],
+  props: ["sample", "experiments", "useTripodColors"],
 
-    components: {
-        ExperimentGradeChip,
-        EditableChip,
-    },
+  components: {
+    ExperimentGradeChip,
+    EditableChip,
+  },
 
   computed: {
     PUBCHEM_SID_URL() {
@@ -116,14 +131,20 @@ export default {
 
     SampleCallDataService() {
       return SampleCallDataService;
-    }
+    },
+
+    titleClass() {
+      return this.sample.withdrawn
+        ? "ma-2 text-decoration-line-through"
+        : "ma-2";
+    },
   },
 
   data() {
     return {
-        t0Grade: null,
-        t4Grade: null,
-        call: null,
+      t0Grade: null,
+      t4Grade: null,
+      call: null,
 
       experimentHeaders: [
         {
@@ -157,15 +178,15 @@ export default {
     retrieveSampleGrades(id) {
       SampleDataService.getGrades(id)
         .then((response) => {
-            this.t0Grade = null;
-            this.t4Grade = null;
-            response.data.forEach(grade => {
-                if (grade.t0_t4) {
-                    this.t4Grade = grade;
-                } else {
-                    this.t0Grade = grade;
-                }
-            })
+          this.t0Grade = null;
+          this.t4Grade = null;
+          response.data.forEach((grade) => {
+            if (grade.t0_t4) {
+              this.t4Grade = grade;
+            } else {
+              this.t0Grade = grade;
+            }
+          });
           console.log(response.data);
         })
         .catch((e) => {
@@ -195,6 +216,6 @@ export default {
 
   mounted() {
     this.refresh(this.sample.id);
-  }
+  },
 };
 </script>
