@@ -14,33 +14,35 @@
         <div :class="titleClass" v-else>No sample number</div>
         <div
           class="mx-2"
-          v-if="(t0Grade || t4Grade || call) && !sample.withdrawn"
+          v-if="(sampleGradeT0 || sampleGradeT4 || sampleCall) && !sample.withdrawn"
         >
-          <div v-if="t0Grade" class="mx-1 d-inline-flex align-center">
+          <div v-if="sampleGradeT0" class="mx-1 d-inline-flex align-center">
             <EditableChip
-              :data="t0Grade"
+              :data="sampleGradeT0"
               type="grade"
               title="T0"
               :use-tripod-colors="useTripodColors"
-              :service="SampleGradeDataService"
+              @validated="onValidate(sampleGradeT0, SampleGradeDataService)"
+              @deleted="onDelete(sampleGradeT0, SampleGradeDataService)"
             />
           </div>
-          <div v-if="t4Grade" class="mx-1 d-inline-flex align-center">
+          <div v-if="sampleGradeT4" class="mx-1 d-inline-flex align-center">
             <EditableChip
-              :data="t4Grade"
+              :data="sampleGradeT4"
               type="grade"
               title="T4"
               :use-tripod-colors="useTripodColors"
-              :service="SampleGradeDataService"
+              @validated="onValidate(sampleGradeT4, SampleGradeDataService)"
+              @deleted="onDelete(sampleGradeT4, SampleGradeDataService)"
             />
           </div>
-          <div v-if="call" class="mx-1 d-inline-flex align-center">
+          <div v-if="sampleCall" class="mx-1 d-inline-flex align-center">
             <EditableChip
-              :data="call"
+              :data="sampleCall"
               type="call"
               title="Call"
-              :use-tripod-colors="useTripodColors"
-              :service="SampleCallDataService"
+              @validated="onValidate(sampleCall, SampleCallDataService)"
+              @deleted="onDelete(sampleCall, SampleCallDataService)"
             />
           </div>
         </div>
@@ -154,9 +156,9 @@ export default {
 
   data() {
     return {
-      t0Grade: null,
-      t4Grade: null,
-      call: null,
+      sampleGradeT0: null,
+      sampleGradeT4: null,
+      sampleCall: null,
 
       experimentHeaders: [
         {
@@ -187,37 +189,37 @@ export default {
   },
 
   methods: {
-    retrieveSampleGrades(id) {
-      SampleDataService.getGrades(id)
-        .then((response) => {
-          this.t0Grade = null;
-          this.t4Grade = null;
-          response.data.forEach((grade) => {
-            if (grade.t0_t4) {
-              this.t4Grade = grade;
-            } else {
-              this.t0Grade = grade;
-            }
-          });
-          console.log(response.data);
-        })
-        .catch((e) => {
-          this.t0Grade = null;
-          this.t4Grade = null;
-          console.log(e);
-        });
+    async onValidate(data, service) {
+      data.validated = true;
+      data = await service.put(data.id, data);
     },
 
-    retrieveSampleCall(id) {
-      SampleDataService.getCall(id)
-        .then((response) => {
-          this.call = response.data;
-          console.log(response.data);
-        })
-        .catch((e) => {
-          this.call = null;
-          console.log(e);
+    async onDelete(data, service) {
+      data = await service.delete(data.id);
+      this.refresh(this.sample.id)
+    },
+
+    async retrieveSampleGrades(id) {
+      this.sampleGradeT0 = null;
+      this.sampleGradeT4 = null;
+      let response = await SampleDataService.getGrades(id);
+      if (response) {
+        response.data.forEach((resp) => {
+          if (resp.t0_t4) {
+            this.sampleGradeT4 = resp;
+          } else {
+            this.sampleGradeT0 = resp;
+          }
         });
+      }
+    },
+
+    async retrieveSampleCall(id) {
+      this.sampleCall = null;
+      let response = await SampleDataService.getCall(id);
+      if (response) {
+        this.sampleCall = response.data;
+      }
     },
 
     refresh(id) {
