@@ -195,57 +195,43 @@ export default {
       return SubstanceDataService.getDetailAlternate(query, type);
     },
 
-    retrieveSubstanceFlags(id) {
-      SubstanceDataService.getFlags(id)
-        .then((response) => {
-          this.substanceFlags = response.data;
-          console.log(response.data);
-        })
-        .catch((e) => {
-          this.substanceFlags = [];
-          console.log(e);
-        });
+    async retrieveSubstanceFlags(id) {
+      this.substanceFlags = [];
+      let response = await SubstanceDataService.getFlags(id);
+      if (response) {
+        this.substanceFlags = response.data;
+        console.log(response.data);
+      }
     },
 
-    retrieveSubstanceGrades(id) {
-      SubstanceDataService.getGrades(id)
-        .then((response) => {
-          this.t0Grade = null;
-          this.t4Grade = null;
-          response.data.forEach((grade) => {
-            if (grade.t0_t4) {
-              this.t4Grade = grade;
-            } else {
-              this.t0Grade = grade;
-            }
-          });
-          console.log(response.data);
-        })
-        .catch((e) => {
-          this.t0Grade = null;
-          this.t4Grade = null;
-          console.log(e);
+    async retrieveSubstanceGrades(id) {
+      this.t0Grade = null;
+      this.t4Grade = null;
+      let response = await SubstanceDataService.getGrades(id);
+      if (response) {
+        response.data.forEach((grade) => {
+          if (grade.t0_t4) {
+            this.t4Grade = grade;
+          } else {
+            this.t0Grade = grade;
+          }
         });
+      }
     },
 
-    retrieveSubstanceCall(id) {
-      SubstanceDataService.getCall(id)
-        .then((response) => {
-          this.call = response.data;
-          console.log(response.data);
-        })
-        .catch((e) => {
-          this.call = null;
-          console.log(e);
-        });
+    async retrieveSubstanceCall(id) {
+      this.call = null;
+      let response = await SubstanceDataService.getCall(id);
+      if (response) {
+        this.call = response.data;
+      }
     },
 
     async refresh(query, type) {
       this.state.missingImage = false;
       let response = await this.retrieveSubstanceDetail(query, type);
-      this.substanceDetail = response.data;
-
-      if (this.substanceDetail) {
+      if (response) {
+        this.substanceDetail = response.data;
         let id = this.substanceDetail.substance.id;
         this.retrieveSubstanceFlags(id);
         this.retrieveSubstanceGrades(id);

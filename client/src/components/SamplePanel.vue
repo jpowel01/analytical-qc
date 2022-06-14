@@ -79,7 +79,7 @@
       </v-data-table>
       <div class="text-caption text--secondary my-2">
         <span class="mx-1" v-if="sample.tox21Id"
-          ><strong>Tox21 ID:</strong> Tox21_{{ sample.tox21Id }}</span
+          ><strong>Tox21 ID:</strong> Tox21_{{ sample.tox21Id }} ({{ library }})</span
         >
         <span class="mx-1" v-if="sample.ncgcId"
           ><strong>NCGC ID:</strong> {{ sample.ncgcId }}</span
@@ -95,12 +95,6 @@
             :href="`${PUBCHEM_SID_URL}/${sample.pubchemSid}`"
             >{{ sample.pubchemSid }}</a
           ><v-icon x-small class="ml-1">mdi-open-in-new</v-icon>
-        </span>
-        <span class="mx-1" v-if="sample.tox21Id">
-          This sample belongs to the
-          <a href="https://pubs.acs.org/doi/10.1021/acs.chemrestox.0c00264"
-            >{{ library }} Tox21 library</a
-          >.
         </span>
       </div>
     </v-expansion-panel-content>
