@@ -64,7 +64,7 @@ public class SubstanceController {
         }
     }
 
-    @GetMapping("/{id}")
+    @GetMapping({"/{id}", "/id/{id}"})
     public ResponseEntity<Substance> getSubstance(@PathVariable("id") Integer id) {
         Optional<Substance> findSubstance = substanceRepository.findById(id);
         if (findSubstance.isEmpty()) {
@@ -74,31 +74,51 @@ public class SubstanceController {
         }
     }
 
-    @GetMapping("/{id}/detail")
-    public ResponseEntity<SubstanceDetail> getSubstanceDetail(@PathVariable("id") Integer id) {
-        Optional<Substance> findSubstance = substanceRepository.findById(id);
-        if (findSubstance.isEmpty()) {
+    @GetMapping("/{type}/{query}/detail")
+    public ResponseEntity<SubstanceDetail> getSubstanceDetail(@PathVariable("type") String type,
+        @PathVariable("query") String query) {
+        Optional<Substance> findSubstance = null;
+        type = type.toLowerCase();
+        switch (type) {
+            case "id":
+                findSubstance = substanceRepository.findById(Integer.parseInt(query));
+                break;
+            case "casrn":
+                findSubstance = substanceRepository.findByCasrn(query);
+                break;
+            case "dtxsid":
+                findSubstance = substanceRepository.findByDtxsid(query);
+                break;
+            default:
+                findSubstance = null;
+        }
+
+        if (findSubstance == null || findSubstance.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Substance not found");
         } else {
-            Substance substance = findSubstance.get();
-            PropertyPredictionDto propertyPrediction = propertyPredictionRepository.findDtoBySubstanceId(id).orElse(null);
-            List<SampleDto> samples = sampleRepository.findDtoBySubstanceId(id);
-
-            List<SampleDetail> sampleDetails = new ArrayList<SampleDetail>();
-            for (SampleDto sample:samples) {
-                List<ExperimentDto> experiments = experimentRepository.findDtoBySampleId(sample.getId());
-                List<ExperimentDetail> experimentDetails = new ArrayList<ExperimentDetail>();
-                for (ExperimentDto experiment:experiments) {
-                    List<Grade> grades = experimentGradeRepository.findByExperimentId(experiment.getId()).stream().map(eg -> eg.getGrade()).collect(Collectors.toList());
-                    experimentDetails.add(new ExperimentDetail(experiment, grades));
-                }
-
-                sampleDetails.add(new SampleDetail(sample, experimentDetails));
-            }
-
-            SubstanceDetail substanceDetail = new SubstanceDetail(substance, propertyPrediction, sampleDetails);
+            SubstanceDetail substanceDetail = buildSubstanceDetail(findSubstance.get());
             return new ResponseEntity<>(substanceDetail, HttpStatus.OK);
         }
+    }
+
+    public SubstanceDetail buildSubstanceDetail(Substance substance) {
+        Integer id = substance.getId();
+        PropertyPredictionDto propertyPrediction = propertyPredictionRepository.findDtoBySubstanceId(id).orElse(null);
+        List<SampleDto> samples = sampleRepository.findDtoBySubstanceId(id);
+
+        List<SampleDetail> sampleDetails = new ArrayList<SampleDetail>();
+        for (SampleDto sample:samples) {
+            List<ExperimentDto> experiments = experimentRepository.findDtoBySampleId(sample.getId());
+            List<ExperimentDetail> experimentDetails = new ArrayList<ExperimentDetail>();
+            for (ExperimentDto experiment:experiments) {
+                List<Grade> grades = experimentGradeRepository.findByExperimentId(experiment.getId()).stream().map(eg -> eg.getGrade()).collect(Collectors.toList());
+                experimentDetails.add(new ExperimentDetail(experiment, grades));
+            }
+
+            sampleDetails.add(new SampleDetail(sample, experimentDetails));
+        }
+
+        return new SubstanceDetail(substance, propertyPrediction, sampleDetails);
     }
 
     @GetMapping("/dtxsid/{dtxsid}")

@@ -17,33 +17,30 @@
           v-if="(t0Grade || t4Grade || call) && !sample.withdrawn"
         >
           <div v-if="t0Grade" class="mx-1 d-inline-flex align-center">
-            <span class="text-body-1 text--secondary">T0: </span>
             <EditableChip
               :data="t0Grade"
               type="grade"
+              title="T0"
               :use-tripod-colors="useTripodColors"
               :service="SampleGradeDataService"
-              @deleted="retrieveSampleGrades(sample.id)"
             />
           </div>
           <div v-if="t4Grade" class="mx-1 d-inline-flex align-center">
-            <span class="text-body-1 text--secondary">T4: </span>
             <EditableChip
               :data="t4Grade"
               type="grade"
+              title="T4"
               :use-tripod-colors="useTripodColors"
               :service="SampleGradeDataService"
-              @deleted="retrieveSampleGrades(sample.id)"
             />
           </div>
           <div v-if="call" class="mx-1 d-inline-flex align-center">
-            <span class="text-body-1 text--secondary">Call: </span>
             <EditableChip
               :data="call"
               type="call"
+              title="Call"
               :use-tripod-colors="useTripodColors"
               :service="SampleCallDataService"
-              @deleted="retrieveSampleCall(sample.id)"
             />
           </div>
         </div>
@@ -63,12 +60,12 @@
         hide-default-footer
         sort-by="experiment.timepoint"
       >
-        <template v-slot:item.experiment.experimentDate="{ item }">
-          {{ item.experiment.experimentDate | formatDate }}
+        <template v-slot:item.experiment.experimentDate="{ value }">
+          {{ value | formatDate }}
         </template>
 
-        <template v-slot:item.experiment.file.fileDate="{ item }">
-          {{ item.experiment.file.fileDate | formatDate }}
+        <template v-slot:item.experiment.file.fileDate="{ value }">
+          {{ value | formatDate }}
         </template>
 
         <template v-slot:item.experiment.grade="{ item }">
@@ -91,13 +88,19 @@
           ><strong>EPA Bottle Barcode:</strong> {{ sample.bottleBarcode }}</span
         >
         <span class="mx-1" v-if="sample.pubchemSid"
-          ><strong>PubChem SID:</strong>
+          ><strong>PubChem SID: </strong>
           <a
             target="_blank"
             rel="noreferrer noopener"
             :href="`${PUBCHEM_SID_URL}/${sample.pubchemSid}`"
             >{{ sample.pubchemSid }}</a
           ><v-icon x-small class="ml-1">mdi-open-in-new</v-icon>
+        </span>
+        <span class="mx-1" v-if="sample.tox21Id">
+          This sample belongs to the
+          <a href="https://pubs.acs.org/doi/10.1021/acs.chemrestox.0c00264"
+            >{{ library }} Tox21 library</a
+          >.
         </span>
       </div>
     </v-expansion-panel-content>
@@ -113,7 +116,7 @@ import SampleCallDataService from "../services/SampleCallDataService";
 import { PUBCHEM_SID_URL } from "@/main";
 
 export default {
-  props: ["sample", "experiments", "useTripodColors"],
+  props: ["sample", "experiments", "useTripodColors", "showSpectrusFiles"],
 
   components: {
     ExperimentGradeChip,
@@ -137,6 +140,21 @@ export default {
       return this.sample.withdrawn
         ? "ma-2 text-decoration-line-through"
         : "ma-2";
+    },
+
+    library() {
+      const digit = Number(String(this.sample.tox21Id).charAt(0));
+      switch (digit) {
+        case 1:
+          return "NCATS";
+        case 2:
+          return "NTP";
+        case 3:
+          return "EPA";
+        case 4:
+          return "replicate";
+      }
+      return null;
     },
   },
 

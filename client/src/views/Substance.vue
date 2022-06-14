@@ -6,33 +6,30 @@
       </div>
       <div class="mx-2" v-if="t0Grade || t4Grade || call || substanceFlags">
         <div v-if="t0Grade" class="mx-1 d-inline-flex align-center">
-          <span class="text--secondary">T0: </span>
           <EditableChip
             :data="t0Grade"
             type="grade"
+            title="T0"
             :use-tripod-colors="state.useTripodColors"
             :service="SubstanceGradeDataService"
-            @deleted="retrieveSubstanceGrades($route.params.id)"
           />
         </div>
         <div v-if="t4Grade" class="mx-1 d-inline-flex align-center">
-          <span class="text--secondary">T4: </span>
           <EditableChip
             type="grade"
+            title="T4"
             :data="t4Grade"
             :use-tripod-colors="state.useTripodColors"
             :service="SubstanceGradeDataService"
-            @deleted="retrieveSubstanceGrades($route.params.id)"
           />
         </div>
         <div v-if="call" class="mx-1 d-inline-flex align-center">
-          <span class="text--secondary">Call: </span>
           <EditableChip
             :data="call"
             type="call"
+            title="Call"
             :use-tripod-colors="state.useTripodColors"
             :service="SubstanceCallDataService"
-            @deleted="retrieveSubstanceCall($route.params.id)"
           />
         </div>
         <div v-if="substanceFlags" class="mx-1 d-inline-flex align-center">
@@ -43,7 +40,6 @@
             type="flag"
             :use-tripod-colors="state.useTripodColors"
             :service="SubstanceFlagDataService"
-            @deleted="retrieveSubstanceFlags($route.params.id)"
           />
         </div>
         <EditDialog />
@@ -53,7 +49,7 @@
         class="ma-1"
         dark
         color="primary"
-        :to="'/substances/' + (substanceDetail.substance.id - 1)"
+        :to="'/substances/id/' + (substanceDetail.substance.id - 1)"
       >
         Previous Substance
       </v-btn>
@@ -61,7 +57,7 @@
         class="ma-1"
         dark
         color="primary"
-        :to="'/substances/' + (substanceDetail.substance.id + 1)"
+        :to="'/substances/id/' + (substanceDetail.substance.id + 1)"
       >
         Next Substance
       </v-btn>
@@ -97,10 +93,26 @@
 
     <v-row>
       <v-col>
-        <v-switch
-          v-model="state.useTripodColors"
-          :label="(state.useTripodColors ? 'Tripod' : 'Default') + ' colors'"
-        ></v-switch>
+        <div class="d-inline-flex align-center mx-2">
+          <v-switch
+            v-model="state.useTripodColors"
+            :label="(state.useTripodColors ? 'Tripod' : 'Default') + ' colors'"
+            hide-details
+          />
+        </div>
+        <div class="d-inline-flex align-center mx-2">
+          <v-switch
+            v-model="state.showSpectrusFiles"
+            :label="
+              (state.showSpectrusFiles ? 'Show' : 'Hide') + ' Spectrus files'
+            "
+            hide-details
+          />
+        </div>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
         <v-expansion-panels multiple>
           <SamplePanel
             v-for="sampleDetail in substanceDetail.sampleDetails"
@@ -108,6 +120,7 @@
             :sample="sampleDetail.sample"
             :experiments="sampleDetail.experiments"
             :use-tripod-colors="state.useTripodColors"
+            :show-spectrus-files="state.showSpectrusFiles"
           />
         </v-expansion-panels>
       </v-col>
@@ -154,6 +167,7 @@ export default {
       state: {
         missingImage: false,
         useTripodColors: false,
+        showSpectrusFiles: false,
       },
     };
   },
@@ -177,8 +191,8 @@ export default {
   },
 
   methods: {
-    retrieveSubstanceDetail(id) {
-      SubstanceDataService.getDetail(id)
+    retrieveSubstanceDetail(query, type) {
+      SubstanceDataService.getDetailAlternate(query, type)
         .then((response) => {
           this.substanceDetail = response.data;
           console.log(response.data);
@@ -234,9 +248,10 @@ export default {
         });
     },
 
-    refresh(id) {
+    refresh(query, type) {
       this.state.missingImage = false;
-      this.retrieveSubstanceDetail(id);
+      this.retrieveSubstanceDetail(query, type);
+      const id = this.substanceDetail.substance.id;
       this.retrieveSubstanceFlags(id);
       this.retrieveSubstanceGrades(id);
       this.retrieveSubstanceCall(id);
@@ -263,14 +278,17 @@ export default {
   },
 
   watch: {
-    "$route.params.id"() {
-      this.refresh(this.$route.params.id);
+    "$route.params.query"() {
+      this.refresh(this.$route.params.query, this.$route.params.type);
+    },
+    "$route.params.type"() {
+      this.refresh(this.$route.params.query, this.$route.params.type);
     },
   },
 
   mounted() {
     this.retrieveGradesAndCalls();
-    this.refresh(this.$route.params.id);
+    this.refresh(this.$route.params.query, this.$route.params.type);
   },
 };
 </script>

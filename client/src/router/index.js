@@ -16,8 +16,8 @@ const routes = [
     component: () => import("../views/SubstanceList.vue"),
   },
   {
-    path: "/substances/:id",
-    name: "substance-details",
+    path: "/substances/:type/:query",
+    name: "substance-detail",
     component: () => import("../views/Substance.vue"),
   },
 ];

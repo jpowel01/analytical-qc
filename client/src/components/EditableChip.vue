@@ -1,8 +1,11 @@
 <template>
-  <v-menu bottom offset-y>
+  <v-menu bottom offset-y v-if="data">
     <template v-slot:activator="{ on: menu, attrs }">
       <v-tooltip top>
         <template v-slot:activator="{ on: tooltip }">
+          <span v-if="title" class="text-body-1 text--secondary"
+            >{{ title }}:
+          </span>
           <v-chip
             :color="color"
             :outlined="!data.validated"
@@ -40,7 +43,9 @@
 import ColorByName from "../services/ColorByName";
 
 export default {
-  props: ["data", "type", "service", "useTripodColors"],
+  props: ["data", "type", "service", "useTripodColors", "title"],
+
+  emits: ["deleted"],
 
   data() {
     return {
@@ -57,6 +62,7 @@ export default {
 
     deleteData() {
       this.service.delete(this.data.id);
+      this.data = null;
       this.$emit("deleted");
     },
 

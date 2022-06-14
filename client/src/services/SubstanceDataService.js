@@ -15,8 +15,16 @@ class SubstanceDataService {
     return http.get(`substances/${id}`);
   }
 
+  getAlternate(query, type) {
+    return http.get(`substances/${type}/${query}`);
+  }
+
   getDetail(id) {
     return http.get(`substances/${id}/detail`);
+  }
+
+  getDetailAlternate(query, type) {
+    return http.get(`substances/${type}/${query}/detail`);
   }
 
   getFlags(id) {

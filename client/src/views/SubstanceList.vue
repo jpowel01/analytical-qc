@@ -23,7 +23,7 @@
         >
           <template v-slot:item.detail="{ item }">
             <v-btn
-              :to="'/substances/' + item.id"
+              :to="'/substances/id/' + item.id"
               class="ma-2"
               dark
               small
