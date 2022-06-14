@@ -192,15 +192,7 @@ export default {
 
   methods: {
     retrieveSubstanceDetail(query, type) {
-      SubstanceDataService.getDetailAlternate(query, type)
-        .then((response) => {
-          this.substanceDetail = response.data;
-          console.log(response.data);
-        })
-        .catch((e) => {
-          this.substanceDetail = null;
-          console.log(e);
-        });
+      return SubstanceDataService.getDetailAlternate(query, type);
     },
 
     retrieveSubstanceFlags(id) {
@@ -248,13 +240,17 @@ export default {
         });
     },
 
-    refresh(query, type) {
+    async refresh(query, type) {
       this.state.missingImage = false;
-      this.retrieveSubstanceDetail(query, type);
-      const id = this.substanceDetail.substance.id;
-      this.retrieveSubstanceFlags(id);
-      this.retrieveSubstanceGrades(id);
-      this.retrieveSubstanceCall(id);
+      let response = await this.retrieveSubstanceDetail(query, type);
+      this.substanceDetail = response.data;
+
+      if (this.substanceDetail) {
+        let id = this.substanceDetail.substance.id;
+        this.retrieveSubstanceFlags(id);
+        this.retrieveSubstanceGrades(id);
+        this.retrieveSubstanceCall(id);
+      }
     },
 
     retrieveGradesAndCalls() {
