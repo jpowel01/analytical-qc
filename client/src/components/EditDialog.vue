@@ -9,54 +9,42 @@
         <v-container>
           <v-row>
             <v-col>
-              <v-autocomplete
-                v-model="t0Grade"
+              <v-select
+                v-model="gradeT0"
                 :items="grades"
-                :hint="`${t0Grade.description}`"
                 item-text="name"
                 item-value="name"
                 label="T0"
                 return-object
-                persistent-hint
               >
-                <template v-slot:item="data">
+                <template v-slot:item="{ item }">
                   <template>
                     <v-list-item-content>
-                      <v-list-item-title
-                        v-html="data.item.name"
-                      ></v-list-item-title>
-                      <v-list-item-subtitle
-                        v-html="data.item.description"
-                      ></v-list-item-subtitle>
+                      <v-list-item-title>{{ item.name }}</v-list-item-title>
+                      <v-list-item-subtitle>{{ item.description }}</v-list-item-subtitle>
                     </v-list-item-content>
                   </template>
                 </template>
-              </v-autocomplete>
+              </v-select>
             </v-col>
             <v-col>
-              <v-autocomplete
-                v-model="t4Grade"
+              <v-select
+                v-model="gradeT4"
                 :items="grades"
-                :hint="`${t4Grade.description}`"
                 item-text="name"
                 item-value="name"
                 label="T4"
                 return-object
-                persistent-hint
               >
-                <template v-slot:item="data">
+                <template v-slot:item="{ item }">
                   <template>
                     <v-list-item-content>
-                      <v-list-item-title
-                        v-html="data.item.name"
-                      ></v-list-item-title>
-                      <v-list-item-subtitle
-                        v-html="data.item.description"
-                      ></v-list-item-subtitle>
+                      <v-list-item-title>{{ item.name }}</v-list-item-title>
+                      <v-list-item-subtitle>{{ item.description }}</v-list-item-subtitle>
                     </v-list-item-content>
                   </template>
                 </template>
-              </v-autocomplete>
+              </v-select>
             </v-col>
           </v-row>
         </v-container>
@@ -70,19 +58,17 @@ export default {
   props: [
     "grades",
     "calls",
-    "existingT0",
-    "existingT4",
+    "existingGradeT0",
+    "existingGradeT4",
     "existingCall",
-    "gradeService",
-    "callService",
   ],
 
   data() {
     return {
       dialog: null,
-      t0Grade: this.existingT0.grade,
-      t4Grade: this.existingT4.grade,
-      call: this.existingCall,
+      gradeT0: this.existingGradeT0.grade,
+      gradeT4: this.existingGradeT4.grade,
+      call: this.existingCall.call,
     };
   },
 };

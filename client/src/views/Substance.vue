@@ -57,11 +57,9 @@
         <EditDialog
           :grades="grades"
           :calls="calls"
-          :existingT0="t0"
-          :existingT4="t4"
-          :existing-call="call"
-          :grade-service="SubstanceGradeDataService"
-          :call-service="SubstanceCallDataService"
+          :existing-grade-t0="substanceGradeT0"
+          :existing-grade-t4="substanceGradeT4"
+          :existing-call="substanceCall"
         />
       </div>
       <v-spacer />
