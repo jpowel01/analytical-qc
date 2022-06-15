@@ -7,6 +7,7 @@ import moment from "moment";
 Vue.config.productionTip = false;
 
 export const SERVER_URL = "http://localhost:9090/api";
+export const CONTENT_SERVER_URL = "http://localhost:82";
 export const DASHBOARD_DETAILS_URL =
   "https://comptox.epa.gov/dashboard/chemical/details";
 export const DASHBOARD_IMAGE_URL =
