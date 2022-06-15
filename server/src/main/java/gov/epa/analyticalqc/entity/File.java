@@ -28,11 +28,7 @@ public class File {
     @Column(name="file_date")
     private Date fileDate;
 
-    private String text;
-
     private String hash;
-
-    private byte[] content;
 
     private Long bytecount;
     
