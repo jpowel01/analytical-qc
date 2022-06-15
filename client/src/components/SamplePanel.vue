@@ -72,6 +72,15 @@
           {{ value | formatDate }}
         </template>
 
+        <template v-slot:item.experiment.file.fileName="{ value }">
+          <a
+            target="_blank"
+            rel="noreferrer noopener"
+            :href="`${SERVERURL}/files-content/${value}`"
+            >{{ value }}</a
+          ><v-icon x-small class="ml-1">mdi-open-in-new</v-icon>
+        </template>
+
         <template v-slot:item.experiment.grade="{ item }">
           <ExperimentGradeChip
             v-for="grade in item.grades"
@@ -113,7 +122,7 @@ import EditableChip from "./EditableChip";
 import SampleDataService from "../services/SampleDataService";
 import SampleGradeDataService from "../services/SampleGradeDataService";
 import SampleCallDataService from "../services/SampleCallDataService";
-import { PUBCHEM_SID_URL } from "@/main";
+import { PUBCHEM_SID_URL, SERVER_URL } from "@/main";
 
 export default {
   props: ["sample", "experiments", "useTripodColors", "showSpectrusFiles"],
@@ -126,6 +135,10 @@ export default {
   computed: {
     PUBCHEM_SID_URL() {
       return PUBCHEM_SID_URL;
+    },
+
+    SERVER_URL() {
+      return SERVER_URL;
     },
 
     SampleGradeDataService() {
