@@ -1,5 +1,13 @@
 version: '3.8'
 services:
+  content-server:
+    build: 
+      context: ./content-server
+    image: gsincl01/analytical-qc-content-server
+    container_name: analytical-qc-content-server
+    ports:
+      - 82:82 
+
   server:
     build: 
       context: ./server
@@ -15,4 +23,5 @@ services:
     ports:
       - 81:80
     depends_on:
+      - content-server
       - server
