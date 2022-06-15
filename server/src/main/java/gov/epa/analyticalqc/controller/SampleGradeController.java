@@ -1,5 +1,6 @@
 package gov.epa.analyticalqc.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,11 @@ public class SampleGradeController {
         } else {
             return new ResponseEntity<>(findSampleGrade.get(), HttpStatus.OK);
         }
+    }
+
+    @GetMapping("/sample-id/{sample-id}")
+    public ResponseEntity<List<SampleGrade>> getSampleGradesBySampleId(@PathVariable("sample-id") Integer id) {
+        return new ResponseEntity<>(sampleGradeRepository.findBySampleId(id), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")

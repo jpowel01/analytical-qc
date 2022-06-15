@@ -34,6 +34,16 @@ public class SubstanceCallController {
         }
     }
 
+    @GetMapping("/substance-id/{substance-id}")
+    public ResponseEntity<SubstanceCall> getSubstanceCallBySubstanceId(@PathVariable("substance-id") Integer id) {
+        Optional<SubstanceCall> findSubstanceCall = substanceCallRepository.findBySubstanceId(id);
+        if (findSubstanceCall.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Substance call not found");
+        } else {
+            return new ResponseEntity<>(findSubstanceCall.get(), HttpStatus.OK);
+        }
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<SubstanceCall> updateSubstanceCall(@PathVariable("id") Integer id, @RequestBody SubstanceCall substanceCall) {
         Optional<SubstanceCall> findSubstanceCall = substanceCallRepository.findById(id);

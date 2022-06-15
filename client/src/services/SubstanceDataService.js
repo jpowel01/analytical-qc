@@ -26,18 +26,6 @@ class SubstanceDataService {
   getDetailAlternate(query, type) {
     return http.get(`substances/${type}/${query}/detail`);
   }
-
-  getFlags(id) {
-    return http.get(`substances/${id}/flags`);
-  }
-
-  getGrades(id) {
-    return http.get(`substances/${id}/grades`);
-  }
-
-  getCall(id) {
-    return http.get(`substances/${id}/call`);
-  }
 }
 
 export default new SubstanceDataService();

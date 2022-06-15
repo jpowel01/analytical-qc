@@ -5,6 +5,10 @@ class SubstanceFlagDataService {
     return http.get(`substance-flags/${id}`);
   }
 
+  getBySubstanceId(id) {
+    return http.get(`substance-flags/substance-id/${id}`);
+  }
+
   put(id, substanceFlag) {
     return http.put(`substance-flags/${id}`, substanceFlag);
   }

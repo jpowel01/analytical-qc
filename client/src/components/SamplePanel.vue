@@ -2,6 +2,11 @@
   <v-expansion-panel>
     <v-expansion-panel-header class="text-h6">
       <v-row align="center">
+        <div v-if="sampleAnnotation" class="mx-1 d-inline-flex align-center">
+          <AnnotationChip
+            :annotation="sampleAnnotation.annotation"
+          />
+        </div>
         <div :class="titleClass" v-if="sample.tox21Id">
           Tox21_{{ sample.tox21Id }}
         </div>
@@ -121,9 +126,10 @@
 <script>
 import ExperimentGradeChip from "./ExperimentGradeChip";
 import EditableChip from "./EditableChip";
-import SampleDataService from "../services/SampleDataService";
+import AnnotationChip from "./AnnotationChip";
 import SampleGradeDataService from "../services/SampleGradeDataService";
 import SampleCallDataService from "../services/SampleCallDataService";
+import SampleAnnotationDataService from "../services/SampleAnnotationDataService";
 import { PUBCHEM_SID_URL, CONTENT_SERVER_URL } from "@/main";
 
 export default {
@@ -132,6 +138,7 @@ export default {
   components: {
     ExperimentGradeChip,
     EditableChip,
+    AnnotationChip,
   },
 
   computed: {
@@ -178,6 +185,7 @@ export default {
       sampleGradeT0: null,
       sampleGradeT4: null,
       sampleCall: null,
+      sampleAnnotation: null,
 
       experimentHeaders: [
         {
@@ -221,7 +229,7 @@ export default {
     async retrieveSampleGrades(id) {
       this.sampleGradeT0 = null;
       this.sampleGradeT4 = null;
-      let response = await SampleDataService.getGrades(id);
+      let response = await SampleGradeDataService.getBySampleId(id);
       if (response) {
         response.data.forEach((resp) => {
           if (resp.t0_t4) {
@@ -235,15 +243,24 @@ export default {
 
     async retrieveSampleCall(id) {
       this.sampleCall = null;
-      let response = await SampleDataService.getCall(id);
+      let response = await SampleCallDataService.getBySampleId(id);
       if (response) {
         this.sampleCall = response.data;
+      }
+    },
+
+    async retrieveSampleAnnotation(id) {
+      this.sampleAnnotation = null;
+      let response = await SampleAnnotationDataService.getBySampleId(id);
+      if (response) {
+        this.sampleAnnotation = response.data;
       }
     },
 
     refresh(id) {
       this.retrieveSampleGrades(id);
       this.retrieveSampleCall(id);
+      this.retrieveSampleAnnotation(id);
     },
   },
 

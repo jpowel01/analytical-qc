@@ -5,6 +5,10 @@ class SubstanceGradeDataService {
     return http.get(`substance-grades/${id}`);
   }
 
+  getBySubstanceId(id) {
+    return http.get(`substance-grades/substance-id/${id}`);
+  }
+
   put(id, substanceGrade) {
     return http.put(`substance-grades/${id}`, substanceGrade);
   }

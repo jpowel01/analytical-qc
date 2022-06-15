@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import gov.epa.analyticalqc.entity.Sample;
-import gov.epa.analyticalqc.entity.SampleCall;
-import gov.epa.analyticalqc.entity.SampleGrade;
 import gov.epa.analyticalqc.repository.SampleCallRepository;
 import gov.epa.analyticalqc.repository.SampleGradeRepository;
 import gov.epa.analyticalqc.repository.SampleRepository;
@@ -71,20 +69,4 @@ public class SampleController {
             return new ResponseEntity<>(findSample.get(), HttpStatus.OK);
         }
     }
-
-    @GetMapping("/{id}/grades")
-    public ResponseEntity<List<SampleGrade>> getSampleGradesBySampleId(@PathVariable("id") Integer id) {
-        return new ResponseEntity<>(sampleGradeRepository.findBySampleId(id), HttpStatus.OK);
-    }
-
-    @GetMapping("/{id}/call")
-    public ResponseEntity<SampleCall> getSampleCallBySampleId(@PathVariable("id") Integer id) {
-        Optional<SampleCall> findSampleCall = sampleCallRepository.findBySampleId(id);
-        if (findSampleCall.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sample call not found");
-        } else {
-            return new ResponseEntity<>(findSampleCall.get(), HttpStatus.OK);
-        }
-    }
-
 }

@@ -26,10 +26,8 @@ import gov.epa.analyticalqc.dto.SampleDetail;
 import gov.epa.analyticalqc.dto.SampleDto;
 import gov.epa.analyticalqc.dto.SubstanceDetail;
 import gov.epa.analyticalqc.entity.Grade;
+import gov.epa.analyticalqc.entity.Sample;
 import gov.epa.analyticalqc.entity.Substance;
-import gov.epa.analyticalqc.entity.SubstanceCall;
-import gov.epa.analyticalqc.entity.SubstanceFlag;
-import gov.epa.analyticalqc.entity.SubstanceGrade;
 import gov.epa.analyticalqc.repository.ExperimentGradeRepository;
 import gov.epa.analyticalqc.repository.ExperimentRepository;
 import gov.epa.analyticalqc.repository.PropertyPredictionRepository;
@@ -77,27 +75,50 @@ public class SubstanceController {
     @GetMapping("/{type}/{query}/detail")
     public ResponseEntity<SubstanceDetail> getSubstanceDetail(@PathVariable("type") String type,
         @PathVariable("query") String query) {
-        Optional<Substance> findSubstance = null;
+        Substance substance = null;
+        Sample sample = null;
         type = type.toLowerCase();
+
         switch (type) {
             case "id":
-                findSubstance = substanceRepository.findById(Integer.parseInt(query));
+                Integer queryInt = Integer.parseInt(query.replaceAll("[^0-9]",""));
+                substance = substanceRepository.findById(queryInt).orElse(null);
                 break;
+            case "cas":
             case "casrn":
-                findSubstance = substanceRepository.findByCasrn(query);
+                substance = substanceRepository.findByCasrn(query).orElse(null);
                 break;
             case "dtxsid":
-                findSubstance = substanceRepository.findByDtxsid(query);
+                substance = substanceRepository.findByDtxsid(query).orElse(null);
+                break;
+            case "tox21":
+            case "tox21-id":
+                Long queryLong = Long.parseLong(query.replaceAll("[^0-9]",""));
+                sample = sampleRepository.findByTox21Id(queryLong).orElse(null);
+                break;
+            case "ncgc":
+            case "ncgc-id":
+                sample = sampleRepository.findByNcgcId(query).orElse(null);
+                break;
+            case "barcode":
+            case "bottle-barcode":
+                sample = sampleRepository.findByBottleBarcode(query).orElse(null);
                 break;
             default:
-                findSubstance = null;
+                substance = null;
+                sample = null;
+                break;
         }
 
-        if (findSubstance == null || findSubstance.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Substance not found");
-        } else {
-            SubstanceDetail substanceDetail = buildSubstanceDetail(findSubstance.get());
+        if (substance == null && sample != null) {
+            substance = sample.getSubstance();
+        }
+
+        if (substance != null) {
+            SubstanceDetail substanceDetail = buildSubstanceDetail(substance);
             return new ResponseEntity<>(substanceDetail, HttpStatus.OK);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Substance not found");
         }
     }
 
@@ -140,25 +161,4 @@ public class SubstanceController {
             return new ResponseEntity<>(findSubstance.get(), HttpStatus.OK);
         }
     }
-
-    @GetMapping("/{id}/flags")
-    public ResponseEntity<List<SubstanceFlag>> getSubstanceFlagsBySubstanceId(@PathVariable("id") Integer id) {
-        return new ResponseEntity<>(substanceFlagRepository.findBySubstanceId(id), HttpStatus.OK);
-    }
-
-    @GetMapping("/{id}/grades")
-    public ResponseEntity<List<SubstanceGrade>> getSubstanceGradesBySubstanceId(@PathVariable("id") Integer id) {
-        return new ResponseEntity<>(substanceGradeRepository.findBySubstanceId(id), HttpStatus.OK);
-    }
-
-    @GetMapping("/{id}/call")
-    public ResponseEntity<SubstanceCall> getSubstanceCallBySubstanceId(@PathVariable("id") Integer id) {
-        Optional<SubstanceCall> findSubstanceCall = substanceCallRepository.findBySubstanceId(id);
-        if (findSubstanceCall.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Substance call not found");
-        } else {
-            return new ResponseEntity<>(findSubstanceCall.get(), HttpStatus.OK);
-        }
-    }
-
 }

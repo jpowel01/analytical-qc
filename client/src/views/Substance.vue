@@ -1,6 +1,11 @@
 <template>
   <v-container fluid v-if="substanceDetail.substance">
     <v-row class="ma-2" align="center">
+      <div v-if="substanceAnnotation" class="mx-1 d-inline-flex align-center">
+          <AnnotationChip
+            :annotation="substanceAnnotation.annotation"
+          />
+        </div>
       <div class="text-h4 mr-2">
         {{ substanceDetail.substance.preferredName }}
       </div>
@@ -54,22 +59,22 @@
             @deleted="onDelete(sf, SubstanceFlagDataService)"
           />
         </div>
-        <EditDialog
+      </div>
+      <v-spacer />
+      <EditDialog
           :grades="grades"
           :calls="calls"
           :existing-grade-t0="substanceGradeT0"
           :existing-grade-t4="substanceGradeT4"
           :existing-call="substanceCall"
         />
-      </div>
-      <v-spacer />
       <v-btn
         class="ma-1"
         dark
         color="primary"
         :to="'/substances/id/' + (substanceDetail.substance.id - 1)"
       >
-        Previous Substance
+        Previous
       </v-btn>
       <v-btn
         class="ma-1"
@@ -77,7 +82,7 @@
         color="primary"
         :to="'/substances/id/' + (substanceDetail.substance.id + 1)"
       >
-        Next Substance
+        Next
       </v-btn>
     </v-row>
     <v-row>
@@ -151,6 +156,7 @@ import GradeDataService from "../services/GradeDataService";
 import CallDataService from "../services/CallDataService";
 import SubstanceDataService from "../services/SubstanceDataService";
 import EditableChip from "../components/EditableChip";
+import AnnotationChip from "../components/AnnotationChip";
 import EditDialog from "../components/EditDialog";
 import SubstanceInfoTable from "../components/SubstanceInfoTable";
 import PropertyPredictionTable from "../components/PropertyPredictionTable";
@@ -158,6 +164,7 @@ import SamplePanel from "../components/SamplePanel";
 import SubstanceGradeDataService from "../services/SubstanceGradeDataService";
 import SubstanceCallDataService from "../services/SubstanceCallDataService";
 import SubstanceFlagDataService from "../services/SubstanceFlagDataService";
+import SubstanceAnnotationDataService from "../services/SubstanceAnnotationDataService";
 import { DASHBOARD_IMAGE_URL } from "@/main";
 
 export default {
@@ -169,6 +176,7 @@ export default {
     PropertyPredictionTable,
     SamplePanel,
     EditDialog,
+    AnnotationChip,
   },
 
   data() {
@@ -178,6 +186,7 @@ export default {
       substanceGradeT0: null,
       substanceGradeT4: null,
       substanceCall: null,
+      substanceAnnotation: null,
 
       grades: [],
       calls: [],
@@ -225,7 +234,7 @@ export default {
 
     async retrieveSubstanceFlags(id) {
       this.substanceFlags = [];
-      let response = await SubstanceDataService.getFlags(id);
+      let response = await SubstanceFlagDataService.getBySubstanceId(id);
       if (response) {
         this.substanceFlags = response.data;
       }
@@ -234,7 +243,7 @@ export default {
     async retrieveSubstanceGrades(id) {
       this.substanceGradeT0 = null;
       this.substanceGradeT4 = null;
-      let response = await SubstanceDataService.getGrades(id);
+      let response = await SubstanceGradeDataService.getBySubstanceId(id);
       if (response) {
         response.data.forEach((resp) => {
           if (resp.t0_t4) {
@@ -248,9 +257,17 @@ export default {
 
     async retrieveSubstanceCall(id) {
       this.substanceCall = null;
-      let response = await SubstanceDataService.getCall(id);
+      let response = await SubstanceCallDataService.getBySubstanceId(id);
       if (response) {
         this.substanceCall = response.data;
+      }
+    },
+
+    async retrieveSubstanceAnnotation(id) {
+      this.substanceAnnotation = null;
+      let response = await SubstanceAnnotationDataService.getBySubstanceId(id);
+      if (response) {
+        this.substanceAnnotation = response.data;
       }
     },
 
@@ -268,6 +285,7 @@ export default {
       this.retrieveSubstanceFlags(id);
       this.retrieveSubstanceGrades(id);
       this.retrieveSubstanceCall(id);
+      this.retrieveSubstanceAnnotation(id);
     },
 
     retrieveGradesAndCalls() {

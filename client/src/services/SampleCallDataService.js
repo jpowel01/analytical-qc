@@ -5,6 +5,10 @@ class SampleCallDataService {
     return http.get(`sample-calls/${id}`);
   }
 
+  getBySampleId(id) {
+    return http.get(`sample-calls/sample-id/${id}`);
+  }
+
   put(id, sampleCall) {
     return http.put(`sample-calls/${id}`, sampleCall);
   }

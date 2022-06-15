@@ -1,5 +1,6 @@
 package gov.epa.analyticalqc.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,11 @@ public class SubstanceFlagController {
         } else {
             return new ResponseEntity<>(findSubstanceFlag.get(), HttpStatus.OK);
         }
+    }
+
+    @GetMapping("/substance-id/{substance-id}")
+    public ResponseEntity<List<SubstanceFlag>> getSubstanceFlagsBySubstanceId(@PathVariable("substance-id") Integer id) {
+        return new ResponseEntity<>(substanceFlagRepository.findBySubstanceId(id), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")

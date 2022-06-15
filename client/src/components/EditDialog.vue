@@ -1,7 +1,15 @@
 <template>
   <v-dialog v-model="dialog" max-width="800px">
     <template v-slot:activator="{ on, attrs }">
-      <v-icon class="ma-1" v-on="on" v-bind="attrs">mdi-plus-circle</v-icon>
+      <v-btn
+        class="ma-1"
+        dark
+        color="secondary"
+        v-on="on"
+        v-bind="attrs"
+      >
+        <v-icon color="white">mdi-pencil</v-icon>
+      </v-btn>
     </template>
     <v-card>
       <v-card-title>Edit</v-card-title>
@@ -34,7 +42,6 @@
                 item-text="name"
                 item-value="name"
                 label="T4"
-                return-object
               >
                 <template v-slot:item="{ item }">
                   <template>
@@ -66,9 +73,9 @@ export default {
   data() {
     return {
       dialog: null,
-      gradeT0: this.existingGradeT0.grade,
-      gradeT4: this.existingGradeT4.grade,
-      call: this.existingCall.call,
+      gradeT0: this.existingGradeT0.grade.name,
+      gradeT4: this.existingGradeT4.grade.name,
+      call: this.existingCall.call.name,
     };
   },
 };

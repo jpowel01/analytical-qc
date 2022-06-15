@@ -69,7 +69,7 @@ export default {
         this.name = this.data.call.name;
         this.description = this.data.call.description;
       } else if (this.type === "flag") {
-        this.name = this.data.flag.description;
+        this.name = this.data.flag.name;
         this.description = this.data.flag.description;
       }
     },

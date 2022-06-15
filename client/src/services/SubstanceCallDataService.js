@@ -5,6 +5,10 @@ class SubstanceCallDataService {
     return http.get(`substance-calls/${id}`);
   }
 
+  getBySubstanceId(id) {
+    return http.get(`substance-calls/substance-id/${id}`);
+  }
+
   put(id, substanceCall) {
     return http.put(`substance-calls/${id}`, substanceCall);
   }

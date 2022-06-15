@@ -34,6 +34,16 @@ public class SampleCallController {
         }
     }
 
+    @GetMapping("/sample-id/{sample-id}")
+    public ResponseEntity<SampleCall> getSampleCallBySampleId(@PathVariable("sample-id") Integer id) {
+        Optional<SampleCall> findSampleCall = sampleCallRepository.findBySampleId(id);
+        if (findSampleCall.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sample call not found");
+        } else {
+            return new ResponseEntity<>(findSampleCall.get(), HttpStatus.OK);
+        }
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<SampleCall> updateSampleCall(@PathVariable("id") Integer id, @RequestBody SampleCall sampleCall) {
         Optional<SampleCall> findSampleCall = sampleCallRepository.findById(id);
