@@ -76,7 +76,7 @@
           <a
             target="_blank"
             rel="noreferrer noopener"
-            :href="`${SERVERURL}/files-content/${value}`"
+            :href="`${SERVER_URL}/files-content/${value}`"
             >{{ value }}</a
           ><v-icon x-small class="ml-1">mdi-open-in-new</v-icon>
         </template>
