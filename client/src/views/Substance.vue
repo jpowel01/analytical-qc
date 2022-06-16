@@ -58,7 +58,7 @@
         :grades="grades"
         :calls="calls"
         :editable="editable"
-        @edited="saveEdited"
+        @edited="save"
         />
       <v-btn
         class="ma-1"
@@ -204,53 +204,48 @@ export default {
       return SubstanceDataService.getDetailAlternate(query, type);
     },
 
-    async retrieveSubstanceFlags(id) {
+    retrieveSubstanceFlags(id) {
       this.editable.substanceFlags = [];
-      let response = await SubstanceFlagDataService.getBySubstanceId(id);
-      if (response) {
+      SubstanceFlagDataService.getBySubstanceId(id).then((response) => {
         this.editable.substanceFlags = response.data;
-      }
+      })
     },
 
-    async retrieveSubstanceGrades(id) {
+   retrieveSubstanceGrades(id) {
       this.editable.mappedGradeT0 = null;
       this.editable.mappedGradeT4 = null;
-      let response = await SubstanceGradeDataService.getBySubstanceId(id);
-      if (response) {
+      SubstanceGradeDataService.getBySubstanceId(id).then((response) => {
         response.data.forEach((resp) => {
           if (resp.t0_t4) {
             this.editable.mappedGradeT4 = resp;
           } else {
             this.editable.mappedGradeT0 = resp;
           }
-        });
-      }
+        })
+      })
     },
 
-    async retrieveSubstanceCall(id) {
+    retrieveSubstanceCall(id) {
       this.editable.mappedCall = null;
-      let response = await SubstanceCallDataService.getBySubstanceId(id);
-      if (response) {
+      SubstanceCallDataService.getBySubstanceId(id).then((response) => {
         this.editable.mappedCall = response.data;
-      }
+      })
     },
 
-    async retrieveSubstanceAnnotation(id) {
+    retrieveSubstanceAnnotation(id) {
       this.editable.annotation = null;
-      let response = await SubstanceAnnotationDataService.getBySubstanceId(id);
-      if (response) {
+      SubstanceAnnotationDataService.getBySubstanceId(id).then((response) => {
         this.editable.annotation = response.data;
-      }
+      })
     },
 
-    async refresh(query, type) {
+    refresh(query, type) {
       this.state.missingImage = false;
       this.substanceDetail = null;
-      let response = await this.retrieveSubstanceDetail(query, type);
-      if (response) {
+      this.retrieveSubstanceDetail(query, type).then((response) => {
         this.substanceDetail = response.data;
         this.refreshEditable(this.substanceDetail.substance.id);
-      }
+      })
     },
 
     refreshEditable(id) {
@@ -269,23 +264,22 @@ export default {
       });
     },
 
-    async saveEdited(edited) {
-      this.saveEditable(edited).then((values) => {
-        this.editable.mappedGradeT0 = values[0];
-        this.editable.mappedGradeT4 = values[1];
-        this.editable.mappedCall = values[2];
-        this.editable.annotation = values[3];
+    save(edited) {
+      this.saveEdited(edited).then((p) => {
+        this.editable.mappedGradeT0 = p[0];
+        this.editable.mappedGradeT4 = p[1];
+        this.editable.mappedCall = p[2];
+        this.editable.annotation = p[3];
         this.refreshEditable(this.substanceDetail.substance.id);
-      }
-      )
+      })
     },
 
-    async saveEditable(edited) {
-      const p1 = this.saveGrade(this.editable.mappedGradeT0, edited.mappedGradeT0);
-      const p2 = this.saveGrade(this.editable.mappedGradeT4, edited.mappedGradeT4);
-      const p3 = this.saveCall(this.editable.mappedCall, edited.mappedCall);
-      const p4 = this.saveAnnotation(this.editable.annotation, edited.annotation);
-      return Promise.all([p1, p2, p3, p4]);
+    saveEdited(edited) {
+      const p0 = this.saveGrade(this.editable.mappedGradeT0, edited.mappedGradeT0);
+      const p1 = this.saveGrade(this.editable.mappedGradeT4, edited.mappedGradeT4);
+      const p2 = this.saveCall(this.editable.mappedCall, edited.mappedCall);
+      const p3 = this.saveAnnotation(this.editable.annotation, edited.annotation);
+      return Promise.all([p0, p1, p2, p3]);
     },
 
     saveGrade(editableMappedGrade, editedMappedGrade) {
