@@ -4,6 +4,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 *.pdf
+/content-server/static
 
 ### STS ###
 .apt_generated
