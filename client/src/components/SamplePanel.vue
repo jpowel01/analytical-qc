@@ -17,6 +17,7 @@
           {{ sample.bottleBarcode }}
         </div>
         <div :class="titleClass" v-else>No sample number</div>
+        <v-spacer></v-spacer>
         <div
           class="mx-2"
           v-if="

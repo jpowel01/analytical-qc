@@ -1,72 +1,64 @@
 <template>
   <v-container fluid v-if="substanceDetail.substance">
     <v-row class="ma-2" align="center">
-      <div v-if="substanceAnnotation" class="mx-1 d-inline-flex align-center">
-          <AnnotationChip
-            :annotation="substanceAnnotation.annotation"
-          />
-        </div>
       <div class="text-h4 mr-2">
         {{ substanceDetail.substance.preferredName }}
       </div>
       <div
         class="mx-2"
         v-if="
-          substanceGradeT0 ||
-          substanceGradeT4 ||
-          substanceCall ||
-          substanceFlags
+          editable.mappedGradeT0 ||
+          editable.mappedGradeT4 ||
+          editable.mappedCall ||
+          editable.substanceFlags ||
+          editable.annotation
         "
       >
-        <div v-if="substanceGradeT0" class="mx-1 d-inline-flex align-center">
+        <div v-if="editable.annotation" class="mx-1 d-inline-flex align-center">
+          <AnnotationChip
+            :annotation="editable.annotation.annotation"
+          />
+        </div>
+        <div v-if="editable.mappedGradeT0" class="mx-1 d-inline-flex align-center">
           <EditableChip
-            :data="substanceGradeT0"
+            :data="editable.mappedGradeT0"
             type="grade"
             title="T0"
             :use-tripod-colors="state.useTripodColors"
-            @validated="onValidate(substanceGradeT0, SubstanceGradeDataService)"
-            @deleted="onDelete(substanceGradeT0, SubstanceGradeDataService)"
           />
         </div>
-        <div v-if="substanceGradeT4" class="mx-1 d-inline-flex align-center">
+        <div v-if="editable.mappedGradeT4" class="mx-1 d-inline-flex align-center">
           <EditableChip
-            :data="substanceGradeT4"
+            :data="editable.mappedGradeT4"
             type="grade"
             title="T4"
             :use-tripod-colors="state.useTripodColors"
-            @validated="onValidate(substanceGradeT4, SubstanceGradeDataService)"
-            @deleted="onDelete(substanceGradeT4, SubstanceGradeDataService)"
           />
         </div>
-        <div v-if="substanceCall" class="mx-1 d-inline-flex align-center">
+        <div v-if="editable.mappedCall" class="mx-1 d-inline-flex align-center">
           <EditableChip
-            :data="substanceCall"
+            :data="editable.mappedCall"
             type="call"
             title="Call"
             :use-tripod-colors="state.useTripodColors"
-            @validated="onValidate(substanceCall, SubstanceCallDataService)"
-            @deleted="onDelete(substanceCall, SubstanceCallDataService)"
           />
         </div>
-        <div v-if="substanceFlags" class="mx-1 d-inline-flex align-center">
+        <div v-if="editable.substanceFlags" class="mx-1 d-inline-flex align-center">
           <EditableChip
-            v-for="sf in substanceFlags"
+            v-for="sf in editable.substanceFlags"
             :key="sf.id"
             :data="sf"
             type="flag"
             :use-tripod-colors="state.useTripodColors"
-            @validated="onValidate(sf, SubstanceFlagDataService)"
-            @deleted="onDelete(sf, SubstanceFlagDataService)"
           />
         </div>
       </div>
       <v-spacer />
       <EditDialog
-          :grades="grades"
-          :calls="calls"
-          :existing-grade-t0="substanceGradeT0"
-          :existing-grade-t4="substanceGradeT4"
-          :existing-call="substanceCall"
+        :grades="grades"
+        :calls="calls"
+        :editable="editable"
+        @edited="saveEdited"
         />
       <v-btn
         class="ma-1"
@@ -182,11 +174,13 @@ export default {
   data() {
     return {
       substanceDetail: null,
-      substanceFlags: [],
-      substanceGradeT0: null,
-      substanceGradeT4: null,
-      substanceCall: null,
-      substanceAnnotation: null,
+      editable: {
+        substanceFlags: [],
+        mappedGradeT0: null,
+        mappedGradeT4: null,
+        mappedCall: null,
+        annotation: null,
+      },
 
       grades: [],
       calls: [],
@@ -203,71 +197,49 @@ export default {
     DASHBOARD_IMAGE_URL() {
       return DASHBOARD_IMAGE_URL;
     },
-
-    SubstanceGradeDataService() {
-      return SubstanceGradeDataService;
-    },
-
-    SubstanceCallDataService() {
-      return SubstanceCallDataService;
-    },
-
-    SubstanceFlagDataService() {
-      return SubstanceFlagDataService;
-    },
   },
 
   methods: {
-    async onValidate(data, service) {
-      data.validated = true;
-      data = await service.put(data.id, data);
-    },
-
-    async onDelete(data, service) {
-      data = await service.delete(data.id);
-      this.refreshEditable(this.substanceDetail.substance.id);
-    },
-
     retrieveSubstanceDetail(query, type) {
       return SubstanceDataService.getDetailAlternate(query, type);
     },
 
     async retrieveSubstanceFlags(id) {
-      this.substanceFlags = [];
+      this.editable.substanceFlags = [];
       let response = await SubstanceFlagDataService.getBySubstanceId(id);
       if (response) {
-        this.substanceFlags = response.data;
+        this.editable.substanceFlags = response.data;
       }
     },
 
     async retrieveSubstanceGrades(id) {
-      this.substanceGradeT0 = null;
-      this.substanceGradeT4 = null;
+      this.editable.mappedGradeT0 = null;
+      this.editable.mappedGradeT4 = null;
       let response = await SubstanceGradeDataService.getBySubstanceId(id);
       if (response) {
         response.data.forEach((resp) => {
           if (resp.t0_t4) {
-            this.substanceGradeT4 = resp;
+            this.editable.mappedGradeT4 = resp;
           } else {
-            this.substanceGradeT0 = resp;
+            this.editable.mappedGradeT0 = resp;
           }
         });
       }
     },
 
     async retrieveSubstanceCall(id) {
-      this.substanceCall = null;
+      this.editable.mappedCall = null;
       let response = await SubstanceCallDataService.getBySubstanceId(id);
       if (response) {
-        this.substanceCall = response.data;
+        this.editable.mappedCall = response.data;
       }
     },
 
     async retrieveSubstanceAnnotation(id) {
-      this.substanceAnnotation = null;
+      this.editable.annotation = null;
       let response = await SubstanceAnnotationDataService.getBySubstanceId(id);
       if (response) {
-        this.substanceAnnotation = response.data;
+        this.editable.annotation = response.data;
       }
     },
 
@@ -291,13 +263,76 @@ export default {
     retrieveGradesAndCalls() {
       GradeDataService.getAll().then((response) => {
         this.grades = response.data;
-        console.log(response.data);
       });
       CallDataService.getAll().then((response) => {
         this.calls = response.data;
-        console.log(response.data);
       });
     },
+
+    async saveEdited(edited) {
+      this.saveEditable(edited).then((values) => {
+        this.editable.mappedGradeT0 = values[0];
+        this.editable.mappedGradeT4 = values[1];
+        this.editable.mappedCall = values[2];
+        this.editable.annotation = values[3];
+        this.refreshEditable(this.substanceDetail.substance.id);
+      }
+      )
+    },
+
+    async saveEditable(edited) {
+      const p1 = this.saveGrade(this.editable.mappedGradeT0, edited.mappedGradeT0);
+      const p2 = this.saveGrade(this.editable.mappedGradeT4, edited.mappedGradeT4);
+      const p3 = this.saveCall(this.editable.mappedCall, edited.mappedCall);
+      const p4 = this.saveAnnotation(this.editable.annotation, edited.annotation);
+      return Promise.all([p1, p2, p3, p4]);
+    },
+
+    saveGrade(editableMappedGrade, editedMappedGrade) {
+      let savedMappedGrade = editableMappedGrade;
+      if (!editableMappedGrade && editedMappedGrade.grade.name) {
+        editedMappedGrade.substance = this.substanceDetail.substance;
+        savedMappedGrade = SubstanceGradeDataService.post(editedMappedGrade);
+      } else if (editableMappedGrade) {
+        if (!editedMappedGrade.grade.name) {
+          savedMappedGrade = SubstanceGradeDataService.delete(editableMappedGrade.id);
+        } else if (editableMappedGrade.grade.name !== editedMappedGrade.grade.name || (editableMappedGrade.validated !== editedMappedGrade.validated)) {
+          savedMappedGrade = SubstanceGradeDataService.put(editableMappedGrade.id, editedMappedGrade);
+        }
+      }
+
+      return Promise.resolve(savedMappedGrade);
+    },
+
+    saveCall(editableMappedCall, editedMappedCall) {
+      let savedMappedCall = editableMappedCall;
+      if (!editableMappedCall && editedMappedCall.call.name) {
+        editedMappedCall.substance = this.substanceDetail.substance;
+        savedMappedCall = SubstanceCallDataService.post(editedMappedCall);
+      } else if (editableMappedCall) {
+        if (!editedMappedCall.call.name) {
+          savedMappedCall = SubstanceCallDataService.delete(editableMappedCall.id);
+        } else if ((editableMappedCall.call.name !== editedMappedCall.call.name) || (editableMappedCall.validated !== editedMappedCall.validated)) {
+          savedMappedCall = SubstanceCallDataService.put(editableMappedCall.id, editedMappedCall);
+        }
+      }
+
+      return Promise.resolve(savedMappedCall);
+    },
+
+    saveAnnotation(editableAnnotation, editedAnnotation) {
+      let savedAnnotation = editableAnnotation;
+      if (!editableAnnotation && editedAnnotation.annotation) {
+        editedAnnotation.substance = this.substanceDetail.substance;
+        savedAnnotation = SubstanceAnnotationDataService.post(editedAnnotation);
+      } else if (editableAnnotation && editedAnnotation.annotation) {
+        savedAnnotation = SubstanceAnnotationDataService.put(editableAnnotation.id, editedAnnotation);
+      } else if (editableAnnotation) {
+        savedAnnotation = SubstanceAnnotationDataService.delete(editableAnnotation.id);
+      }
+
+      return Promise.resolve(savedAnnotation);
+    }
   },
 
   watch: {
