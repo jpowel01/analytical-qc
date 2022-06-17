@@ -127,7 +127,7 @@ export default {
         this.state.search,
         this.state.options.page - 1,
         this.state.options.itemsPerPage
-        )
+      )
         .then((response) => {
           this.substances = response.data.content;
           this.totalSubstances = response.data.totalElements;
@@ -138,7 +138,6 @@ export default {
           console.log(e);
           this.state.loading = false;
         });
-      
     },
   },
 

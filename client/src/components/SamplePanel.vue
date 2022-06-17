@@ -2,11 +2,6 @@
   <v-expansion-panel>
     <v-expansion-panel-header class="text-h6">
       <v-row align="center">
-        <div v-if="sampleAnnotation" class="mx-1 d-inline-flex align-center">
-          <AnnotationChip
-            :annotation="sampleAnnotation.annotation"
-          />
-        </div>
         <div :class="titleClass" v-if="sample.tox21Id">
           Tox21_{{ sample.tox21Id }}
         </div>
@@ -17,44 +12,54 @@
           {{ sample.bottleBarcode }}
         </div>
         <div :class="titleClass" v-else>No sample number</div>
-        <v-spacer></v-spacer>
-        <div
-          class="mx-2"
-          v-if="
-            (sampleGradeT0 || sampleGradeT4 || sampleCall) && !sample.withdrawn
-          "
-        >
-          <div v-if="sampleGradeT0" class="mx-1 d-inline-flex align-center">
+        <v-spacer />
+        <div class="mx-2">
+          <EditDialog
+            :grades="grades"
+            :calls="calls"
+            :editable="editable"
+            @edited="save"
+          />
+          <div
+            v-if="editable.annotation"
+            class="mx-1 d-inline-flex align-center"
+          >
+            <AnnotationChip :annotation="editable.annotation.annotation" />
+          </div>
+          <div
+            v-if="editable.mappedGradeT0"
+            class="mx-1 d-inline-flex align-center"
+          >
             <EditableChip
-              :data="sampleGradeT0"
+              :data="editable.mappedGradeT0"
               type="grade"
               title="T0"
               :use-tripod-colors="useTripodColors"
-              @validated="onValidate(sampleGradeT0, SampleGradeDataService)"
-              @deleted="onDelete(sampleGradeT0, SampleGradeDataService)"
             />
           </div>
-          <div v-if="sampleGradeT4" class="mx-1 d-inline-flex align-center">
+          <div
+            v-if="editable.mappedGradeT4"
+            class="mx-1 d-inline-flex align-center"
+          >
             <EditableChip
-              :data="sampleGradeT4"
+              :data="editable.mappedGradeT4"
               type="grade"
               title="T4"
               :use-tripod-colors="useTripodColors"
-              @validated="onValidate(sampleGradeT4, SampleGradeDataService)"
-              @deleted="onDelete(sampleGradeT4, SampleGradeDataService)"
             />
           </div>
-          <div v-if="sampleCall" class="mx-1 d-inline-flex align-center">
+          <div
+            v-if="editable.mappedCall"
+            class="mx-1 d-inline-flex align-center"
+          >
             <EditableChip
-              :data="sampleCall"
+              :data="editable.mappedCall"
               type="call"
               title="Call"
-              @validated="onValidate(sampleCall, SampleCallDataService)"
-              @deleted="onDelete(sampleCall, SampleCallDataService)"
             />
           </div>
         </div>
-        <div class="mx-2" v-else-if="sample.withdrawn">
+        <div class="mx-2" v-if="sample.withdrawn">
           <ExperimentGradeChip
             :use-tripod-colors="useTripodColors"
             :grade="{ name: 'W', description: 'Sample Withdrawn' }"
@@ -128,15 +133,24 @@
 import ExperimentGradeChip from "./ExperimentGradeChip";
 import EditableChip from "./EditableChip";
 import AnnotationChip from "./AnnotationChip";
+import EditDialog from "./EditDialog";
 import SampleGradeDataService from "../services/SampleGradeDataService";
 import SampleCallDataService from "../services/SampleCallDataService";
 import SampleAnnotationDataService from "../services/SampleAnnotationDataService";
 import { PUBCHEM_SID_URL, CONTENT_SERVER_URL } from "@/main";
 
 export default {
-  props: ["sample", "experiments", "useTripodColors", "showSpectrusFiles"],
+  props: [
+    "sample",
+    "experiments",
+    "useTripodColors",
+    "showSpectrusFiles",
+    "grades",
+    "calls",
+  ],
 
   components: {
+    EditDialog,
     ExperimentGradeChip,
     EditableChip,
     AnnotationChip,
@@ -149,14 +163,6 @@ export default {
 
     CONTENT_SERVER_URL() {
       return CONTENT_SERVER_URL;
-    },
-
-    SampleGradeDataService() {
-      return SampleGradeDataService;
-    },
-
-    SampleCallDataService() {
-      return SampleCallDataService;
     },
 
     titleClass() {
@@ -183,10 +189,12 @@ export default {
 
   data() {
     return {
-      sampleGradeT0: null,
-      sampleGradeT4: null,
-      sampleCall: null,
-      sampleAnnotation: null,
+      editable: {
+        mappedGradeT0: null,
+        mappedGradeT4: null,
+        mappedCall: null,
+        annotation: null,
+      },
 
       experimentHeaders: [
         {
@@ -217,56 +225,147 @@ export default {
   },
 
   methods: {
-    async onValidate(data, service) {
-      data.validated = true;
-      data = await service.put(data.id, data);
-    },
-
-    async onDelete(data, service) {
-      data = await service.delete(data.id);
-      this.refresh(this.sample.id);
-    },
-
-    async retrieveSampleGrades(id) {
-      this.sampleGradeT0 = null;
-      this.sampleGradeT4 = null;
-      let response = await SampleGradeDataService.getBySampleId(id);
-      if (response) {
-        response.data.forEach((resp) => {
-          if (resp.t0_t4) {
-            this.sampleGradeT4 = resp;
-          } else {
-            this.sampleGradeT0 = resp;
-          }
+    setSampleGrades(id) {
+      this.editable.mappedGradeT0 = null;
+      this.editable.mappedGradeT4 = null;
+      SampleGradeDataService.getBySampleId(id)
+        .then((response) => {
+          response.data.forEach((resp) => {
+            if (resp.t0_t4) {
+              this.editable.mappedGradeT4 = resp;
+            } else {
+              this.editable.mappedGradeT0 = resp;
+            }
+          });
+        })
+        .catch((err) => {
+          console.log(err);
         });
-      }
     },
 
-    async retrieveSampleCall(id) {
-      this.sampleCall = null;
-      let response = await SampleCallDataService.getBySampleId(id);
-      if (response) {
-        this.sampleCall = response.data;
-      }
+    setSampleCall(id) {
+      this.editable.mappedCall = null;
+      SampleCallDataService.getBySampleId(id)
+        .then((response) => {
+          this.editable.mappedCall = response.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
 
-    async retrieveSampleAnnotation(id) {
-      this.sampleAnnotation = null;
-      let response = await SampleAnnotationDataService.getBySampleId(id);
-      if (response) {
-        this.sampleAnnotation = response.data;
-      }
+    setSampleAnnotation(id) {
+      this.editable.annotation = null;
+      SampleAnnotationDataService.getBySampleId(id)
+        .then((response) => {
+          this.editable.annotation = response.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
 
-    refresh(id) {
-      this.retrieveSampleGrades(id);
-      this.retrieveSampleCall(id);
-      this.retrieveSampleAnnotation(id);
+    setEditable(id) {
+      this.setSampleGrades(id);
+      this.setSampleCall(id);
+      this.setSampleAnnotation(id);
+    },
+
+    save(edited) {
+      this.saveEdited(edited)
+        .then(() => {
+          this.setEditable(this.sample.id);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+
+    saveEdited(edited) {
+      const p0 = this.saveGrade(
+        this.editable.mappedGradeT0,
+        edited.mappedGradeT0
+      );
+      const p1 = this.saveGrade(
+        this.editable.mappedGradeT4,
+        edited.mappedGradeT4
+      );
+      const p2 = this.saveCall(this.editable.mappedCall, edited.mappedCall);
+      const p3 = this.saveAnnotation(
+        this.editable.annotation,
+        edited.annotation
+      );
+      return Promise.all([p0, p1, p2, p3]);
+    },
+
+    saveGrade(editableMappedGrade, editedMappedGrade) {
+      let savedMappedGrade = editableMappedGrade;
+      if (!editableMappedGrade && editedMappedGrade.grade.name) {
+        editedMappedGrade.sample = this.sample;
+        savedMappedGrade = SampleGradeDataService.post(editedMappedGrade);
+      } else if (editableMappedGrade) {
+        if (!editedMappedGrade.grade.name) {
+          savedMappedGrade = SampleGradeDataService.delete(
+            editableMappedGrade.id
+          );
+        } else if (
+          editableMappedGrade.grade.name !== editedMappedGrade.grade.name ||
+          editableMappedGrade.validated !== editedMappedGrade.validated
+        ) {
+          savedMappedGrade = SampleGradeDataService.put(
+            editableMappedGrade.id,
+            editedMappedGrade
+          );
+        }
+      }
+
+      return Promise.resolve(savedMappedGrade);
+    },
+
+    saveCall(editableMappedCall, editedMappedCall) {
+      let savedMappedCall = editableMappedCall;
+      if (!editableMappedCall && editedMappedCall.call.name) {
+        editedMappedCall.sample = this.sample;
+        savedMappedCall = SampleCallDataService.post(editedMappedCall);
+      } else if (editableMappedCall) {
+        if (!editedMappedCall.call.name) {
+          savedMappedCall = SampleCallDataService.delete(editableMappedCall.id);
+        } else if (
+          editableMappedCall.call.name !== editedMappedCall.call.name ||
+          editableMappedCall.validated !== editedMappedCall.validated
+        ) {
+          savedMappedCall = SampleCallDataService.put(
+            editableMappedCall.id,
+            editedMappedCall
+          );
+        }
+      }
+
+      return Promise.resolve(savedMappedCall);
+    },
+
+    saveAnnotation(editableAnnotation, editedAnnotation) {
+      let savedAnnotation = editableAnnotation;
+      if (!editableAnnotation && editedAnnotation.annotation) {
+        editedAnnotation.sample = this.sample;
+        savedAnnotation = SampleAnnotationDataService.post(editedAnnotation);
+      } else if (editableAnnotation && editedAnnotation.annotation) {
+        savedAnnotation = SampleAnnotationDataService.put(
+          editableAnnotation.id,
+          editedAnnotation
+        );
+      } else if (editableAnnotation) {
+        savedAnnotation = SampleAnnotationDataService.delete(
+          editableAnnotation.id
+        );
+      }
+
+      return Promise.resolve(savedAnnotation);
     },
   },
 
   mounted() {
-    this.refresh(this.sample.id);
+    this.setEditable(this.sample.id);
   },
 };
 </script>

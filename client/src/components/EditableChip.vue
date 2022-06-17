@@ -1,9 +1,7 @@
 <template>
   <v-tooltip top>
     <template v-slot:activator="{ on, attrs }">
-      <span v-if="title" class="text-body-1 text--secondary"
-        >{{ title }}
-      </span>
+      <span v-if="title" class="text-body-1 text--secondary">{{ title }} </span>
       <v-chip
         :color="color"
         :outlined="!data.validated"

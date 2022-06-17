@@ -39,34 +39,4 @@ public class SampleController {
             return new ResponseEntity<>(findSample.get(), HttpStatus.OK);
         }
     }
-
-    @GetMapping("/ncgc-id/{ncgc-id}")
-    public ResponseEntity<Sample> getSampleByNcgcId(@PathVariable("ncgc-id") String ncgcId) {
-        Optional<Sample> findSample = sampleRepository.findByNcgcId(ncgcId);
-        if (findSample.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sample not found");
-        } else {
-            return new ResponseEntity<>(findSample.get(), HttpStatus.OK);
-        }
-    }
-
-    @GetMapping("/bottle-barcode/{bottle-barcode}")
-    public ResponseEntity<Sample> getSampleByBottleBarcode(@PathVariable("bottle-barcode") String bottleBarcode) {
-        Optional<Sample> findSample = sampleRepository.findByBottleBarcode(bottleBarcode);
-        if (findSample.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sample not found");
-        } else {
-            return new ResponseEntity<>(findSample.get(), HttpStatus.OK);
-        }
-    }
-
-    @GetMapping("/tox21-id/{tox21-id}")
-    public ResponseEntity<Sample> getSampleByTox21Id(@PathVariable("tox21-id") Long tox21Id) {
-        Optional<Sample> findSample = sampleRepository.findByTox21Id(tox21Id);
-        if (findSample.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sample not found");
-        } else {
-            return new ResponseEntity<>(findSample.get(), HttpStatus.OK);
-        }
-    }
 }

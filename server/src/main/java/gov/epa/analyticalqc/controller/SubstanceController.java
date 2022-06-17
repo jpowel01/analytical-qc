@@ -141,24 +141,4 @@ public class SubstanceController {
 
         return new SubstanceDetail(substance, propertyPrediction, sampleDetails);
     }
-
-    @GetMapping("/dtxsid/{dtxsid}")
-    public ResponseEntity<Substance> getSubstanceByDtxsid(@PathVariable("dtxsid") String dtxsid) {
-        Optional<Substance> findSubstance = substanceRepository.findByDtxsid(dtxsid);
-        if (findSubstance.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Substance not found");
-        } else {
-            return new ResponseEntity<>(findSubstance.get(), HttpStatus.OK);
-        }
-    }
-
-    @GetMapping("/casrn/{casrn}")
-    public ResponseEntity<Substance> getSubstanceByCasrn(@PathVariable("casrn") String casrn) {
-        Optional<Substance> findSubstance = substanceRepository.findByCasrn(casrn);
-        if (findSubstance.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Substance not found");
-        } else {
-            return new ResponseEntity<>(findSubstance.get(), HttpStatus.OK);
-        }
-    }
 }

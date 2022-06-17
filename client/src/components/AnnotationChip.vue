@@ -1,12 +1,7 @@
 <template>
   <v-menu bottom offset-y open-on-hover>
     <template v-slot:activator="{ on, attrs }">
-      <v-chip
-        class="ma-1"
-        color="primary"
-        v-bind="attrs"
-        v-on="on"
-      >
+      <v-chip class="ma-1" color="primary" v-bind="attrs" v-on="on">
         <strong>TEXT</strong>
       </v-chip>
     </template>
