@@ -71,8 +71,6 @@ import {
 } from "@/main";
 
 export default {
-  name: "substances",
-
   data() {
     return {
       substances: [],
@@ -100,13 +98,13 @@ export default {
   watch: {
     "state.options": {
       handler() {
-        this.retrieveSubstances();
+        this.setSubstances();
       },
       deep: true,
     },
     "state.search"() {
       this.state.options.page = 1;
-      this.retrieveSubstances();
+      this.setSubstances();
     },
   },
 
@@ -123,22 +121,24 @@ export default {
   },
 
   methods: {
-    retrieveSubstances() {
+    setSubstances() {
       this.state.loading = true;
       SubstanceDataService.searchPaged(
         this.state.search,
         this.state.options.page - 1,
         this.state.options.itemsPerPage
-      )
+        )
         .then((response) => {
           this.substances = response.data.content;
           this.totalSubstances = response.data.totalElements;
           console.log(response.data);
+          this.state.loading = false;
         })
         .catch((e) => {
           console.log(e);
+          this.state.loading = false;
         });
-      this.state.loading = false;
+      
     },
   },
 

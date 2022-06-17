@@ -93,7 +93,7 @@ public class SubstanceController {
                 break;
             case "tox21":
             case "tox21-id":
-                Long queryLong = Long.parseLong(query.replaceAll("[^0-9]",""));
+                Long queryLong = Long.parseLong(query.replaceAll("Tox21_",""));
                 sample = sampleRepository.findByTox21Id(queryLong).orElse(null);
                 break;
             case "ncgc":

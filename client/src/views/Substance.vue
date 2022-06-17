@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid v-if="substanceDetail.substance">
+  <v-container fluid v-if="substanceDetail && substanceDetail.substance">
     <v-row class="ma-2" align="center">
       <div class="text-h4 mr-2">
         {{ substanceDetail.substance.preferredName }}
@@ -160,8 +160,6 @@ import SubstanceAnnotationDataService from "../services/SubstanceAnnotationDataS
 import { DASHBOARD_IMAGE_URL } from "@/main";
 
 export default {
-  name: "substance-detail",
-
   components: {
     EditableChip,
     SubstanceInfoTable,
@@ -200,18 +198,18 @@ export default {
   },
 
   methods: {
-    retrieveSubstanceDetail(query, type) {
+    getSubstanceDetail(query, type) {
       return SubstanceDataService.getDetailAlternate(query, type);
     },
 
-    retrieveSubstanceFlags(id) {
+    setSubstanceFlags(id) {
       this.editable.substanceFlags = [];
       SubstanceFlagDataService.getBySubstanceId(id).then((response) => {
         this.editable.substanceFlags = response.data;
       })
     },
 
-   retrieveSubstanceGrades(id) {
+   setSubstanceGrades(id) {
       this.editable.mappedGradeT0 = null;
       this.editable.mappedGradeT4 = null;
       SubstanceGradeDataService.getBySubstanceId(id).then((response) => {
@@ -225,37 +223,41 @@ export default {
       })
     },
 
-    retrieveSubstanceCall(id) {
+    setSubstanceCall(id) {
       this.editable.mappedCall = null;
       SubstanceCallDataService.getBySubstanceId(id).then((response) => {
         this.editable.mappedCall = response.data;
       })
     },
 
-    retrieveSubstanceAnnotation(id) {
+    setSubstanceAnnotation(id) {
       this.editable.annotation = null;
       SubstanceAnnotationDataService.getBySubstanceId(id).then((response) => {
         this.editable.annotation = response.data;
       })
     },
 
-    refresh(query, type) {
+    setSubstanceData(query, type) {
       this.state.missingImage = false;
       this.substanceDetail = null;
-      this.retrieveSubstanceDetail(query, type).then((response) => {
-        this.substanceDetail = response.data;
-        this.refreshEditable(this.substanceDetail.substance.id);
-      })
+      this.getSubstanceDetail(query, type)
+        .then((response) => {
+          this.substanceDetail = response.data;
+          this.setEditable(this.substanceDetail.substance.id);
+        })
+        .catch(() => {
+          this.$router.push('/error');
+        })
     },
 
-    refreshEditable(id) {
-      this.retrieveSubstanceFlags(id);
-      this.retrieveSubstanceGrades(id);
-      this.retrieveSubstanceCall(id);
-      this.retrieveSubstanceAnnotation(id);
+    setEditable(id) {
+      this.setSubstanceFlags(id);
+      this.setSubstanceGrades(id);
+      this.setSubstanceCall(id);
+      this.setSubstanceAnnotation(id);
     },
 
-    retrieveGradesAndCalls() {
+    setGradesAndCalls() {
       GradeDataService.getAll().then((response) => {
         this.grades = response.data;
       });
@@ -265,12 +267,8 @@ export default {
     },
 
     save(edited) {
-      this.saveEdited(edited).then((p) => {
-        this.editable.mappedGradeT0 = p[0];
-        this.editable.mappedGradeT4 = p[1];
-        this.editable.mappedCall = p[2];
-        this.editable.annotation = p[3];
-        this.refreshEditable(this.substanceDetail.substance.id);
+      this.saveEdited(edited).then(() => {
+        this.setEditable(this.substanceDetail.substance.id);
       })
     },
 
@@ -331,13 +329,13 @@ export default {
 
   watch: {
     "$route.params"() {
-      this.refresh(this.$route.params.query, this.$route.params.type);
+      this.setSubstanceData(this.$route.params.query, this.$route.params.type);
     },
   },
 
   mounted() {
-    this.retrieveGradesAndCalls();
-    this.refresh(this.$route.params.query, this.$route.params.type);
+    this.setGradesAndCalls();
+    this.setSubstanceData(this.$route.params.query, this.$route.params.type);
   },
 };
 </script>

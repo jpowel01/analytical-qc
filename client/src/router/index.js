@@ -12,13 +12,18 @@ const routes = [
   },
   {
     path: "/substances",
-    name: "substances",
+    name: "substance-list",
     component: () => import("../views/SubstanceList.vue"),
   },
   {
     path: "/substances/:type/:query",
-    name: "substance-detail",
+    name: "substance",
     component: () => import("../views/Substance.vue"),
+  },
+  {
+    path: "/error",
+    name: "error",
+    component: () => import("../views/Error.vue"),
   },
 ];
 
