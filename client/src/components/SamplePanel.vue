@@ -75,6 +75,10 @@
         hide-default-footer
         sort-by="experiment.timepoint"
       >
+        <template v-slot:item.experiment.id="{ item }">
+          <ExperimentAnnotationChip :experiment="item.experiment" />
+        </template>
+        
         <template v-slot:item.experiment.experimentDate="{ value }">
           {{ value | formatDate }}
         </template>
@@ -137,6 +141,7 @@ import EditDialog from "./EditDialog";
 import SampleGradeDataService from "../services/SampleGradeDataService";
 import SampleCallDataService from "../services/SampleCallDataService";
 import SampleAnnotationDataService from "../services/SampleAnnotationDataService";
+import ExperimentAnnotationChip from "../components/ExperimentAnnotationChip";
 import { PUBCHEM_SID_URL, CONTENT_SERVER_URL } from "@/main";
 
 export default {
@@ -154,6 +159,7 @@ export default {
     ExperimentGradeChip,
     EditableChip,
     AnnotationChip,
+    ExperimentAnnotationChip
   },
 
   computed: {
@@ -197,6 +203,11 @@ export default {
       },
 
       experimentHeaders: [
+        {
+          text: "",
+          value: "experiment.id",
+          sortable: false,
+        },
         {
           text: "File Date",
           value: "experiment.file.fileDate",

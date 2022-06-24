@@ -14,7 +14,7 @@
       </v-chip>
     </template>
     <span v-if="data.validated">Validated: </span>
-    <span v-else>Automatic: </span>
+    <span v-else>Provisional: </span>
     <span>{{ description }}</span>
   </v-tooltip>
 </template>
