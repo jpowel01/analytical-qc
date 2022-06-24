@@ -13,6 +13,14 @@ services:
       context: ./server
     image: gsincl01/analytical-qc-server
     container_name: analytical-qc-server
+    environment:
+      - DB_URL
+      - DB_USER
+      - DB_PASS
+      - DB_SCHEMA
+      - DB_DIALECT
+      - DB_DRIVER
+      - CLIENT_URL
     ports:
       - 9091:9090 
 
@@ -22,6 +30,9 @@ services:
     container_name: analytical-qc-client
     ports:
       - 81:80
+    env:
+      - VUE_APP_SERVER_URL
+      - VUE_APP_CONTENT_SERVER_URL
     depends_on:
       - content-server
       - server
