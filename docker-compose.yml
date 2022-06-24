@@ -30,7 +30,7 @@ services:
     container_name: analytical-qc-client
     ports:
       - 81:80
-    env:
+    environment:
       - VUE_APP_SERVER_URL
       - VUE_APP_CONTENT_SERVER_URL
     depends_on:
