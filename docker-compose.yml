@@ -11,13 +11,6 @@ services:
   server:
     build: 
       context: ./server
-      args:
-        - DB_URL
-        - DB_USER
-        - DB_PASS
-        - DB_SCHEMA
-        - DB_DIALECT
-        - DB_DRIVER
     image: gsincl01/analytical-qc-server
     container_name: analytical-qc-server
     environment:
