@@ -2,11 +2,17 @@ import http from "../http-common";
 
 class SubstanceDataService {
   getPaged(no, size) {
-    return http.get("substances", { params: { pageNo: no, pageSize: size } });
+    return http.get(`substances`, { params: { pageNo: no, pageSize: size } });
+  }
+
+  listPaged(list, no, size) {
+    return http.get(`substances/list`, {
+      params: { ids: list.join(','), pageNo: no, pageSize: size },
+    });
   }
 
   searchPaged(str, no, size) {
-    return http.get("substances", {
+    return http.get(`substances`, {
       params: { search: str, pageNo: no, pageSize: size },
     });
   }

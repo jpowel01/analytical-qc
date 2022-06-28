@@ -1,5 +1,6 @@
 package gov.epa.analyticalqc.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -19,5 +20,7 @@ public interface SubstanceRepository extends JpaRepository<Substance, Integer> {
     Page<Substance> findByMolFormula(String molFormula, Pageable pageable);
 
     Page<Substance> findByPreferredNameContainingIgnoreCase(String query, Pageable pageable);
+
+    Page<Substance> findByIdIn(List<Integer> ids, Pageable pageable);
 
 }

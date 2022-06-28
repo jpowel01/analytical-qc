@@ -71,16 +71,11 @@
         class="ma-1"
         dark
         color="primary"
-        :to="'/substances/id/' + (substanceDetail.substance.id - 1)"
+        :to="'/substances/id/' + state.previous"
       >
         Previous
       </v-btn>
-      <v-btn
-        class="ma-1"
-        dark
-        color="primary"
-        :to="'/substances/id/' + (substanceDetail.substance.id + 1)"
-      >
+      <v-btn class="ma-1" dark color="primary" :to="'/substances/id/' + state.next">
         Next
       </v-btn>
     </v-row>
@@ -143,9 +138,31 @@
             :experiments="sampleDetail.experiments"
             :use-tripod-colors="state.useTripodColors"
             :show-spectrus-files="state.showSpectrusFiles"
+            :show-ungraded-experiments="state.showUngradedExperiments"
             :grades="grades"
             :calls="calls"
           />
+          <v-expansion-panel v-if="substanceDetail.substanceFiles.length > 0">
+            <v-expansion-panel-header class="text-h6">
+              <v-row align="center">
+                <div class="ma-2">
+                  Additional files
+                </div>
+              </v-row>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <v-list>
+                <v-list-item v-for="file in substanceDetail.substanceFiles" :key="file.id">
+                  <a
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    :href="`${CONTENT_SERVER_URL}/${file.fileName}`"
+                    >{{ file.fileName }}</a
+                  ><v-icon x-small class="ml-1">mdi-open-in-new</v-icon>
+                </v-list-item>
+              </v-list>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
         </v-expansion-panels>
       </v-col>
     </v-row>
@@ -166,7 +183,8 @@ import SubstanceGradeDataService from "../services/SubstanceGradeDataService";
 import SubstanceCallDataService from "../services/SubstanceCallDataService";
 import SubstanceFlagDataService from "../services/SubstanceFlagDataService";
 import SubstanceAnnotationDataService from "../services/SubstanceAnnotationDataService";
-import { DASHBOARD_IMAGE_URL } from "@/main";
+import store from "../store";
+import { DASHBOARD_IMAGE_URL, CONTENT_SERVER_URL } from "@/store";
 
 export default {
   components: {
@@ -196,13 +214,22 @@ export default {
         missingImage: false,
         useTripodColors: false,
         showSpectrusFiles: false,
+        showUngradedExperiments: true,
+        next: null,
+        previous: null,
       },
+
+      store
     };
   },
 
   computed: {
     DASHBOARD_IMAGE_URL() {
       return DASHBOARD_IMAGE_URL;
+    },
+
+    CONTENT_SERVER_URL() {
+      return CONTENT_SERVER_URL;
     },
   },
 
@@ -268,6 +295,7 @@ export default {
       this.getSubstanceDetail(query, type)
         .then((response) => {
           this.substanceDetail = response.data;
+          this.setNavigation();
           this.setEditable(this.substanceDetail.substance.id);
         })
         .catch(() => {
@@ -392,17 +420,40 @@ export default {
 
       return Promise.resolve(savedAnnotation);
     },
+
+    setNavigation() {
+      if (this.store.listSelected()) {
+          this.state.next = this.store.next();
+          this.state.previous = this.store.previous();
+        } else {
+          this.state.next = this.substanceDetail.substance.id + 1;
+          this.state.previous = this.substanceDetail.substance.id - 1;
+        }
+    }
   },
 
   watch: {
     "$route.params"() {
       this.setSubstanceData(this.$route.params.query, this.$route.params.type);
     },
+
+    "state.showSpectrusFiles"() {
+      if (this.state.showSpectrusFiles) {
+        this.state.showUngradedExperiments = false;
+      }
+    },
+
+    "state.showUngradedExperiments"() {
+      if (this.state.showUngradedExperiments) {
+        this.state.showSpectrusFiles = false;
+      }
+    }
   },
 
   mounted() {
     this.setGradesAndCalls();
     this.setSubstanceData(this.$route.params.query, this.$route.params.type);
+    this.setNavigation();
   },
 };
 </script>

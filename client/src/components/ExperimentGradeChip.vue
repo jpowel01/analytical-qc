@@ -1,13 +1,7 @@
 <template>
   <v-tooltip top>
     <template v-slot:activator="{ on, attrs }">
-      <v-chip
-        :color="color"
-        text-color="white"
-        class="ma-1"
-        v-bind="attrs"
-        v-on="on"
-      >
+      <v-chip :color="color" outlined class="ma-1" v-bind="attrs" v-on="on">
         <strong>{{ grade.name }}</strong>
       </v-chip>
     </template>

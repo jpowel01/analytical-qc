@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,18 +23,22 @@ import org.springframework.web.server.ResponseStatusException;
 
 import gov.epa.analyticalqc.dto.ExperimentDetail;
 import gov.epa.analyticalqc.dto.ExperimentDto;
+import gov.epa.analyticalqc.dto.ListDetail;
 import gov.epa.analyticalqc.dto.PropertyPredictionDto;
 import gov.epa.analyticalqc.dto.SampleDetail;
 import gov.epa.analyticalqc.dto.SampleDto;
 import gov.epa.analyticalqc.dto.SubstanceDetail;
+import gov.epa.analyticalqc.entity.File;
 import gov.epa.analyticalqc.entity.Grade;
 import gov.epa.analyticalqc.entity.Sample;
 import gov.epa.analyticalqc.entity.Substance;
+import gov.epa.analyticalqc.entity.SubstanceFile;
 import gov.epa.analyticalqc.repository.ExperimentGradeRepository;
 import gov.epa.analyticalqc.repository.ExperimentRepository;
 import gov.epa.analyticalqc.repository.PropertyPredictionRepository;
 import gov.epa.analyticalqc.repository.SampleRepository;
 import gov.epa.analyticalqc.repository.SubstanceCallRepository;
+import gov.epa.analyticalqc.repository.SubstanceFileRepository;
 import gov.epa.analyticalqc.repository.SubstanceFlagRepository;
 import gov.epa.analyticalqc.repository.SubstanceGradeRepository;
 import gov.epa.analyticalqc.repository.SubstanceRepository;
@@ -49,6 +55,7 @@ public class SubstanceController {
     @Autowired ExperimentGradeRepository experimentGradeRepository;
     @Autowired SubstanceGradeRepository substanceGradeRepository;
     @Autowired SubstanceCallRepository substanceCallRepository;
+    @Autowired SubstanceFileRepository substanceFileRepository;
 
     @GetMapping()
     public ResponseEntity<Page<Substance>> getAllSubstances(@RequestParam(name="search", required=false) String search,
@@ -60,6 +67,14 @@ public class SubstanceController {
         } else {
             return new ResponseEntity<>(substanceRepository.findAll(pageable), HttpStatus.OK);
         }
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<Page<Substance>> getAllSubstances(@RequestParam(name="ids") List<Integer> ids,
+        @RequestParam(name="pageNo", defaultValue="0") Integer pageNo, 
+        @RequestParam(name="pageSize", defaultValue="100") Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("id").ascending());
+        return new ResponseEntity<>(substanceRepository.findByIdIn(ids, pageable), HttpStatus.OK);
     }
 
     @GetMapping({"/{id}", "/id/{id}"})
@@ -139,6 +154,8 @@ public class SubstanceController {
             sampleDetails.add(new SampleDetail(sample, experimentDetails));
         }
 
-        return new SubstanceDetail(substance, propertyPrediction, sampleDetails);
+        List<File> substanceFiles = substanceFileRepository.findBySubstanceId(id).stream().map(sf -> sf.getFile()).collect(Collectors.toList());
+
+        return new SubstanceDetail(substance, propertyPrediction, sampleDetails, substanceFiles);
     }
 }

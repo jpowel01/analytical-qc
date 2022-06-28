@@ -1,8 +1,5 @@
 package gov.epa.analyticalqc.entity;
 
-import java.util.Date;
-
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,17 +12,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name="files")
+@Table(name="lists")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
-public class File {
+public class List {
     
     @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name="file_name")
-    private String fileName;
+    private String name;
 
-    @Column(name="file_date")
-    private Date fileDate;
-    
+    private String description;
+
 }

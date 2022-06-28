@@ -51,7 +51,7 @@
                 v-model="edited.mappedGradeT0.validated"
                 :disabled="!edited.mappedGradeT0.grade.name"
                 :label="
-                  edited.mappedGradeT0.validated ? 'Validated' : 'Automatic'
+                  edited.mappedGradeT0.validated ? 'Validated' : 'Provisional'
                 "
               />
             </v-col>
@@ -91,7 +91,7 @@
                 v-model="edited.mappedGradeT4.validated"
                 :disabled="!edited.mappedGradeT4.grade.name"
                 :label="
-                  edited.mappedGradeT4.validated ? 'Validated' : 'Automatic'
+                  edited.mappedGradeT4.validated ? 'Validated' : 'Provisional'
                 "
               />
             </v-col>
@@ -130,7 +130,9 @@
               <v-switch
                 v-model="edited.mappedCall.validated"
                 :disabled="!edited.mappedCall.call.name"
-                :label="edited.mappedCall.validated ? 'Validated' : 'Automatic'"
+                :label="
+                  edited.mappedCall.validated ? 'Validated' : 'Provisional'
+                "
               />
             </v-col>
           </v-row>

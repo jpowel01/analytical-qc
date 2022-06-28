@@ -44,6 +44,8 @@
 </template>
 
 <script>
+import ListDataService from "./services/ListDataService";
+
 export default {
   name: "App",
 
@@ -60,6 +62,11 @@ export default {
         type: "dtxsid",
         query: "",
       },
+
+      list: {
+        items: [],
+        selected: {},
+      },
     };
   },
 
@@ -68,6 +75,13 @@ export default {
       this.$router.push(`/substances/${this.search.type}/${this.search.query}`);
       this.search.query = "";
     },
+  },
+
+  mounted() {
+    ListDataService.getAll()
+      .then((response) => {
+        this.list.items = response.data;
+      })
   },
 };
 </script>

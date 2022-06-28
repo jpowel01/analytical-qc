@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import { DASHBOARD_DETAILS_URL, PUBCHEM_CID_URL } from "@/main";
+import { DASHBOARD_DETAILS_URL, PUBCHEM_CID_URL } from "@/store";
 
 export default {
   props: ["substance"],

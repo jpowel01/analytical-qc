@@ -1,57 +1,65 @@
 <template>
-<div align="center" style="white-space: nowrap">
-  <div class="d-inline-flex ma-0">
-    <v-dialog v-model="dialog" max-width="600">
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          class="ma-1 pa-2"
-          dark
-          color="secondary"
-          v-on="on"
-          v-bind="attrs"
-          icon
-        >
-          <v-icon>mdi-pencil</v-icon>
-        </v-btn>
-      </template>
-      <v-card>
-        <v-card-title>Edit</v-card-title>
-        <v-card-text>
-          <v-container>
-            <v-row>
-              <v-col>
-                <v-textarea
-                  label="Annotation"
-                  v-model="editedAnnotation.annotation"
-                  hide-details
-                />
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn class="ma-1" dark color="secondary" @click="dialog = false">
-            Cancel
+  <div style="white-space: nowrap">
+    <div class="d-inline-flex ma-0">
+      <v-dialog v-model="dialog" max-width="600">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            class="ma-1 pa-2"
+            dark
+            color="secondary"
+            v-on="on"
+            v-bind="attrs"
+            icon
+          >
+            <v-icon>mdi-pencil</v-icon>
           </v-btn>
-          <v-btn class="ma-1" dark color="primary" @click="save"> Save </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+        </template>
+        <v-card>
+          <v-card-title>Edit</v-card-title>
+          <v-card-text>
+            <v-container>
+              <v-row>
+                <v-col>
+                  <v-textarea
+                    label="Annotation"
+                    v-model="editedAnnotation.annotation"
+                    hide-details
+                  />
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn class="ma-1" dark color="secondary" @click="dialog = false">
+              Cancel
+            </v-btn>
+            <v-btn class="ma-1" dark color="primary" @click="save">
+              Save
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </div>
+    <div
+      class="d-inline-flex ma-0"
+      v-if="editableAnnotation && editableAnnotation.annotation"
+    >
+      <v-menu bottom offset-y open-on-hover>
+        <template v-slot:activator="{ on, attrs }">
+          <v-chip class="ma-1" color="primary" v-bind="attrs" v-on="on">
+            <v-icon small class="pa-0">mdi-text</v-icon>
+          </v-chip>
+        </template>
+        <v-card
+          max-width="600"
+          v-if="editableAnnotation && editableAnnotation.annotation"
+        >
+          <v-card-text>{{ editableAnnotation.annotation }}</v-card-text>
+        </v-card>
+      </v-menu>
+    </div>
   </div>
-  <div class="d-inline-flex ma-0" v-if="editableAnnotation && editableAnnotation.annotation">
-    <v-menu bottom offset-y open-on-hover>
-      <template v-slot:activator="{ on, attrs }">
-        <v-chip class="ma-1" color="primary" v-bind="attrs" v-on="on">
-          <v-icon small class="pa-0">mdi-text</v-icon>
-        </v-chip>
-      </template>
-      <v-card max-width="600" v-if="editableAnnotation && editableAnnotation.annotation">
-        <v-card-text>{{ editableAnnotation.annotation }}</v-card-text>
-      </v-card>
-    </v-menu>
-  </div>
-</div>
 </template>
 
 <script>
@@ -64,12 +72,12 @@ export default {
     return {
       dialog: false,
       editableAnnotation: {
-          annotation: "",
-        },
+        annotation: "",
+      },
       editedAnnotation: {
-          annotation: "",
-        },
-    }
+        annotation: "",
+      },
+    };
   },
 
   methods: {
@@ -89,7 +97,8 @@ export default {
       let savedAnnotation = editableAnnotation;
       if (!editableAnnotation && editedAnnotation.annotation) {
         editedAnnotation.experiment = this.experiment;
-        savedAnnotation = ExperimentAnnotationDataService.post(editedAnnotation);
+        savedAnnotation =
+          ExperimentAnnotationDataService.post(editedAnnotation);
       } else if (editableAnnotation && editedAnnotation.annotation) {
         savedAnnotation = ExperimentAnnotationDataService.put(
           editableAnnotation.id,
@@ -107,12 +116,12 @@ export default {
     setAnnotation() {
       this.editableAnnotation = null;
       ExperimentAnnotationDataService.getByExperimentId(this.experiment.id)
-        .then(resp => {
+        .then((resp) => {
           this.editableAnnotation = resp.data;
         })
-        .catch ((err) => {
+        .catch((err) => {
           console.log(err);
-        })
+        });
     },
 
     setDataFromProps() {
@@ -149,7 +158,7 @@ export default {
   created() {
     this.setAnnotation();
     this.setDataFromProps();
-  }
+  },
 };
 </script>
 

@@ -74,11 +74,12 @@
         disable-pagination
         hide-default-footer
         sort-by="experiment.timepoint"
+        :search="showSpectrusFiles ? '' : '.pdf'"
       >
         <template v-slot:item.experiment.id="{ item }">
           <ExperimentAnnotationChip :experiment="item.experiment" />
         </template>
-        
+
         <template v-slot:item.experiment.experimentDate="{ value }">
           {{ value | formatDate }}
         </template>
@@ -142,7 +143,7 @@ import SampleGradeDataService from "../services/SampleGradeDataService";
 import SampleCallDataService from "../services/SampleCallDataService";
 import SampleAnnotationDataService from "../services/SampleAnnotationDataService";
 import ExperimentAnnotationChip from "../components/ExperimentAnnotationChip";
-import { PUBCHEM_SID_URL, CONTENT_SERVER_URL } from "@/main";
+import { PUBCHEM_SID_URL, CONTENT_SERVER_URL } from "@/store";
 
 export default {
   props: [
@@ -150,6 +151,7 @@ export default {
     "experiments",
     "useTripodColors",
     "showSpectrusFiles",
+    "showUngradedExperiments",
     "grades",
     "calls",
   ],
@@ -159,7 +161,7 @@ export default {
     ExperimentGradeChip,
     EditableChip,
     AnnotationChip,
-    ExperimentAnnotationChip
+    ExperimentAnnotationChip,
   },
 
   computed: {
@@ -191,18 +193,8 @@ export default {
       }
       return null;
     },
-  },
 
-  data() {
-    return {
-      editable: {
-        mappedGradeT0: null,
-        mappedGradeT4: null,
-        mappedCall: null,
-        annotation: null,
-      },
-
-      experimentHeaders: [
+    experimentHeaders() { return [
         {
           text: "",
           value: "experiment.id",
@@ -227,11 +219,21 @@ export default {
         { text: "Timepoint", value: "experiment.timepoint", sortable: true },
         { text: "Batch", value: "experiment.batch", sortable: true },
         { text: "Well", value: "experiment.well", sortable: true },
-        { text: "Grade", value: "experiment.grade", sortable: true },
+        { text: "Grade", value: "experiment.grade", sortable: true, },
         { text: "Purity", value: "experiment.purity", sortable: true },
         { text: "Pass/Fail", value: "experiment.passFail", sortable: true },
         { text: "Comment", value: "experiment.comment", sortable: true },
-      ],
+      ]},
+  },
+
+  data() {
+    return {
+      editable: {
+        mappedGradeT0: null,
+        mappedGradeT4: null,
+        mappedCall: null,
+        annotation: null,
+      },
     };
   },
 

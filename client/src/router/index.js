@@ -11,7 +11,7 @@ const routes = [
     component: Home,
   },
   {
-    path: "/substances",
+    path: "/substances", 
     name: "substance-list",
     component: () => import("../views/SubstanceList.vue"),
   },

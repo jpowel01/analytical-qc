@@ -68,7 +68,7 @@ import {
   DASHBOARD_DETAILS_URL,
   DASHBOARD_IMAGE_URL,
   PUBCHEM_CID_URL,
-} from "@/main";
+} from "@/store";
 
 export default {
   data() {
@@ -138,11 +138,7 @@ export default {
           console.log(e);
           this.state.loading = false;
         });
-    },
-  },
-
-  mounted() {
-    this.retrieveSubstances();
+      }
   },
 };
 </script>
