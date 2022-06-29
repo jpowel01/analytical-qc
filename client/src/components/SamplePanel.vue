@@ -151,7 +151,6 @@ export default {
     "experiments",
     "useTripodColors",
     "showSpectrusFiles",
-    "showUngradedExperiments",
     "grades",
     "calls",
   ],

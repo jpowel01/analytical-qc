@@ -1,38 +1,49 @@
 <template>
   <v-app>
+    <v-navigation-drawer app v-model="state.drawer" dark color="secondary">
+      <v-card light class="ma-2">
+        <v-card-title class="pb-0">Go to record</v-card-title>
+        <v-card-text>
+          <v-select
+              v-model="search.type"
+              :items="search.items"
+              hide-details
+            />
+            <v-text-field
+              v-model="search.query"
+              append-icon="mdi-arrow-right"
+              hide-details
+              label="Go"
+              @keyup.enter="go"
+              @click:append="go"
+            />
+        </v-card-text>
+      </v-card>
+      <v-card light class="ma-2">
+        <v-card-title class="pb-0">Go to list</v-card-title>
+        <v-card-text>
+          <v-select
+              v-model="list.id"
+              :items="list.items"
+              item-text="name"
+              item-value="id"
+              hide-details
+            />
+        </v-card-text>
+      </v-card>
+      <v-card light class="ma-2">
+        <v-card-text class="text-center"><v-btn to="/substances" color="primary"> All substances </v-btn></v-card-text>
+      </v-card>
+    </v-navigation-drawer>
+
     <v-app-bar app color="primary" dark>
+      <v-app-bar-nav-icon @click.stop="state.drawer = !state.drawer" />
       <v-row align="center">
-        <v-col class="d-inline-flex col-auto">
-          <v-icon>mdi-checkbox-multiple-marked</v-icon>
-        </v-col>
         <v-col class="d-inline-flex col-auto mr-auto">
           <div class="text-h6">Analytical QC</div>
         </v-col>
-        <v-col class="d-inline-flex col-2">
-          <v-select
-            v-model="search.type"
-            light
-            :items="search.items"
-            hide-details
-            solo
-            dense
-          />
-        </v-col>
-        <v-col class="d-inline-flex col-2">
-          <v-text-field
-            solo
-            v-model="search.query"
-            light
-            append-icon="mdi-arrow-right"
-            hide-details
-            label="Go"
-            dense
-            @keyup.enter="go"
-            @click:append="go"
-          />
-        </v-col>
         <v-col class="d-inline-flex col-auto">
-          <v-btn to="/substances" text> All </v-btn>
+          
         </v-col>
       </v-row>
     </v-app-bar>
@@ -67,6 +78,10 @@ export default {
         items: [],
         selected: {},
       },
+
+      state: {
+        drawer: null,
+      }
     };
   },
 
@@ -75,6 +90,14 @@ export default {
       this.$router.push(`/substances/${this.search.type}/${this.search.query}`);
       this.search.query = "";
     },
+  },
+
+  watch: {
+    "list.id"() {
+      if (this.list.id) {
+        this.$router.push(`/substances/list/${this.list.id}`);
+      }
+    }
   },
 
   mounted() {

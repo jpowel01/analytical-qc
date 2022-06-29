@@ -12,6 +12,11 @@ const routes = [
   },
   {
     path: "/substances", 
+    name: "substances",
+    component: () => import("../views/SubstanceList.vue"),
+  },
+  {
+    path: "/substances/list/:id", 
     name: "substance-list",
     component: () => import("../views/SubstanceList.vue"),
   },

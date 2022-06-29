@@ -138,7 +138,6 @@
             :experiments="sampleDetail.experiments"
             :use-tripod-colors="state.useTripodColors"
             :show-spectrus-files="state.showSpectrusFiles"
-            :show-ungraded-experiments="state.showUngradedExperiments"
             :grades="grades"
             :calls="calls"
           />
@@ -183,7 +182,6 @@ import SubstanceGradeDataService from "../services/SubstanceGradeDataService";
 import SubstanceCallDataService from "../services/SubstanceCallDataService";
 import SubstanceFlagDataService from "../services/SubstanceFlagDataService";
 import SubstanceAnnotationDataService from "../services/SubstanceAnnotationDataService";
-import store from "../store";
 import { DASHBOARD_IMAGE_URL, CONTENT_SERVER_URL } from "@/store";
 
 export default {
@@ -214,12 +212,9 @@ export default {
         missingImage: false,
         useTripodColors: false,
         showSpectrusFiles: false,
-        showUngradedExperiments: true,
         next: null,
         previous: null,
       },
-
-      store
     };
   },
 
@@ -422,13 +417,8 @@ export default {
     },
 
     setNavigation() {
-      if (this.store.listSelected()) {
-          this.state.next = this.store.next();
-          this.state.previous = this.store.previous();
-        } else {
-          this.state.next = this.substanceDetail.substance.id + 1;
-          this.state.previous = this.substanceDetail.substance.id - 1;
-        }
+      this.state.next = this.substanceDetail.substance.id + 1;
+      this.state.previous = this.substanceDetail.substance.id - 1;
     }
   },
 
@@ -436,18 +426,6 @@ export default {
     "$route.params"() {
       this.setSubstanceData(this.$route.params.query, this.$route.params.type);
     },
-
-    "state.showSpectrusFiles"() {
-      if (this.state.showSpectrusFiles) {
-        this.state.showUngradedExperiments = false;
-      }
-    },
-
-    "state.showUngradedExperiments"() {
-      if (this.state.showUngradedExperiments) {
-        this.state.showSpectrusFiles = false;
-      }
-    }
   },
 
   mounted() {

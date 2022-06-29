@@ -64,6 +64,7 @@
 
 <script>
 import SubstanceDataService from "../services/SubstanceDataService";
+import ListDataService from "../services/ListDataService"
 import {
   DASHBOARD_DETAILS_URL,
   DASHBOARD_IMAGE_URL,
@@ -106,6 +107,12 @@ export default {
       this.state.options.page = 1;
       this.setSubstances();
     },
+    "$route.params": {
+      handler() {
+        this.setSubstances();
+      },
+      deep: true,
+    },
   },
 
   computed: {
@@ -123,22 +130,44 @@ export default {
   methods: {
     setSubstances() {
       this.state.loading = true;
-      SubstanceDataService.searchPaged(
-        this.state.search,
-        this.state.options.page - 1,
-        this.state.options.itemsPerPage
-      )
-        .then((response) => {
-          this.substances = response.data.content;
-          this.totalSubstances = response.data.totalElements;
-          console.log(response.data);
-          this.state.loading = false;
-        })
-        .catch((e) => {
-          console.log(e);
-          this.state.loading = false;
-        });
-      }
+      if (!this.$route.params.id) {
+        SubstanceDataService.searchPaged(
+          this.state.search,
+          this.state.options.page - 1,
+          this.state.options.itemsPerPage
+        )
+          .then((response) => {
+            this.substances = response.data.content;
+            this.totalSubstances = response.data.totalElements;
+            console.log(response.data);
+            this.state.loading = false;
+          })
+          .catch((e) => {
+            console.log(e);
+            this.state.loading = false;
+          });
+        } else {
+          ListDataService.getDetail(this.$route.params.id)
+            .then((response) => {
+              const substanceIds = response.data.substanceIds;
+              SubstanceDataService.listPaged(
+                substanceIds,
+                this.state.options.page - 1,
+                this.state.options.itemsPerPage
+              )
+                .then((response) => {
+                  this.substances = response.data.content;
+                  this.totalSubstances = response.data.totalElements;
+                  console.log(response.data);
+                  this.state.loading = false;
+                })
+                .catch((e) => {
+                  console.log(e);
+                  this.state.loading = false;
+                });
+            })
+        }
+    }
   },
 };
 </script>
