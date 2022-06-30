@@ -2,7 +2,6 @@ package gov.epa.analyticalqc.dto;
 
 import java.util.List;
 
-import gov.epa.analyticalqc.entity.File;
 import gov.epa.analyticalqc.entity.Substance;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,6 +17,6 @@ public class SubstanceDetail {
 
     private List<SampleDetail> sampleDetails;
 
-    private List<File> substanceFiles;
+    private List<SubstanceFileDto> substanceFiles;
 
 }

@@ -28,6 +28,7 @@ import gov.epa.analyticalqc.dto.PropertyPredictionDto;
 import gov.epa.analyticalqc.dto.SampleDetail;
 import gov.epa.analyticalqc.dto.SampleDto;
 import gov.epa.analyticalqc.dto.SubstanceDetail;
+import gov.epa.analyticalqc.dto.SubstanceFileDto;
 import gov.epa.analyticalqc.dto.SubstanceListRequest;
 import gov.epa.analyticalqc.entity.File;
 import gov.epa.analyticalqc.entity.Grade;
@@ -153,7 +154,7 @@ public class SubstanceController {
             sampleDetails.add(new SampleDetail(sample, experimentDetails));
         }
 
-        List<File> substanceFiles = substanceFileRepository.findBySubstanceId(id).stream().map(sf -> sf.getFile()).collect(Collectors.toList());
+        List<SubstanceFileDto> substanceFiles = substanceFileRepository.findDtoBySubstanceId(id);
 
         return new SubstanceDetail(substance, propertyPrediction, sampleDetails, substanceFiles);
     }

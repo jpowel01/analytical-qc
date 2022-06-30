@@ -158,6 +158,7 @@
                     :href="`${CONTENT_SERVER_URL}/${file.fileName}`"
                     >{{ file.fileName }}</a
                   ><v-icon x-small class="ml-1">mdi-open-in-new</v-icon>
+                  &nbsp;({{ file.note }})
                 </v-list-item>
               </v-list>
             </v-expansion-panel-content>
