@@ -28,5 +28,7 @@ public class SubstanceFile {
     @ManyToOne
 	@JoinColumn(name="file_id")
 	private File file;
+
+    private String note;
     
 }
