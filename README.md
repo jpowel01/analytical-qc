@@ -13,15 +13,15 @@ The database contains substance, sample, experiment, and file information along 
 
 ### Static content (content-server)
 
-Static files are served from a directory by an nginx server. The directory containing all files is currently located at L:/Lab/NCCT_Richard/Antony Williams/analytical-qc_GFBS_010722/analytical-qc_content-server_static.tar.gz. The contents of this file (~10 GB) should be extracted into the content-server/static directory of this project for deployment.
+Static files are served from a directory by an nginx server, by default on port 82. The directory containing all files is currently located at L:/Lab/NCCT_Richard/Antony Williams/analytical-qc_GFBS_010722/analytical-qc_content-server_static.tar.gz. The contents of this file (~10 GB) should be extracted into the content-server/static directory of this project for deployment.
 
 ### Backend (server)
 
-A database API served by a Spring Boot web service.
+A database API served by a Spring Boot web service, by default on port 9091.
 
 ### Frontend (client)
 
-A frontend interface in Vue.js, running on an nginx server.
+A frontend interface in Vue.js, running on an nginx server, by default on port 81.
 
 ## Deployment
 
