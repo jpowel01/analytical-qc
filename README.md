@@ -7,13 +7,21 @@ The Analytical QC application consists of four components:
 - Backend
 - Frontend
 
-**Database**: The database contains substance, sample, experiment, and file information along with structured and freeform annotations. It is currently located at ccte-postgres-res.dmap-prod.aws.epa.gov, under database res_gsincl01_qsar and schema sbox_analytical_qc. DDL and CSV table exports are located in the db directory of this project.
+### Database
 
-**Static content (content-server)**: Static files are served from a directory by an nginx server. The directory containing all files is currently located at L:/Lab/NCCT_Richard/Antony Williams/analytical-qc_GFBS_010722/analytical-qc_content-server_static.tar.gz. The contents of this file (~10 GB) should be extracted into the content-server/static directory of this project for deployment.
+The database contains substance, sample, experiment, and file information along with structured and freeform annotations. It is currently located at ccte-postgres-res.dmap-prod.aws.epa.gov, under database res_gsincl01_qsar and schema sbox_analytical_qc. DDL and CSV table exports are located in the db directory of this project.
 
-**Backend (server)**: A database API served by a Spring Boot web service.
+### Static content (content-server)
 
-**Frontend (client)**: A frontend interface in Vue.js, running on an nginx server.
+Static files are served from a directory by an nginx server. The directory containing all files is currently located at L:/Lab/NCCT_Richard/Antony Williams/analytical-qc_GFBS_010722/analytical-qc_content-server_static.tar.gz. The contents of this file (~10 GB) should be extracted into the content-server/static directory of this project for deployment.
+
+### Backend (server)
+
+A database API served by a Spring Boot web service.
+
+### Frontend (client)
+
+A frontend interface in Vue.js, running on an nginx server.
 
 ## Deployment
 
@@ -36,3 +44,9 @@ This application is set up to deploy in Docker using docker-compose. It has been
 
 - VUE_APP_SERVER_URL: URL of server deployment
 - VUE_APP_CONTENT_SERVER_URL: URL of content-server deployment
+
+## Important
+
+### Adding files
+
+The web app interface contains a panel to link files to substances. Files added this way **must be manually added to the static content** in order to display; otherwise you will see broken links. Files can be added before or after linking in the interface. To add files, copy them into the content-server/static directory, then run `docker-compose up -d --build --force-recreate --no-deps content-server` to recreate without affecting the server and client services.
