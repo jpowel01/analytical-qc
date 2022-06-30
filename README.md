@@ -49,4 +49,6 @@ This application is set up to deploy in Docker using docker-compose. It has been
 
 ### Adding files
 
-The web app interface contains a panel to link files to substances. Files added this way **must be manually added to the static content** in order to display; otherwise you will see broken links. Files can be added before or after linking in the interface. To add files, copy them into the content-server/static directory, then run `docker-compose up -d --build --force-recreate --no-deps content-server` to recreate without affecting the server and client services.
+The web app interface contains a panel to link files to substances. Files added this way **must be manually added to the static content** in order to display; otherwise you will see broken links. Files can be added before or after linking in the interface. To add files, copy them into the content-server/static directory of the deployment location, then run `docker-compose up -d --build --force-recreate --no-deps content-server` to recreate without affecting the server and client services.
+
+https://linuxize.com/post/how-to-use-scp-command-to-securely-transfer-files/
