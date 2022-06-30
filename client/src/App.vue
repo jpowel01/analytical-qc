@@ -24,7 +24,7 @@
         <v-card-text>
           <v-select
               v-model="list.id"
-              :items="list.items"
+              :items="visibleLists"
               item-text="name"
               item-value="id"
               hide-details
@@ -116,6 +116,12 @@ export default {
         drawer: null,
       }
     };
+  },
+
+  computed: {
+    visibleLists() {
+      return this.list.items.filter((ele) => !ele.hidden);
+    }
   },
 
   methods: {

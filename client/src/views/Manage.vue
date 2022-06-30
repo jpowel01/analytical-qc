@@ -66,7 +66,7 @@
                 />
               </div>
               <v-row class="mt-2">
-                <v-col>
+                <v-col class="d-inline-flex col-auto">
                   <v-btn class="my-2" color="primary" @click="submitList" :disabled="!rules.valid || state.loading">
                     {{ listButton }}
                     <v-progress-circular
@@ -75,6 +75,11 @@
                       class="ml-1"
                       size="20"
                     />
+                  </v-btn>
+                </v-col>
+                <v-col class="d-inline-flex col-auto">
+                  <v-btn class="my-2" color="secondary" @click="hideList" :disabled="state.loading" v-if="state.lists.includes(listInput.name)">
+                    Hide
                   </v-btn>
                 </v-col>
               </v-row>
@@ -212,6 +217,20 @@ export default {
         .then(() => {
           this.state.loading = false;
           this.state.lists.push(this.listInput.name);
+          this.$emit("update");
+        })
+        .catch(() => {
+          this.state.loading = false;
+          this.state.message = "Error creating list";
+        })
+    },
+
+    hideList() {
+      this.state.message = "";
+      this.state.loading = true;
+      ListDataService.delete(this.listInput.name)
+        .then(() => {
+          this.state.loading = false;
           this.$emit("update");
         })
         .catch(() => {

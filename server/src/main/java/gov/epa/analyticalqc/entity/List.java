@@ -23,4 +23,6 @@ public class List {
 
     private String description;
 
+    private Boolean hidden;
+
 }

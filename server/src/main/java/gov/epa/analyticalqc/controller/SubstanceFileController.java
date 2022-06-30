@@ -53,7 +53,7 @@ public class SubstanceFileController {
         gov.epa.analyticalqc.entity.List list = listRepository.findByName(name).orElse(null);
         if (list == null && name != null && !name.isBlank()) {
             String description = request.getDescription();
-            list = listRepository.save(new gov.epa.analyticalqc.entity.List(null, name, description));
+            list = listRepository.save(new gov.epa.analyticalqc.entity.List(null, name, description, true));
         }
 
         CSVReader reader = new CSVReaderBuilder(new StringReader(request.getFiles())).withCSVParser(parser).build();
