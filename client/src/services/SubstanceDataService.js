@@ -6,8 +6,10 @@ class SubstanceDataService {
   }
 
   listPaged(list, no, size) {
-    return http.get(`substances/list`, {
-      params: { ids: list.join(','), pageNo: no, pageSize: size },
+    return http.post(`substances/list`, {
+      ids: list, 
+      pageNo: no, 
+      pageSize: size
     });
   }
 

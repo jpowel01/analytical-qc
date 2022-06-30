@@ -16,10 +16,16 @@ const routes = [
     component: () => import("../views/SubstanceList.vue"),
   },
   {
-    path: "/substances/list/:id", 
+    path: "/manage", 
+    name: "manage",
+    component: () => import("../views/Manage.vue"),
+  },
+  {
+    path: "/substances/lists/:id", 
     name: "substance-list",
     component: () => import("../views/SubstanceList.vue"),
   },
+  
   {
     path: "/substances/:type/:query",
     name: "substance",

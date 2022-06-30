@@ -28,6 +28,7 @@ import gov.epa.analyticalqc.dto.PropertyPredictionDto;
 import gov.epa.analyticalqc.dto.SampleDetail;
 import gov.epa.analyticalqc.dto.SampleDto;
 import gov.epa.analyticalqc.dto.SubstanceDetail;
+import gov.epa.analyticalqc.dto.SubstanceListRequest;
 import gov.epa.analyticalqc.entity.File;
 import gov.epa.analyticalqc.entity.Grade;
 import gov.epa.analyticalqc.entity.Sample;
@@ -69,12 +70,10 @@ public class SubstanceController {
         }
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<Page<Substance>> getAllSubstances(@RequestParam(name="ids") List<Integer> ids,
-        @RequestParam(name="pageNo", defaultValue="0") Integer pageNo, 
-        @RequestParam(name="pageSize", defaultValue="100") Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("id").ascending());
-        return new ResponseEntity<>(substanceRepository.findByIdIn(ids, pageable), HttpStatus.OK);
+    @PostMapping("/list")
+    public ResponseEntity<Page<Substance>> getListSubstances(@RequestBody SubstanceListRequest request) {
+        Pageable pageable = PageRequest.of(request.getPageNo(), request.getPageSize(), Sort.by("id").ascending());
+        return new ResponseEntity<>(substanceRepository.findByIdIn(request.getIds(), pageable), HttpStatus.OK);
     }
 
     @GetMapping({"/{id}", "/id/{id}"})

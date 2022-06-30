@@ -8,6 +8,14 @@ class ListDataService {
   getDetail(id) {
     return http.get(`lists/${id}/detail`);
   }
+
+  post(request) {
+    return http.post(`lists`, request);
+  }
+
+  delete(name) {
+    return http.delete(`lists/name/${name}`)
+  }
 }
 
 export default new ListDataService();

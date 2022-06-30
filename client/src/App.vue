@@ -28,28 +28,61 @@
               item-text="name"
               item-value="id"
               hide-details
-            />
+            >
+            <template v-slot:item="{ item }">
+              <template>
+                <v-list-item-content>
+                  <v-list-item-title>{{ item.name }}</v-list-item-title>
+                  <v-list-item-subtitle>{{
+                    item.description
+                  }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </template>
+            </template>
+          </v-select>
         </v-card-text>
       </v-card>
       <v-card light class="ma-2">
-        <v-card-text class="text-center"><v-btn to="/substances" color="primary"> All substances </v-btn></v-card-text>
+        <v-card-title>
+          <v-row>
+            <v-col class="mr-auto col-auto">
+              View all
+            </v-col>
+            <v-col class="col-auto">
+              <v-btn icon to="/substances" color="primary">
+                <v-icon>
+                  mdi-arrow-right
+                </v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-card-title>
+      </v-card>
+      <v-card light class="ma-2">
+        <v-card-title>
+          <v-row>
+            <v-col class="mr-auto col-auto">
+              Manage
+            </v-col>
+            <v-col class="col-auto">
+              <v-btn icon to="/manage" color="primary">
+                <v-icon>
+                  mdi-arrow-right
+                </v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-card-title>
       </v-card>
     </v-navigation-drawer>
 
     <v-app-bar app color="primary" dark>
       <v-app-bar-nav-icon @click.stop="state.drawer = !state.drawer" />
-      <v-row align="center">
-        <v-col class="d-inline-flex col-auto mr-auto">
-          <div class="text-h6">Analytical QC</div>
-        </v-col>
-        <v-col class="d-inline-flex col-auto">
-          
-        </v-col>
-      </v-row>
+      <v-toolbar-title>Analytical QC</v-toolbar-title>
     </v-app-bar>
 
     <v-main>
-      <router-view />
+      <router-view @update="fetchLists" />
     </v-main>
   </v-app>
 </template>
@@ -90,21 +123,25 @@ export default {
       this.$router.push(`/substances/${this.search.type}/${this.search.query}`);
       this.search.query = "";
     },
+
+    fetchLists() {
+      ListDataService.getAll()
+      .then((response) => {
+        this.list.items = response.data;
+      })
+    }
   },
 
   watch: {
     "list.id"() {
       if (this.list.id) {
-        this.$router.push(`/substances/list/${this.list.id}`);
+        this.$router.push(`/substances/lists/${this.list.id}`);
       }
     }
   },
 
   mounted() {
-    ListDataService.getAll()
-      .then((response) => {
-        this.list.items = response.data;
-      })
+    this.fetchLists();
   },
 };
 </script>

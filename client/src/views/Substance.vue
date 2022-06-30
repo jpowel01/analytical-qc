@@ -121,7 +121,7 @@
           <v-switch
             v-model="state.showSpectrusFiles"
             :label="
-              (state.showSpectrusFiles ? 'Show' : 'Hide') + ' Spectrus files'
+              (state.showSpectrusFiles ? 'Showing' : 'Hiding') + ' Spectrus files'
             "
             hide-details
           />

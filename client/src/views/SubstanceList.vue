@@ -1,16 +1,17 @@
 <template>
   <v-container fluid>
     <v-row class="ma-2">
-      <div class="text-h4">Substances</div>
+      <div class="text-h4">{{ state.title }}</div>
       <v-spacer />
       <v-text-field
+        v-if="!$route.params.id"
         label="Search"
         append-icon="mdi-magnify"
         v-model="state.search"
         solo
         clearable
         hide-details
-      ></v-text-field>
+      />
     </v-row>
     <v-row>
       <v-col>
@@ -49,12 +50,14 @@
             ><v-icon x-small class="ml-1">mdi-open-in-new</v-icon>
           </template>
           <template v-slot:item.pubchemCid="{ value }">
-            <a
-              target="_blank"
-              rel="noreferrer noopener"
-              :href="`${PUBCHEM_CID_URL}/${value}`"
-              >{{ value }}</a
-            ><v-icon x-small class="ml-1">mdi-open-in-new</v-icon>
+            <div v-if="value">
+                <a
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  :href="`${PUBCHEM_CID_URL}/${value}`"
+                  >{{ value }}</a
+                ><v-icon x-small class="ml-1">mdi-open-in-new</v-icon>
+              </div>
           </template>
         </v-data-table>
       </v-col>
@@ -92,6 +95,7 @@ export default {
         loading: false,
         options: {},
         search: "",
+        title: "Substances",
       },
     };
   },
@@ -109,6 +113,7 @@ export default {
     },
     "$route.params": {
       handler() {
+        this.state.options.page = 1;
         this.setSubstances();
       },
       deep: true,
@@ -131,6 +136,7 @@ export default {
     setSubstances() {
       this.state.loading = true;
       if (!this.$route.params.id) {
+        this.state.title = "Substances";
         SubstanceDataService.searchPaged(
           this.state.search,
           this.state.options.page - 1,
@@ -150,6 +156,7 @@ export default {
           ListDataService.getDetail(this.$route.params.id)
             .then((response) => {
               const substanceIds = response.data.substanceIds;
+              this.state.title = response.data.list.name;
               SubstanceDataService.listPaged(
                 substanceIds,
                 this.state.options.page - 1,

@@ -8,4 +8,6 @@ public interface ListRepository extends JpaRepository<gov.epa.analyticalqc.entit
 
     Optional<gov.epa.analyticalqc.entity.List> findByName(String listName);
 
+    Long deleteByName(String name);
+
 }

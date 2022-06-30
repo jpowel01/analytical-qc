@@ -12,4 +12,6 @@ public interface ListSubstanceRepository extends JpaRepository<ListSubstance, In
     @Query("select ls.substance.id from ListSubstance ls where ls.list.id = :listId order by ls.substance.id asc")
     List<Integer> findSubstanceIdsByListId(Integer listId);
 
+    Long deleteByListName(String name);
+
 }
