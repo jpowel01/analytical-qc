@@ -21,6 +21,7 @@ services:
       - DB_DIALECT
       - DB_DRIVER
       - CLIENT_URL
+      - DASHBOARD_API_URL
     ports:
       - 9091:9090 
 
