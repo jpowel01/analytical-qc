@@ -96,11 +96,10 @@
       <v-col cols="5" class="d-flex flex-column">
         <PropertyPredictionTable
           class="flex d-flex flex-column"
-          v-if="detail.propertyPrediction || detail.amenabilityPrediction"
           :property-prediction="detail.propertyPrediction"
           :amenability-prediction="detail.amenabilityPrediction"
+          @changed="saveAmenabilityPrediction"
         />
-        <v-alert type="error" v-else>Substance predictions unavailable</v-alert>
       </v-col>
     </v-row>
 
@@ -179,6 +178,7 @@ import PropertyPredictionTable from "../components/PropertyPredictionTable";
 import SamplePanel from "../components/SamplePanel";
 import SubstanceStructureFlagDataService from "../services/SubstanceStructureFlagDataService";
 import SubstanceAnnotationDataService from "../services/SubstanceAnnotationDataService";
+import AmenabilityPredictionDataService from "../services/AmenabilityPredictionDataService";
 import { DASHBOARD_IMAGE_URL, CONTENT_SERVER_URL } from "@/store";
 
 export default {
@@ -300,6 +300,26 @@ export default {
         .catch((err) => {
           console.log(err);
         });
+    },
+
+    saveAmenabilityPrediction(newAmenabilityPrediction) {
+      this.saveNewAmenabilityPrediction(newAmenabilityPrediction)
+        .then(() => { this.setSubstanceData(this.$route.params.query, this.$route.params.type) })
+    },
+
+    saveNewAmenabilityPrediction(newAmenabilityPrediction) {
+      let savedAmenabilityPrediction = this.detail.substance.amenabilityPrediction;
+      if (!this.detail.substance.amenabilityPrediction && newAmenabilityPrediction.nmrAmenFlag) {
+        newAmenabilityPrediction.substance = this.detail.substance;
+        savedAmenabilityPrediction = AmenabilityPredictionDataService.post(newAmenabilityPrediction);
+      } else if (newAmenabilityPrediction.nmrAmenFlag) {
+        savedAmenabilityPrediction = AmenabilityPredictionDataService.put(
+          this.detail.substance.amenabilityPrediction.id,
+          newAmenabilityPrediction
+        );
+      }
+
+      return Promise.resolve(savedAmenabilityPrediction);
     },
 
     saveEdited(edited) {
