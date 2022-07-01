@@ -22,6 +22,9 @@ public interface SampleRepository extends JpaRepository<Sample, Integer> {
 
     List<Sample> findBySubstanceId(Integer substanceId);
 
+    @Query("SELECT distinct s.substance.id from Sample s")
+    List<Integer> findAllSubstanceIds();
+
     @Query("SELECT new gov.epa.analyticalqc.dto.SampleDto(s.id, s.ncgcId, s.tox21Id, s.pubchemSid, s.bottleBarcode, s.withdrawn) from Sample s where s.substance.id = :substanceId")
     List<SampleDto> findDtoBySubstanceId(@Param("substanceId") Integer substanceId);
 

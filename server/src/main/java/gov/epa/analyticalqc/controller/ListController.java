@@ -25,6 +25,7 @@ import gov.epa.analyticalqc.entity.ListSubstance;
 import gov.epa.analyticalqc.entity.Substance;
 import gov.epa.analyticalqc.repository.ListRepository;
 import gov.epa.analyticalqc.repository.ListSubstanceRepository;
+import gov.epa.analyticalqc.repository.SampleRepository;
 import gov.epa.analyticalqc.repository.SubstanceAnnotationRepository;
 import gov.epa.analyticalqc.repository.SubstanceCallRepository;
 import gov.epa.analyticalqc.repository.SubstanceGradeRepository;
@@ -37,6 +38,7 @@ public class ListController {
     @Autowired ListRepository listRepository;
     @Autowired ListSubstanceRepository listSubstanceRepository;
     @Autowired SubstanceRepository substanceRepository;
+    @Autowired SampleRepository sampleRepository;
     @Autowired SubstanceGradeRepository substanceGradeRepository;
     @Autowired SubstanceCallRepository substanceCallRepository;
     @Autowired SubstanceAnnotationRepository substanceAnnotationRepository;
@@ -122,6 +124,9 @@ public class ListController {
                 textIds.addAll(substanceRepository.findUnannotatedIds());
             }
 
+            Set<Integer> sampleIds = new HashSet<Integer>(sampleRepository.findAllSubstanceIds());
+
+            t0Ids.retainAll(sampleIds);
             t0Ids.retainAll(t4Ids);
             t0Ids.retainAll(callIds);
             t0Ids.retainAll(textIds);
