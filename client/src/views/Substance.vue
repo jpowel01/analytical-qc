@@ -41,6 +41,7 @@
             :use-tripod-colors="state.useTripodColors"
           />
         </div>
+        </div>
         <div
           v-if="substanceStructureFlags"
           class="mx-1 d-inline-flex align-center"
@@ -51,7 +52,6 @@
             :substance-structure-flag="sf"
           />
         </div>
-      </div>
       <v-spacer />
       <EditDialog
         :grades="grades"

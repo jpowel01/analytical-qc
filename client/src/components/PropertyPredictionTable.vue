@@ -12,15 +12,15 @@
             <tbody>
               <tr>
                 <th scope="row">Melting Point (&deg;C)</th>
-                <td>{{ propertyPrediction.mp.toFixed(0) }}</td>
+                <td v-if="propertyPrediction.mp">{{ propertyPrediction.mp.toFixed(0) }}</td>
               </tr>
               <tr>
                 <th scope="row">Boiling Point (&deg;C)</th>
-                <td>{{ propertyPrediction.bp.toFixed(0) }}</td>
+                <td v-if="propertyPrediction.bp">{{ propertyPrediction.bp.toFixed(0) }}</td>
               </tr>
               <tr>
                 <th scope="row">Vapor Pressure (mmHg)</th>
-                <td v-if="propertyPrediction.vp < 0.1">
+                <td v-if="propertyPrediction.vp && propertyPrediction.vp < 0.1">
                   {{ propertyPrediction.vp.toExponential(2) }}
                 </td>
                 <td v-else>
@@ -31,7 +31,7 @@
                 <th scope="row">
                   Octanol-Water Partition Coefficient (logK<sub>ow</sub>)
                 </th>
-                <td>{{ propertyPrediction.logP.toPrecision(2) }}</td>
+                <td v-if="propertyPrediction.logP">{{ propertyPrediction.logP.toPrecision(2) }}</td>
               </tr>
             </tbody>
           </v-simple-table>
@@ -40,13 +40,13 @@
       </v-tab-item>
       <v-tab-item key="amenability">
         <v-card flat class="align-start">
-          <v-simple-table v-if="amenabilityPrediction">
+          <v-simple-table>
             <tbody>
               <tr>
                 <th scope="row">LCMS (ESI-)</th>
                 <td>
                   <AmenabilityChip
-                    v-if="amenabilityPrediction.lcmsAmenNeg"
+                    v-if="amenabilityPrediction && amenabilityPrediction.lcmsAmenNeg"
                     threshold="0.5"
                     :prob="amenabilityPrediction.lcmsAmenNeg"
                   />
@@ -56,7 +56,7 @@
                 <th scope="row">LCMS (ESI+)</th>
                 <td>
                   <AmenabilityChip
-                    v-if="amenabilityPrediction.lcmsAmenPos"
+                    v-if="amenabilityPrediction && amenabilityPrediction.lcmsAmenPos"
                     threshold="0.5"
                     :prob="amenabilityPrediction.lcmsAmenPos"
                   />
@@ -74,7 +74,6 @@
               </tr>
             </tbody>
           </v-simple-table>
-          <v-alert type="error" v-else>Amenability predictions unavailable</v-alert>
         </v-card>
       </v-tab-item>
     </v-tabs-items>

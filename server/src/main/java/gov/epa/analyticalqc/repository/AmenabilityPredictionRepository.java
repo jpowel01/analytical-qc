@@ -15,7 +15,7 @@ public interface AmenabilityPredictionRepository extends JpaRepository<Amenabili
 
     Optional<AmenabilityPrediction> findBySubstanceId(Integer substanceId);
 
-    @Query("SELECT new gov.epa.analyticalqc.dto.AmenabilityPredictionDto(ap.lcmsAmenNeg, ap.lcmsAmenPos) from AmenabilityPrediction ap where ap.substance.id = :substanceId")
+    @Query("SELECT new gov.epa.analyticalqc.dto.AmenabilityPredictionDto(ap.lcmsAmenNeg, ap.lcmsAmenPos, ap.lcmsAmenNegTrue, ap.lcmsAmenPosTrue, ap.nmrAmenFlag) from AmenabilityPrediction ap where ap.substance.id = :substanceId")
     Optional<AmenabilityPredictionDto> findDtoBySubstanceId(@Param("substanceId") Integer substanceId);
 
 }

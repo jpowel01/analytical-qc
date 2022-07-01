@@ -36,5 +36,11 @@ public class AmenabilityPrediction {
     @ManyToOne
 	@JoinColumn(name="nmr_amen_flag_id")
     private NmrAmenFlag nmrAmenFlag;
+
+    @Column(name="lcms_amen_neg_true")
+    private Boolean lcmsAmenNegTrue;
+
+    @Column(name="lcms_amen_pos_true")
+    private Boolean lcmsAmenPosTrue;
     
 }
