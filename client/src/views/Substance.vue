@@ -64,8 +64,10 @@
       <EditDialog
         :grades="grades"
         :calls="calls"
+        :flags="flags"
         :editable="editable"
         @edited="save"
+        show-flags="true"
       />
       <v-btn
         class="ma-1"
@@ -172,6 +174,7 @@
 <script>
 import GradeDataService from "../services/GradeDataService";
 import CallDataService from "../services/CallDataService";
+import FlagDataService from "../services/FlagDataService";
 import SubstanceDataService from "../services/SubstanceDataService";
 import EditableChip from "../components/EditableChip";
 import AnnotationChip from "../components/AnnotationChip";
@@ -208,6 +211,7 @@ export default {
 
       grades: [],
       calls: [],
+      flags: [],
 
       state: {
         missingImage: false,
@@ -321,6 +325,13 @@ export default {
         .catch((err) => {
           console.log(err);
         });
+      FlagDataService.getAll()
+        .then((response) => {
+          this.flags = response.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
 
     save(edited) {
@@ -347,7 +358,11 @@ export default {
         this.editable.annotation,
         edited.annotation
       );
-      return Promise.all([p0, p1, p2, p3]);
+      const p4 = this.saveFlags(
+        this.editable.substanceFlags,
+        edited.substanceFlags
+      );
+      return Promise.all([p0, p1, p2, p3, p4]);
     },
 
     saveGrade(editableMappedGrade, editedMappedGrade) {
@@ -415,6 +430,25 @@ export default {
       }
 
       return Promise.resolve(savedAnnotation);
+    },
+
+    saveFlags(editableFlags, editedFlags) {
+      let p1 = [];
+      editableFlags.forEach((sf) => {
+        p1.push(SubstanceFlagDataService.delete(sf.id));
+      })
+
+      let p2 = [];
+      Promise.all(p1)
+        .then(() => {
+          editedFlags.forEach((sf) => {
+            sf.substance = this.substanceDetail.substance;
+            sf.validated = true;
+            p2.push(SubstanceFlagDataService.post(sf));
+          })
+        })
+
+      return Promise.all(p2);
     },
 
     setNavigation() {

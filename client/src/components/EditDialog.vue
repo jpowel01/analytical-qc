@@ -136,6 +136,32 @@
               />
             </v-col>
           </v-row>
+          <v-row v-if="this.showFlags">
+            <v-col cols="8">
+              <v-select
+                v-model="edited.substanceFlags"
+                :items="flagObjects"
+                item-text="flag.name"
+                item-value="flag.name"
+                label="Flags"
+                return-object
+                clearable
+                multiple
+                chips
+              >
+                <template v-slot:item="{ item }">
+                  <template>
+                    <v-list-item-content>
+                      <v-list-item-title>{{ item.flag.name }}</v-list-item-title>
+                      <v-list-item-subtitle>{{
+                        item.flag.description
+                      }}</v-list-item-subtitle>
+                    </v-list-item-content>
+                  </template>
+                </template>
+              </v-select>
+            </v-col>
+          </v-row>
           <v-row>
             <v-col>
               <v-textarea
@@ -160,7 +186,7 @@
 
 <script>
 export default {
-  props: ["grades", "calls", "editable"],
+  props: ["grades", "calls", "flags", "editable", "showFlags"],
 
   emits: ["edited"],
 
@@ -168,6 +194,7 @@ export default {
     return {
       dialog: null,
       edited: {
+        substanceFlags: [],
         mappedGradeT0: {
           grade: {
             name: "",
@@ -198,6 +225,16 @@ export default {
     };
   },
 
+  computed: {
+    flagObjects() {
+      var flagObjects = [];
+      this.flags.forEach((f) => {
+        flagObjects.push({ flag: f, validated: true })
+      })
+      return flagObjects;
+    }
+  },
+
   methods: {
     save() {
       this.dialog = false;
@@ -205,10 +242,15 @@ export default {
     },
 
     clearData() {
+      this.clearFlags();
       this.clearGradeT0();
       this.clearGradeT4();
       this.clearCall();
       this.clearAnnotation();
+    },
+
+    clearFlags() {
+      this.edited.substanceFlags = [];
     },
 
     clearGradeT0() {
@@ -250,6 +292,12 @@ export default {
     },
 
     setDataFromProps() {
+      if (this.editable.substanceFlags) {
+        this.edited.substanceFlags = JSON.parse(
+          JSON.stringify(this.editable.substanceFlags)
+        );
+      }
+
       if (this.editable.mappedGradeT0) {
         this.edited.mappedGradeT0 = JSON.parse(
           JSON.stringify(this.editable.mappedGradeT0)
