@@ -10,18 +10,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import gov.epa.analyticalqc.entity.Flag;
-import gov.epa.analyticalqc.repository.FlagRepository;
+import gov.epa.analyticalqc.entity.StructureFlag;
+import gov.epa.analyticalqc.repository.StructureFlagRepository;
 
 @RestController
-@RequestMapping("/api/flags")
-public class FlagController {
+@RequestMapping("/api/structure-flags")
+public class StructureFlagController {
     
-    @Autowired FlagRepository flagRepository;
+    @Autowired StructureFlagRepository structureFlagRepository;
 
     @GetMapping()
-    public ResponseEntity<List<Flag>> getAllFlags() {
-        return new ResponseEntity<>(flagRepository.findAll(Sort.by("id").ascending()), HttpStatus.OK);
+    public ResponseEntity<List<StructureFlag>> getAllStructureFlags() {
+        return new ResponseEntity<>(structureFlagRepository.findAll(Sort.by("id").ascending()), HttpStatus.OK);
     }
 
 }

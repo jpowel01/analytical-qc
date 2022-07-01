@@ -24,27 +24,21 @@ import org.springframework.web.server.ResponseStatusException;
 import gov.epa.analyticalqc.dto.AmenabilityPredictionDto;
 import gov.epa.analyticalqc.dto.ExperimentDetail;
 import gov.epa.analyticalqc.dto.ExperimentDto;
-import gov.epa.analyticalqc.dto.ListDetail;
 import gov.epa.analyticalqc.dto.PropertyPredictionDto;
 import gov.epa.analyticalqc.dto.SampleDetail;
 import gov.epa.analyticalqc.dto.SampleDto;
 import gov.epa.analyticalqc.dto.SubstanceDetail;
 import gov.epa.analyticalqc.dto.SubstanceFileDto;
 import gov.epa.analyticalqc.dto.SubstanceListRequest;
-import gov.epa.analyticalqc.entity.File;
 import gov.epa.analyticalqc.entity.Grade;
 import gov.epa.analyticalqc.entity.Sample;
 import gov.epa.analyticalqc.entity.Substance;
-import gov.epa.analyticalqc.entity.SubstanceFile;
 import gov.epa.analyticalqc.repository.AmenabilityPredictionRepository;
 import gov.epa.analyticalqc.repository.ExperimentGradeRepository;
 import gov.epa.analyticalqc.repository.ExperimentRepository;
 import gov.epa.analyticalqc.repository.PropertyPredictionRepository;
 import gov.epa.analyticalqc.repository.SampleRepository;
-import gov.epa.analyticalqc.repository.SubstanceCallRepository;
 import gov.epa.analyticalqc.repository.SubstanceFileRepository;
-import gov.epa.analyticalqc.repository.SubstanceFlagRepository;
-import gov.epa.analyticalqc.repository.SubstanceGradeRepository;
 import gov.epa.analyticalqc.repository.SubstanceRepository;
 
 @RestController
@@ -53,13 +47,10 @@ public class SubstanceController {
     
     @Autowired SubstanceRepository substanceRepository;
     @Autowired SampleRepository sampleRepository;
-    @Autowired SubstanceFlagRepository substanceFlagRepository;
     @Autowired PropertyPredictionRepository propertyPredictionRepository;
     @Autowired AmenabilityPredictionRepository amenabilityPredictionRepository;
     @Autowired ExperimentRepository experimentRepository;
     @Autowired ExperimentGradeRepository experimentGradeRepository;
-    @Autowired SubstanceGradeRepository substanceGradeRepository;
-    @Autowired SubstanceCallRepository substanceCallRepository;
     @Autowired SubstanceFileRepository substanceFileRepository;
 
     @GetMapping()

@@ -16,18 +16,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import gov.epa.analyticalqc.entity.SubstanceFlag;
-import gov.epa.analyticalqc.repository.SubstanceFlagRepository;
+import gov.epa.analyticalqc.entity.SubstanceStructureFlag;
+import gov.epa.analyticalqc.repository.SubstanceStructureFlagRepository;
 
 @RestController
-@RequestMapping("/api/substance-flags")
-public class SubstanceFlagController {
+@RequestMapping("/api/substance-structure-flags")
+public class SubstanceStructureFlagController {
     
-    @Autowired SubstanceFlagRepository substanceFlagRepository;
+    @Autowired SubstanceStructureFlagRepository substanceStructureFlagRepository;
 
     @GetMapping("/{id}")
-    public ResponseEntity<SubstanceFlag> getSubstanceFlag(@PathVariable("id") Integer id) {
-        Optional<SubstanceFlag> findSubstanceFlag = substanceFlagRepository.findById(id);
+    public ResponseEntity<SubstanceStructureFlag> getSubstanceFlag(@PathVariable("id") Integer id) {
+        Optional<SubstanceStructureFlag> findSubstanceFlag = substanceStructureFlagRepository.findById(id);
         if (findSubstanceFlag.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Substance flag not found");
         } else {
@@ -36,24 +36,24 @@ public class SubstanceFlagController {
     }
 
     @GetMapping("/substance-id/{substance-id}")
-    public ResponseEntity<List<SubstanceFlag>> getSubstanceFlagsBySubstanceId(@PathVariable("substance-id") Integer id) {
-        return new ResponseEntity<>(substanceFlagRepository.findBySubstanceId(id), HttpStatus.OK);
+    public ResponseEntity<List<SubstanceStructureFlag>> getSubstanceFlagsBySubstanceId(@PathVariable("substance-id") Integer id) {
+        return new ResponseEntity<>(substanceStructureFlagRepository.findBySubstanceId(id), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SubstanceFlag> updateSubstanceFlag(@PathVariable("id") Integer id, @RequestBody SubstanceFlag substanceFlag) {
-        Optional<SubstanceFlag> findSubstanceFlag = substanceFlagRepository.findById(id);
+    public ResponseEntity<SubstanceStructureFlag> updateSubstanceFlag(@PathVariable("id") Integer id, @RequestBody SubstanceStructureFlag substanceFlag) {
+        Optional<SubstanceStructureFlag> findSubstanceFlag = substanceStructureFlagRepository.findById(id);
         if (findSubstanceFlag.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Substance flag not found");
         } else {
-            return new ResponseEntity<>(substanceFlagRepository.save(substanceFlag), HttpStatus.OK);
+            return new ResponseEntity<>(substanceStructureFlagRepository.save(substanceFlag), HttpStatus.OK);
         }
     }
 
     @PostMapping
-    public ResponseEntity<SubstanceFlag> createSubstanceFlag(@RequestBody SubstanceFlag substanceFlag) {
+    public ResponseEntity<SubstanceStructureFlag> createSubstanceFlag(@RequestBody SubstanceStructureFlag substanceFlag) {
         try {
-			SubstanceFlag _substanceFlag = substanceFlagRepository.save(substanceFlag);
+			SubstanceStructureFlag _substanceFlag = substanceStructureFlagRepository.save(substanceFlag);
 			return new ResponseEntity<>(_substanceFlag, HttpStatus.CREATED);
 		} catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error creating substance flag");
@@ -63,7 +63,7 @@ public class SubstanceFlagController {
     @DeleteMapping("/{id}")
 	public ResponseEntity<HttpStatus> deleteSubstanceFlag(@PathVariable("id") Integer id) {
 		try {
-			substanceFlagRepository.deleteById(id);
+			substanceStructureFlagRepository.deleteById(id);
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error deleting substance flag");

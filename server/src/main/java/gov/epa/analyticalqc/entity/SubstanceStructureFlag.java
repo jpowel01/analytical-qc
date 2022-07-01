@@ -1,5 +1,6 @@
 package gov.epa.analyticalqc.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,19 +15,22 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name="experiment_grades")
+@Table(name="substance_structure_flags")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
-public class ExperimentGrade {
+public class SubstanceStructureFlag {
     
     @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne
-	@JoinColumn(name="experiment_id")
-	private Experiment experiment;
+	@JoinColumn(name="substance_id")
+	private Substance substance;
 
     @ManyToOne
-	@JoinColumn(name="grade_id")
-	private Grade grade;
+	@JoinColumn(name="structure_flag_id")
+	private StructureFlag structureFlag;
+
+    @Column(name="validated")
+    private Boolean validated;
     
 }

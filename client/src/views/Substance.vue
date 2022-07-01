@@ -1,62 +1,54 @@
 <template>
-  <v-container fluid v-if="substanceDetail && substanceDetail.substance">
+  <v-container fluid v-if="detail && detail.substance">
     <v-row class="ma-2" align="center">
       <div class="text-h4 mr-2">
-        {{ substanceDetail.substance.preferredName }}
+        {{ detail.substance.preferredName }}
       </div>
       <div
         class="mx-2"
-        v-if="
-          editable.mappedGradeT0 ||
-          editable.mappedGradeT4 ||
-          editable.mappedCall ||
-          editable.substanceFlags ||
-          editable.annotation
-        "
+        v-if="annotation"
       >
-        <div v-if="editable.annotation" class="mx-1 d-inline-flex align-center">
-          <AnnotationChip :annotation="editable.annotation.annotation" />
+        <div v-if="annotation && annotation.annotation" class="mx-1 d-inline-flex align-center">
+          <AnnotationChip :annotation="annotation.annotation" />
         </div>
         <div
-          v-if="editable.mappedGradeT0"
+          v-if="annotation.t0Grade"
           class="mx-1 d-inline-flex align-center"
         >
-          <EditableChip
-            :data="editable.mappedGradeT0"
-            type="grade"
+          <GradeCallChip
+            :data="annotation.t0Grade"
+            :validated="annotation.validated"
             title="T0"
             :use-tripod-colors="state.useTripodColors"
           />
         </div>
         <div
-          v-if="editable.mappedGradeT4"
+          v-if="annotation.t4Grade"
           class="mx-1 d-inline-flex align-center"
         >
-          <EditableChip
-            :data="editable.mappedGradeT4"
-            type="grade"
+          <GradeCallChip
+            :data="annotation.t4Grade"
+            :validated="annotation.validated"
             title="T4"
             :use-tripod-colors="state.useTripodColors"
           />
         </div>
-        <div v-if="editable.mappedCall" class="mx-1 d-inline-flex align-center">
-          <EditableChip
-            :data="editable.mappedCall"
-            type="call"
+        <div v-if="annotation.call" class="mx-1 d-inline-flex align-center">
+          <GradeCallChip
+            :data="annotation.call"
+            :validated="annotation.validated"
             title="Call"
             :use-tripod-colors="state.useTripodColors"
           />
         </div>
         <div
-          v-if="editable.substanceFlags"
+          v-if="substanceStructureFlags"
           class="mx-1 d-inline-flex align-center"
         >
-          <EditableChip
-            v-for="sf in editable.substanceFlags"
+          <StructureFlagChip
+            v-for="sf in substanceStructureFlags"
             :key="sf.id"
-            :data="sf"
-            type="flag"
-            :use-tripod-colors="state.useTripodColors"
+            :substance-structure-flag="sf"
           />
         </div>
       </div>
@@ -64,10 +56,11 @@
       <EditDialog
         :grades="grades"
         :calls="calls"
-        :flags="flags"
-        :editable="editable"
+        :structure-flags="structureFlags"
+        :annotation="annotation"
+        :substance-structure-flags="substanceStructureFlags"
+        show-structure-flags="true"
         @edited="save"
-        show-flags="true"
       />
       <v-btn
         class="ma-1"
@@ -84,8 +77,8 @@
     <v-row>
       <v-col cols="2">
         <v-img
-          :src="`${DASHBOARD_IMAGE_URL}/${substanceDetail.substance.dtxsid}`"
-          :key="substanceDetail.substance.dtxsid"
+          :src="`${DASHBOARD_IMAGE_URL}/${detail.substance.dtxsid}`"
+          :key="detail.substance.dtxsid"
           @error="state.missingImage = true"
         />
         <v-alert type="error" v-if="state.missingImage"
@@ -95,7 +88,7 @@
 
       <v-col cols="5" class="d-flex flex-column">
         <SubstanceInfoTable
-          :substance="substanceDetail.substance"
+          :substance="detail.substance"
           class="flex d-flex flex-column"
         />
       </v-col>
@@ -103,9 +96,9 @@
       <v-col cols="5" class="d-flex flex-column">
         <PropertyPredictionTable
           class="flex d-flex flex-column"
-          v-if="substanceDetail.propertyPrediction || substanceDetail.amenabilityPrediction"
-          :property-prediction="substanceDetail.propertyPrediction"
-          :amenability-prediction="substanceDetail.amenabilityPrediction"
+          v-if="detail.propertyPrediction || detail.amenabilityPrediction"
+          :property-prediction="detail.propertyPrediction"
+          :amenability-prediction="detail.amenabilityPrediction"
         />
         <v-alert type="error" v-else>Substance predictions unavailable</v-alert>
       </v-col>
@@ -135,7 +128,7 @@
       <v-col>
         <v-expansion-panels multiple>
           <SamplePanel
-            v-for="sampleDetail in substanceDetail.sampleDetails"
+            v-for="sampleDetail in detail.sampleDetails"
             :key="sampleDetail.sample.id"
             :sample="sampleDetail.sample"
             :experiments="sampleDetail.experiments"
@@ -144,7 +137,7 @@
             :grades="grades"
             :calls="calls"
           />
-          <v-expansion-panel v-if="substanceDetail.substanceFiles.length > 0">
+          <v-expansion-panel v-if="detail.substanceFiles.length > 0">
             <v-expansion-panel-header class="text-h6">
               <v-row align="center">
                 <div class="ma-2">
@@ -154,7 +147,7 @@
             </v-expansion-panel-header>
             <v-expansion-panel-content>
               <v-list>
-                <v-list-item v-for="file in substanceDetail.substanceFiles" :key="file.id">
+                <v-list-item v-for="file in detail.substanceFiles" :key="file.id">
                   <a
                     target="_blank"
                     rel="noreferrer noopener"
@@ -175,23 +168,23 @@
 <script>
 import GradeDataService from "../services/GradeDataService";
 import CallDataService from "../services/CallDataService";
-import FlagDataService from "../services/FlagDataService";
+import StructureFlagDataService from "../services/StructureFlagDataService";
 import SubstanceDataService from "../services/SubstanceDataService";
-import EditableChip from "../components/EditableChip";
+import GradeCallChip from "../components/GradeCallChip";
+import StructureFlagChip from "../components/StructureFlagChip";
 import AnnotationChip from "../components/AnnotationChip";
 import EditDialog from "../components/EditDialog";
 import SubstanceInfoTable from "../components/SubstanceInfoTable";
 import PropertyPredictionTable from "../components/PropertyPredictionTable";
 import SamplePanel from "../components/SamplePanel";
-import SubstanceGradeDataService from "../services/SubstanceGradeDataService";
-import SubstanceCallDataService from "../services/SubstanceCallDataService";
-import SubstanceFlagDataService from "../services/SubstanceFlagDataService";
+import SubstanceStructureFlagDataService from "../services/SubstanceStructureFlagDataService";
 import SubstanceAnnotationDataService from "../services/SubstanceAnnotationDataService";
 import { DASHBOARD_IMAGE_URL, CONTENT_SERVER_URL } from "@/store";
 
 export default {
   components: {
-    EditableChip,
+    GradeCallChip,
+    StructureFlagChip,
     SubstanceInfoTable,
     PropertyPredictionTable,
     SamplePanel,
@@ -201,18 +194,13 @@ export default {
 
   data() {
     return {
-      substanceDetail: null,
-      editable: {
-        substanceFlags: [],
-        mappedGradeT0: null,
-        mappedGradeT4: null,
-        mappedCall: null,
-        annotation: null,
-      },
+      detail: null,
+      annotation: {},
+      substanceStructureFlags: [],
 
       grades: [],
       calls: [],
-      flags: [],
+      structureFlags: [],
 
       state: {
         missingImage: false,
@@ -235,44 +223,15 @@ export default {
   },
 
   methods: {
-    getSubstanceDetail(query, type) {
+    getDetail(query, type) {
       return SubstanceDataService.getDetailAlternate(query, type);
     },
 
-    setSubstanceFlags(id) {
-      this.editable.substanceFlags = [];
-      SubstanceFlagDataService.getBySubstanceId(id)
+    setSubstanceStructureFlags(id) {
+      this.substanceStructureFlags = [];
+      SubstanceStructureFlagDataService.getBySubstanceId(id)
         .then((response) => {
-          this.editable.substanceFlags = response.data;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
-
-    setSubstanceGrades(id) {
-      this.editable.mappedGradeT0 = null;
-      this.editable.mappedGradeT4 = null;
-      SubstanceGradeDataService.getBySubstanceId(id)
-        .then((response) => {
-          response.data.forEach((resp) => {
-            if (resp.t0_t4) {
-              this.editable.mappedGradeT4 = resp;
-            } else {
-              this.editable.mappedGradeT0 = resp;
-            }
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
-
-    setSubstanceCall(id) {
-      this.editable.mappedCall = null;
-      SubstanceCallDataService.getBySubstanceId(id)
-        .then((response) => {
-          this.editable.mappedCall = response.data;
+          this.substanceStructureFlags = response.data;
         })
         .catch((err) => {
           console.log(err);
@@ -280,10 +239,10 @@ export default {
     },
 
     setSubstanceAnnotation(id) {
-      this.editable.annotation = null;
+      this.annotation = null;
       SubstanceAnnotationDataService.getBySubstanceId(id)
         .then((response) => {
-          this.editable.annotation = response.data;
+          this.annotation = response.data;
         })
         .catch((err) => {
           console.log(err);
@@ -292,12 +251,12 @@ export default {
 
     setSubstanceData(query, type) {
       this.state.missingImage = false;
-      this.substanceDetail = null;
-      this.getSubstanceDetail(query, type)
+      this.detail = null;
+      this.getDetail(query, type)
         .then((response) => {
-          this.substanceDetail = response.data;
+          this.detail = response.data;
           this.setNavigation();
-          this.setEditable(this.substanceDetail.substance.id);
+          this.setEditable(this.detail.substance.id);
         })
         .catch(() => {
           this.$router.push("/error");
@@ -305,13 +264,11 @@ export default {
     },
 
     setEditable(id) {
-      this.setSubstanceFlags(id);
-      this.setSubstanceGrades(id);
-      this.setSubstanceCall(id);
+      this.setSubstanceStructureFlags(id);
       this.setSubstanceAnnotation(id);
     },
 
-    setGradesAndCalls() {
+    initGradesCallsStructureFlags() {
       GradeDataService.getAll()
         .then((response) => {
           this.grades = response.data;
@@ -326,9 +283,9 @@ export default {
         .catch((err) => {
           console.log(err);
         });
-      FlagDataService.getAll()
+      StructureFlagDataService.getAll()
         .then((response) => {
-          this.flags = response.data;
+          this.structureFlags = response.data;
         })
         .catch((err) => {
           console.log(err);
@@ -338,7 +295,7 @@ export default {
     save(edited) {
       this.saveEdited(edited)
         .then(() => {
-          this.setEditable(this.substanceDetail.substance.id);
+          this.setEditable(this.detail.substance.id);
         })
         .catch((err) => {
           console.log(err);
@@ -346,106 +303,44 @@ export default {
     },
 
     saveEdited(edited) {
-      const p0 = this.saveGrade(
-        this.editable.mappedGradeT0,
-        edited.mappedGradeT0
-      );
-      const p1 = this.saveGrade(
-        this.editable.mappedGradeT4,
-        edited.mappedGradeT4
-      );
-      const p2 = this.saveCall(this.editable.mappedCall, edited.mappedCall);
-      const p3 = this.saveAnnotation(
-        this.editable.annotation,
+      const p1 = this.saveAnnotation(
         edited.annotation
       );
-      const p4 = this.saveFlags(
-        this.editable.substanceFlags,
-        edited.substanceFlags
+      const p2 = this.saveStructureFlags(
+        edited.substanceStructureFlags,
+        edited.annotation.validated
       );
-      return Promise.all([p0, p1, p2, p3, p4]);
+      return Promise.all([p1, p2]);
     },
 
-    saveGrade(editableMappedGrade, editedMappedGrade) {
-      let savedMappedGrade = editableMappedGrade;
-      if (!editableMappedGrade && editedMappedGrade.grade.name) {
-        editedMappedGrade.substance = this.substanceDetail.substance;
-        savedMappedGrade = SubstanceGradeDataService.post(editedMappedGrade);
-      } else if (editableMappedGrade) {
-        if (!editedMappedGrade.grade.name) {
-          savedMappedGrade = SubstanceGradeDataService.delete(
-            editableMappedGrade.id
-          );
-        } else if (
-          editableMappedGrade.grade.name !== editedMappedGrade.grade.name ||
-          editableMappedGrade.validated !== editedMappedGrade.validated
-        ) {
-          savedMappedGrade = SubstanceGradeDataService.put(
-            editableMappedGrade.id,
-            editedMappedGrade
-          );
-        }
-      }
-
-      return Promise.resolve(savedMappedGrade);
-    },
-
-    saveCall(editableMappedCall, editedMappedCall) {
-      let savedMappedCall = editableMappedCall;
-      if (!editableMappedCall && editedMappedCall.call.name) {
-        editedMappedCall.substance = this.substanceDetail.substance;
-        savedMappedCall = SubstanceCallDataService.post(editedMappedCall);
-      } else if (editableMappedCall) {
-        if (!editedMappedCall.call.name) {
-          savedMappedCall = SubstanceCallDataService.delete(
-            editableMappedCall.id
-          );
-        } else if (
-          editableMappedCall.call.name !== editedMappedCall.call.name ||
-          editableMappedCall.validated !== editedMappedCall.validated
-        ) {
-          savedMappedCall = SubstanceCallDataService.put(
-            editableMappedCall.id,
-            editedMappedCall
-          );
-        }
-      }
-
-      return Promise.resolve(savedMappedCall);
-    },
-
-    saveAnnotation(editableAnnotation, editedAnnotation) {
-      let savedAnnotation = editableAnnotation;
-      if (!editableAnnotation && editedAnnotation.annotation) {
-        editedAnnotation.substance = this.substanceDetail.substance;
+    saveAnnotation(editedAnnotation) {
+      let savedAnnotation = this.annotation;
+      if (!this.annotation && editedAnnotation) {
+        editedAnnotation.substance = this.detail.substance;
         savedAnnotation = SubstanceAnnotationDataService.post(editedAnnotation);
-      } else if (editableAnnotation && editedAnnotation.annotation) {
+      } else if (editedAnnotation) {
         savedAnnotation = SubstanceAnnotationDataService.put(
-          editableAnnotation.id,
+          this.annotation.id,
           editedAnnotation
-        );
-      } else if (editableAnnotation) {
-        savedAnnotation = SubstanceAnnotationDataService.delete(
-          editableAnnotation.id
         );
       }
 
       return Promise.resolve(savedAnnotation);
     },
 
-    saveFlags(editableFlags, editedFlags) {
+    saveStructureFlags(editedStructureFlags, validated) {
       let p1 = [];
-      editableFlags.forEach((sf) => {
-        p1.push(SubstanceFlagDataService.delete(sf.id));
+      this.substanceStructureFlags.forEach((sf) => {
+        p1.push(SubstanceStructureFlagDataService.delete(sf.id));
       })
 
       let p2 = [];
       Promise.all(p1)
         .then(() => {
-          editedFlags.forEach((sf) => {
-            sf.substance = this.substanceDetail.substance;
-            sf.validated = true;
-            p2.push(SubstanceFlagDataService.post(sf));
+          editedStructureFlags.forEach((sf) => {
+            sf.substance = this.detail.substance;
+            sf.validated = validated;
+            p2.push(SubstanceStructureFlagDataService.post(sf));
           })
         })
 
@@ -453,8 +348,8 @@ export default {
     },
 
     setNavigation() {
-      this.state.next = this.substanceDetail.substance.id + 1;
-      this.state.previous = this.substanceDetail.substance.id - 1;
+      this.state.next = this.detail.substance.id + 1;
+      this.state.previous = this.detail.substance.id - 1;
     }
   },
 
@@ -465,7 +360,7 @@ export default {
   },
 
   mounted() {
-    this.setGradesAndCalls();
+    this.initGradesCallsStructureFlags();
     this.setSubstanceData(this.$route.params.query, this.$route.params.type);
     this.setNavigation();
   },

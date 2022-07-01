@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import gov.epa.analyticalqc.entity.Sample;
-import gov.epa.analyticalqc.repository.SampleCallRepository;
-import gov.epa.analyticalqc.repository.SampleGradeRepository;
 import gov.epa.analyticalqc.repository.SampleRepository;
 
 @RestController
@@ -22,8 +20,6 @@ import gov.epa.analyticalqc.repository.SampleRepository;
 public class SampleController {
     
     @Autowired SampleRepository sampleRepository;
-    @Autowired SampleGradeRepository sampleGradeRepository;
-    @Autowired SampleCallRepository sampleCallRepository;
 
     @GetMapping()
     public ResponseEntity<List<Sample>> getAllSamples() {

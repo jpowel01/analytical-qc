@@ -25,6 +25,20 @@ public class SubstanceAnnotation {
 	@JoinColumn(name="substance_id")
 	private Substance substance;
 
+    @ManyToOne
+	@JoinColumn(name="t0_grade_id")
+	private Grade t0Grade;
+
+    @ManyToOne
+	@JoinColumn(name="t4_grade_id")
+	private Grade t4Grade;
+
+    @ManyToOne
+	@JoinColumn(name="call_id")
+	private Call call;
+
+    private Boolean validated;
+
     private String annotation;
     
 }

@@ -35,13 +35,4 @@ public interface SubstanceRepository extends JpaRepository<Substance, Integer> {
 
     List<Substance> findByMolWeightBetween(Double min, Double max);
 
-    @Query("select distinct s.id from Substance s left join SubstanceGrade sg on sg.substance.id = s.id and sg.t0_t4 = :t0_t4 where sg.id is null")
-    List<Integer> findUngradedIds(Boolean t0_t4);
-
-    @Query("select distinct s.id from Substance s left join SubstanceCall sc on sc.substance.id = s.id where sc.id is null")
-    List<Integer> findUncalledIds();
-
-    @Query("select distinct s.id from Substance s left join SubstanceAnnotation sa on sa.substance.id = s.id where sa.id is null")
-    List<Integer> findUnannotatedIds();
-
 }

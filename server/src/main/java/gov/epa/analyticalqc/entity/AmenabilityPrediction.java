@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -31,5 +32,9 @@ public class AmenabilityPrediction {
 
     @Column(name="lcms_amen_pos")
     private Double lcmsAmenPos;
+
+    @ManyToOne
+	@JoinColumn(name="nmr_amen_flag_id")
+    private NmrAmenFlag nmrAmenFlag;
     
 }

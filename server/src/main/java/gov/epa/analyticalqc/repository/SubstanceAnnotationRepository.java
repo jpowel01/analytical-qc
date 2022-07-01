@@ -12,7 +12,28 @@ public interface SubstanceAnnotationRepository extends JpaRepository<SubstanceAn
 
     Optional<SubstanceAnnotation> findBySubstanceId(Integer substanceId);
 
-    @Query("select distinct sa.substance.id from SubstanceAnnotation sa")
+    @Query("select distinct sa.substance.id from SubstanceAnnotation sa where sa.annotation is not null")
     List<Integer> findAnnotatedSubstanceIds();
+
+    @Query("select distinct sa.substance.id from SubstanceAnnotation sa where sa.annotation is null")
+    List<Integer> findUnannotatedSubstanceIds();
+
+    @Query("select distinct sa.substance.id from SubstanceAnnotation sa where sa.t0Grade.id in (:gradeIds)")
+    List<Integer> findSubstanceIdsByT0GradeIdIn(List<Integer> gradeIds);
+
+    @Query("select distinct sa.substance.id from SubstanceAnnotation sa where sa.t0Grade.id is null")
+    List<Integer> findT0UngradedSubstanceIds();
+
+    @Query("select distinct sa.substance.id from SubstanceAnnotation sa where sa.t4Grade.id in (:gradeIds)")
+    List<Integer> findSubstanceIdsByT4GradeIdIn(List<Integer> gradeIds);
+
+    @Query("select distinct sa.substance.id from SubstanceAnnotation sa where sa.t4Grade.id is null")
+    List<Integer> findT4UngradedSubstanceIds();
+
+    @Query("select distinct sa.substance.id from SubstanceAnnotation sa where sa.call.id in (:callIds)")
+    List<Integer> findSubstanceIdsByCallIdIn(List<Integer> callIds);
+
+    @Query("select distinct sa.substance.id from SubstanceAnnotation sa where sa.call.id is null")
+    List<Integer> findUncalledSubstanceIds();
 
 }

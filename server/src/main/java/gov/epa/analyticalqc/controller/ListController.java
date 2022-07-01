@@ -27,8 +27,6 @@ import gov.epa.analyticalqc.repository.ListRepository;
 import gov.epa.analyticalqc.repository.ListSubstanceRepository;
 import gov.epa.analyticalqc.repository.SampleRepository;
 import gov.epa.analyticalqc.repository.SubstanceAnnotationRepository;
-import gov.epa.analyticalqc.repository.SubstanceCallRepository;
-import gov.epa.analyticalqc.repository.SubstanceGradeRepository;
 import gov.epa.analyticalqc.repository.SubstanceRepository;
 
 @RestController
@@ -39,8 +37,6 @@ public class ListController {
     @Autowired ListSubstanceRepository listSubstanceRepository;
     @Autowired SubstanceRepository substanceRepository;
     @Autowired SampleRepository sampleRepository;
-    @Autowired SubstanceGradeRepository substanceGradeRepository;
-    @Autowired SubstanceCallRepository substanceCallRepository;
     @Autowired SubstanceAnnotationRepository substanceAnnotationRepository;
 
     @GetMapping()
@@ -96,23 +92,23 @@ public class ListController {
         } else if (createBy.equals("annotation")) {
             List<Integer> t0Grades = request.getT0Grades();
             Set<Integer> t0Ids = new HashSet<Integer>();
-            t0Ids.addAll(substanceGradeRepository.findSubstanceIdsByGradeIdIn(t0Grades, false));
+            t0Ids.addAll(substanceAnnotationRepository.findSubstanceIdsByT0GradeIdIn(t0Grades));
             if (t0Grades.contains(0)) {
-                t0Ids.addAll(substanceRepository.findUngradedIds(false));
+                t0Ids.addAll(substanceAnnotationRepository.findT0UngradedSubstanceIds());
             }
 
             List<Integer> t4Grades = request.getT4Grades();
             Set<Integer> t4Ids = new HashSet<Integer>();
-            t4Ids.addAll(substanceGradeRepository.findSubstanceIdsByGradeIdIn(t4Grades, true));
+            t4Ids.addAll(substanceAnnotationRepository.findSubstanceIdsByT4GradeIdIn(t4Grades));
             if (t4Grades.contains(0)) {
-                t4Ids.addAll(substanceRepository.findUngradedIds(true));
+                t4Ids.addAll(substanceAnnotationRepository.findT4UngradedSubstanceIds());
             }
 
             List<Integer> calls = request.getCalls();
             Set<Integer> callIds = new HashSet<Integer>();
-            callIds.addAll(substanceCallRepository.findSubstanceIdsByCallIdIn(calls));
+            callIds.addAll(substanceAnnotationRepository.findSubstanceIdsByCallIdIn(calls));
             if (calls.contains(0)) {
-                callIds.addAll(substanceRepository.findUncalledIds());
+                callIds.addAll(substanceAnnotationRepository.findUncalledSubstanceIds());
             }
 
             Set<Integer> textIds = new HashSet<Integer>();
@@ -121,7 +117,7 @@ public class ListController {
             }
 
             if (request.getHasNoText()) {
-                textIds.addAll(substanceRepository.findUnannotatedIds());
+                textIds.addAll(substanceAnnotationRepository.findUnannotatedSubstanceIds());
             }
 
             Set<Integer> sampleIds = new HashSet<Integer>(sampleRepository.findAllSubstanceIds());

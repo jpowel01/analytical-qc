@@ -17,47 +17,52 @@
           <EditDialog
             :grades="grades"
             :calls="calls"
-            :editable="editable"
+            :annotation="annotation"
             @edited="save"
           />
           <div
-            v-if="editable.annotation"
+            class="ma-0 d-inline-flex"
+            v-if="annotation"
+          >
+          <div
+            v-if="annotation.annotation"
             class="mx-1 d-inline-flex align-center"
           >
-            <AnnotationChip :annotation="editable.annotation.annotation" />
+            <AnnotationChip :annotation="annotation.annotation" />
           </div>
           <div
-            v-if="editable.mappedGradeT0"
+            v-if="annotation.t0Grade"
             class="mx-1 d-inline-flex align-center"
           >
-            <EditableChip
-              :data="editable.mappedGradeT0"
-              type="grade"
+            <GradeCallChip
+              :data="annotation.t0Grade"
+              :validated="annotation.validated"
               title="T0"
               :use-tripod-colors="useTripodColors"
             />
           </div>
           <div
-            v-if="editable.mappedGradeT4"
+            v-if="annotation.t4Grade"
             class="mx-1 d-inline-flex align-center"
           >
-            <EditableChip
-              :data="editable.mappedGradeT4"
-              type="grade"
+            <GradeCallChip
+              :data="annotation.t4Grade"
+              :validated="annotation.validated"
               title="T4"
               :use-tripod-colors="useTripodColors"
             />
           </div>
           <div
-            v-if="editable.mappedCall"
+            v-if="annotation.call"
             class="mx-1 d-inline-flex align-center"
           >
-            <EditableChip
-              :data="editable.mappedCall"
-              type="call"
+            <GradeCallChip
+              :data="annotation.call"
+              :validated="annotation.validated"
               title="Call"
             />
           </div>
+        </div>
         </div>
         <div class="mx-2" v-if="sample.withdrawn">
           <ExperimentGradeChip
@@ -136,11 +141,9 @@
 
 <script>
 import ExperimentGradeChip from "./ExperimentGradeChip";
-import EditableChip from "./EditableChip";
+import GradeCallChip from "./GradeCallChip";
 import AnnotationChip from "./AnnotationChip";
 import EditDialog from "./EditDialog";
-import SampleGradeDataService from "../services/SampleGradeDataService";
-import SampleCallDataService from "../services/SampleCallDataService";
 import SampleAnnotationDataService from "../services/SampleAnnotationDataService";
 import ExperimentAnnotationChip from "../components/ExperimentAnnotationChip";
 import { PUBCHEM_SID_URL, CONTENT_SERVER_URL } from "@/store";
@@ -158,7 +161,7 @@ export default {
   components: {
     EditDialog,
     ExperimentGradeChip,
-    EditableChip,
+    GradeCallChip,
     AnnotationChip,
     ExperimentAnnotationChip,
   },
@@ -227,148 +230,41 @@ export default {
 
   data() {
     return {
-      editable: {
-        mappedGradeT0: null,
-        mappedGradeT4: null,
-        mappedCall: null,
-        annotation: null,
-      },
+      annotation: {}
     };
   },
 
   methods: {
-    setSampleGrades(id) {
-      this.editable.mappedGradeT0 = null;
-      this.editable.mappedGradeT4 = null;
-      SampleGradeDataService.getBySampleId(id)
-        .then((response) => {
-          response.data.forEach((resp) => {
-            if (resp.t0_t4) {
-              this.editable.mappedGradeT4 = resp;
-            } else {
-              this.editable.mappedGradeT0 = resp;
-            }
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
-
-    setSampleCall(id) {
-      this.editable.mappedCall = null;
-      SampleCallDataService.getBySampleId(id)
-        .then((response) => {
-          this.editable.mappedCall = response.data;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
-
     setSampleAnnotation(id) {
-      this.editable.annotation = null;
+      this.annotation = null;
       SampleAnnotationDataService.getBySampleId(id)
         .then((response) => {
-          this.editable.annotation = response.data;
+          this.annotation = response.data;
         })
         .catch((err) => {
           console.log(err);
         });
-    },
-
-    setEditable(id) {
-      this.setSampleGrades(id);
-      this.setSampleCall(id);
-      this.setSampleAnnotation(id);
     },
 
     save(edited) {
-      this.saveEdited(edited)
+      this.saveAnnotation(edited.annotation)
         .then(() => {
-          this.setEditable(this.sample.id);
+          this.setSampleAnnotation(this.sample.id);
         })
         .catch((err) => {
           console.log(err);
         });
     },
 
-    saveEdited(edited) {
-      const p0 = this.saveGrade(
-        this.editable.mappedGradeT0,
-        edited.mappedGradeT0
-      );
-      const p1 = this.saveGrade(
-        this.editable.mappedGradeT4,
-        edited.mappedGradeT4
-      );
-      const p2 = this.saveCall(this.editable.mappedCall, edited.mappedCall);
-      const p3 = this.saveAnnotation(
-        this.editable.annotation,
-        edited.annotation
-      );
-      return Promise.all([p0, p1, p2, p3]);
-    },
-
-    saveGrade(editableMappedGrade, editedMappedGrade) {
-      let savedMappedGrade = editableMappedGrade;
-      if (!editableMappedGrade && editedMappedGrade.grade.name) {
-        editedMappedGrade.sample = this.sample;
-        savedMappedGrade = SampleGradeDataService.post(editedMappedGrade);
-      } else if (editableMappedGrade) {
-        if (!editedMappedGrade.grade.name) {
-          savedMappedGrade = SampleGradeDataService.delete(
-            editableMappedGrade.id
-          );
-        } else if (
-          editableMappedGrade.grade.name !== editedMappedGrade.grade.name ||
-          editableMappedGrade.validated !== editedMappedGrade.validated
-        ) {
-          savedMappedGrade = SampleGradeDataService.put(
-            editableMappedGrade.id,
-            editedMappedGrade
-          );
-        }
-      }
-
-      return Promise.resolve(savedMappedGrade);
-    },
-
-    saveCall(editableMappedCall, editedMappedCall) {
-      let savedMappedCall = editableMappedCall;
-      if (!editableMappedCall && editedMappedCall.call.name) {
-        editedMappedCall.sample = this.sample;
-        savedMappedCall = SampleCallDataService.post(editedMappedCall);
-      } else if (editableMappedCall) {
-        if (!editedMappedCall.call.name) {
-          savedMappedCall = SampleCallDataService.delete(editableMappedCall.id);
-        } else if (
-          editableMappedCall.call.name !== editedMappedCall.call.name ||
-          editableMappedCall.validated !== editedMappedCall.validated
-        ) {
-          savedMappedCall = SampleCallDataService.put(
-            editableMappedCall.id,
-            editedMappedCall
-          );
-        }
-      }
-
-      return Promise.resolve(savedMappedCall);
-    },
-
-    saveAnnotation(editableAnnotation, editedAnnotation) {
-      let savedAnnotation = editableAnnotation;
-      if (!editableAnnotation && editedAnnotation.annotation) {
+    saveAnnotation(editedAnnotation) {
+      let savedAnnotation = this.annotation;
+      if (!this.annotation && editedAnnotation) {
         editedAnnotation.sample = this.sample;
         savedAnnotation = SampleAnnotationDataService.post(editedAnnotation);
-      } else if (editableAnnotation && editedAnnotation.annotation) {
+      } else if (editedAnnotation) {
         savedAnnotation = SampleAnnotationDataService.put(
-          editableAnnotation.id,
+          this.annotation.id,
           editedAnnotation
-        );
-      } else if (editableAnnotation) {
-        savedAnnotation = SampleAnnotationDataService.delete(
-          editableAnnotation.id
         );
       }
 
@@ -377,7 +273,7 @@ export default {
   },
 
   mounted() {
-    this.setEditable(this.sample.id);
+    this.setSampleAnnotation(this.sample.id);
   },
 };
 </script>
