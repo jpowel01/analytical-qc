@@ -36,6 +36,7 @@
                 <v-text-field label="Maximum" v-model.number="listInput.mwMax" hide-details type="number" />
               </div>
               <div v-if="listInput.createBy === 'annotation'">
+                <v-alert class="mt-5" type="warning">Includes ToxCast/Tox21 substances only</v-alert>
                 <v-select label="T0" hide-details multiple chips
                   v-model="listInput.t0Grades"
                   :items="state.grades"
