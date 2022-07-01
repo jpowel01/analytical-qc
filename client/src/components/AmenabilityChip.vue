@@ -8,7 +8,7 @@
         v-bind="attrs"
         v-on="on"
       >
-        <strong>{{ tooltip.toUpperCase() }}</strong>
+        <v-icon>{{ prob > threshold ? 'mdi-check' : 'mdi-close' }}</v-icon>
       </v-chip>
     </template>
     <span>{{ "Prediction: " + prob.toPrecision(3) }}</span>

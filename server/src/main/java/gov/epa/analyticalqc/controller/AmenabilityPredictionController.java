@@ -18,7 +18,7 @@ import gov.epa.analyticalqc.entity.AmenabilityPrediction;
 import gov.epa.analyticalqc.repository.AmenabilityPredictionRepository;
 
 @RestController
-@RequestMapping("/api/sample-annotations")
+@RequestMapping("/api/amenability-predictions")
 public class AmenabilityPredictionController {
     
     @Autowired AmenabilityPredictionRepository amenabilityPredictionRepository;
