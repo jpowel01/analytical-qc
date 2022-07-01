@@ -9,7 +9,7 @@ The Analytical QC application consists of four components:
 
 ### Database
 
-The database contains substance, sample, experiment, and file information along with structured and freeform annotations. It is currently located at ccte-postgres-res.dmap-prod.aws.epa.gov, under database res_gsincl01_qsar and schema sbox_analytical_qc. DDL and CSV table exports are located in the db directory of this project.
+The database contains substance, sample, experiment, and file information along with structured and freeform annotations. It is currently located at ccte-postgres-res.dmap-prod.aws.epa.gov, under database res_gsincl01_qsar and schema sbox_analytical_qc. 
 
 ### Static content (content-server)
 
