@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import gov.epa.analyticalqc.dto.AmenabilityPredictionDto;
 import gov.epa.analyticalqc.dto.ExperimentDetail;
 import gov.epa.analyticalqc.dto.ExperimentDto;
 import gov.epa.analyticalqc.dto.ListDetail;
@@ -35,6 +36,7 @@ import gov.epa.analyticalqc.entity.Grade;
 import gov.epa.analyticalqc.entity.Sample;
 import gov.epa.analyticalqc.entity.Substance;
 import gov.epa.analyticalqc.entity.SubstanceFile;
+import gov.epa.analyticalqc.repository.AmenabilityPredictionRepository;
 import gov.epa.analyticalqc.repository.ExperimentGradeRepository;
 import gov.epa.analyticalqc.repository.ExperimentRepository;
 import gov.epa.analyticalqc.repository.PropertyPredictionRepository;
@@ -53,6 +55,7 @@ public class SubstanceController {
     @Autowired SampleRepository sampleRepository;
     @Autowired SubstanceFlagRepository substanceFlagRepository;
     @Autowired PropertyPredictionRepository propertyPredictionRepository;
+    @Autowired AmenabilityPredictionRepository amenabilityPredictionRepository;
     @Autowired ExperimentRepository experimentRepository;
     @Autowired ExperimentGradeRepository experimentGradeRepository;
     @Autowired SubstanceGradeRepository substanceGradeRepository;
@@ -140,6 +143,7 @@ public class SubstanceController {
     public SubstanceDetail buildSubstanceDetail(Substance substance) {
         Integer id = substance.getId();
         PropertyPredictionDto propertyPrediction = propertyPredictionRepository.findDtoBySubstanceId(id).orElse(null);
+        AmenabilityPredictionDto amenabilityPrediction = amenabilityPredictionRepository.findDtoBySubstanceId(id).orElse(null);
         List<SampleDto> samples = sampleRepository.findDtoBySubstanceId(id);
 
         List<SampleDetail> sampleDetails = new ArrayList<SampleDetail>();
@@ -156,6 +160,6 @@ public class SubstanceController {
 
         List<SubstanceFileDto> substanceFiles = substanceFileRepository.findDtoBySubstanceId(id);
 
-        return new SubstanceDetail(substance, propertyPrediction, sampleDetails, substanceFiles);
+        return new SubstanceDetail(substance, propertyPrediction, amenabilityPrediction, sampleDetails, substanceFiles);
     }
 }

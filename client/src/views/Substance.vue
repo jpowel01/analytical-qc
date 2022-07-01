@@ -103,10 +103,11 @@
       <v-col cols="5" class="d-flex flex-column">
         <PropertyPredictionTable
           class="flex d-flex flex-column"
-          v-if="substanceDetail.propertyPrediction"
+          v-if="substanceDetail.propertyPrediction || substanceDetail.amenabilityPrediction"
           :property-prediction="substanceDetail.propertyPrediction"
+          :amenability-prediction="substanceDetail.amenabilityPrediction"
         />
-        <v-alert type="error" v-else>Property predictions unavailable</v-alert>
+        <v-alert type="error" v-else>Substance predictions unavailable</v-alert>
       </v-col>
     </v-row>
 

@@ -8,16 +8,16 @@
         v-bind="attrs"
         v-on="on"
       >
-        <strong>{{ charge }}</strong>
+        <strong>{{ tooltip.toUpperCase() }}</strong>
       </v-chip>
     </template>
-    <span>{{ tooltip + ": " + prob.toPrecision(3) }}</span>
+    <span>{{ "Prediction: " + prob.toPrecision(3) }}</span>
   </v-tooltip>
 </template>
 
 <script>
 export default {
-  props: ["prob", "charge", "threshold"],
+  props: ["prob", "threshold"],
 
   computed: {
     color() {

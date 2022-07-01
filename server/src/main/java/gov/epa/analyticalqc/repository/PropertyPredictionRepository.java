@@ -15,7 +15,7 @@ public interface PropertyPredictionRepository extends JpaRepository<PropertyPred
 
     Optional<PropertyPrediction> findBySubstanceId(Integer substanceId);
 
-    @Query("SELECT new gov.epa.analyticalqc.dto.PropertyPredictionDto(pp.bp, pp.mp, pp.vp, pp.logP, pp.lcmsAmenNeg, pp.lcmsAmenPos) from PropertyPrediction pp where pp.substance.id = :substanceId")
+    @Query("SELECT new gov.epa.analyticalqc.dto.PropertyPredictionDto(pp.bp, pp.mp, pp.vp, pp.logP) from PropertyPrediction pp where pp.substance.id = :substanceId")
     Optional<PropertyPredictionDto> findDtoBySubstanceId(@Param("substanceId") Integer substanceId);
 
 }

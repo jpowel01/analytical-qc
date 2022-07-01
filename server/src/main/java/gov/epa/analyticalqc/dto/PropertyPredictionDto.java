@@ -12,9 +12,5 @@ public class PropertyPredictionDto {
     private Double vp;
 
     private Double logP;
-
-    private Double lcmsAmenNeg;
-
-    private Double lcmsAmenPos;
     
 }

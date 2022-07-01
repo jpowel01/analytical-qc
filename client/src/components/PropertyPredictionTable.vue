@@ -1,50 +1,83 @@
 <template>
   <v-card>
-    <v-card-title>Predicted Properties</v-card-title>
-    <v-simple-table>
-      <tbody>
-        <tr>
-          <th scope="row">Melting Point (&deg;C)</th>
-          <td>{{ propertyPrediction.mp.toFixed(0) }}</td>
-        </tr>
-        <tr>
-          <th scope="row">Boiling Point (&deg;C)</th>
-          <td>{{ propertyPrediction.bp.toFixed(0) }}</td>
-        </tr>
-        <tr>
-          <th scope="row">Vapor Pressure (mmHg)</th>
-          <td v-if="propertyPrediction.vp < 0.1">
-            {{ propertyPrediction.vp.toExponential(2) }}
-          </td>
-          <td v-else>
-            {{ propertyPrediction.vp.toFixed(2) }}
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">
-            Octanol-Water Partition Coefficient (logK<sub>ow</sub>)
-          </th>
-          <td>{{ propertyPrediction.logP.toPrecision(2) }}</td>
-        </tr>
-        <tr>
-          <th scope="row">LCMS Amenability</th>
-          <td>
-            <AmenabilityChip
-              v-if="propertyPrediction.lcmsAmenNeg"
-              charge="ESI-"
-              threshold="0.5"
-              :prob="propertyPrediction.lcmsAmenNeg"
-            />
-            <AmenabilityChip
-              v-if="propertyPrediction.lcmsAmenPos"
-              charge="ESI+"
-              threshold="0.5"
-              :prob="propertyPrediction.lcmsAmenPos"
-            />
-          </td>
-        </tr>
-      </tbody>
-    </v-simple-table>
+    <v-card-title>Substance Predictions</v-card-title>
+    <v-tabs v-model="tab">
+      <v-tab key="properties">Properties</v-tab>
+      <v-tab key="amenability">Amenability</v-tab>
+    </v-tabs>
+    <v-tabs-items v-model="tab">
+      <v-tab-item key="properties">
+        <v-card flat>
+          <v-simple-table v-if="propertyPrediction">
+            <tbody>
+              <tr>
+                <th scope="row">Melting Point (&deg;C)</th>
+                <td>{{ propertyPrediction.mp.toFixed(0) }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Boiling Point (&deg;C)</th>
+                <td>{{ propertyPrediction.bp.toFixed(0) }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Vapor Pressure (mmHg)</th>
+                <td v-if="propertyPrediction.vp < 0.1">
+                  {{ propertyPrediction.vp.toExponential(2) }}
+                </td>
+                <td v-else>
+                  {{ propertyPrediction.vp.toFixed(2) }}
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">
+                  Octanol-Water Partition Coefficient (logK<sub>ow</sub>)
+                </th>
+                <td>{{ propertyPrediction.logP.toPrecision(2) }}</td>
+              </tr>
+            </tbody>
+          </v-simple-table>
+          <v-alert type="error" v-else>Property predictions unavailable</v-alert>
+        </v-card>
+      </v-tab-item>
+      <v-tab-item key="amenability">
+        <v-card flat class="align-start">
+          <v-simple-table v-if="amenabilityPrediction">
+            <tbody>
+              <tr>
+                <th scope="row">LCMS (ESI-)</th>
+                <td>
+                  <AmenabilityChip
+                    v-if="amenabilityPrediction.lcmsAmenNeg"
+                    threshold="0.5"
+                    :prob="amenabilityPrediction.lcmsAmenNeg"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">LCMS (ESI+)</th>
+                <td>
+                  <AmenabilityChip
+                    v-if="amenabilityPrediction.lcmsAmenPos"
+                    threshold="0.5"
+                    :prob="amenabilityPrediction.lcmsAmenPos"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">NMR</th>
+                <td>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row"></th>
+                <td>
+                </td>
+              </tr>
+            </tbody>
+          </v-simple-table>
+          <v-alert type="error" v-else>Amenability predictions unavailable</v-alert>
+        </v-card>
+      </v-tab-item>
+    </v-tabs-items>
   </v-card>
 </template>
 
@@ -52,7 +85,13 @@
 import AmenabilityChip from "./AmenabilityChip";
 
 export default {
-  props: ["propertyPrediction"],
+  props: ["propertyPrediction", "amenabilityPrediction"],
+
+  data() {
+    return {
+      tab: null,
+    }
+  },
 
   components: {
     AmenabilityChip,

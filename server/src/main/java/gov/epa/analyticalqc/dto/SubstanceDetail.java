@@ -15,6 +15,8 @@ public class SubstanceDetail {
 
     private PropertyPredictionDto propertyPrediction;
 
+    private AmenabilityPredictionDto amenabilityPrediction;
+
     private List<SampleDetail> sampleDetails;
 
     private List<SubstanceFileDto> substanceFiles;
