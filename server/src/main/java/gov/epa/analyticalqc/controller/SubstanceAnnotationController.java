@@ -4,6 +4,10 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,7 +37,14 @@ public class SubstanceAnnotationController {
     @Autowired SampleRepository sampleRepository;
 
     @GetMapping()
-    public ResponseEntity<SubstanceAnnotation> getSubstanceAnnotation(@RequestParam("type") String type, @RequestParam("query") String query) {
+    public ResponseEntity<Page<SubstanceAnnotation>> getAllSubstanceAnnotations(@RequestParam(name="pageNo", defaultValue="0") Integer pageNo, 
+        @RequestParam(name="pageSize", defaultValue="100") Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("id").ascending());
+        return new ResponseEntity<>(substanceAnnotationRepository.findAll(pageable), HttpStatus.OK);
+    }
+
+    @GetMapping("/{type}/{query}")
+    public ResponseEntity<SubstanceAnnotation> getSubstanceAnnotation(@PathVariable("type") String type, @PathVariable("query") String query) {
         Substance substance = null;
         Sample sample = null;
         type = type.toLowerCase();
