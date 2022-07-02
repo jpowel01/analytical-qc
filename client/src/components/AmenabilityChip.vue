@@ -24,8 +24,8 @@
             <v-icon>{{ pred > threshold ? 'mdi-thumb-up' : 'mdi-thumb-down' }}</v-icon>
           </v-chip>
         </template>
-        <span v-if="trueVal && (trueVal == pred > threshold)">{{ "Validated prediction: " + pred.toPrecision(3) }}</span>
-        <span v-else-if="trueVal">{{ "Overriden prediction: " + pred.toPrecision(3) }}</span>
+        <span v-if="(trueVal != null) && (trueVal == pred > threshold)">{{ "Validated prediction: " + pred.toPrecision(3) }}</span>
+        <span v-else-if="trueVal != null">{{ "Overridden prediction: " + pred.toPrecision(3) }}</span>
         <span v-else>{{ "Prediction: " + pred.toPrecision(3) }}</span>
       </v-tooltip>
     </template>
