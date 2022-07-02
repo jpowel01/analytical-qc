@@ -5,7 +5,7 @@
         <template v-slot:activator="{ on: tooltip }">
           <v-chip
             v-if="trueVal != null"
-            :color="color"
+            :color="trueVal ? 'green' : 'red'"
             text-color="white"
             class="ma-1"
             v-bind="attrs"
