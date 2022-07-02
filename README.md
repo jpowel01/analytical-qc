@@ -67,3 +67,11 @@ New options for grades, calls, structure flags, and NMR amenability flags can be
 `INSERT INTO sbox_analytical_qc.[grades|calls|structure_flags|nmr_amen_flags] (name, description) VALUES ('newname', 'newdescription')`
 
 New additions will be automatically colored gray when shown.
+
+### Comparing predicted vs. validated LCMS amenability
+
+A side objective of this app was to permit validation of LCMS amenability predictions provided by Charlie Lowe. The interface allows the user to "override" or "validate" the predicted amenability. Amenability predictions (numerical) and user inputs (boolean) are stored in the amenability_predictions table of the database. The following query will retrieve them in summary form:
+
+`select s.dtxsid, ap.lcms_amen_neg AS esi_neg_pred, ap.lcms_amen_pos AS esi_pos_pred, ap.lcms_amen_neg_true AS esi_neg_true, ap.lcms_amen_pos_true AS esi_pos_true
+from sbox_analytical_qc.amenability_predictions ap 
+	join sbox_analytical_qc.substances s on s.id = ap.substance_id;`
