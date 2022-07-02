@@ -23,6 +23,15 @@ A database API served by a Spring Boot web service, by default on port 9091.
 
 A frontend interface in Vue.js, running on an nginx server, by default on port 81.
 
+## Summary API
+
+Summary API endpoints are provided for substance- and sample-level annotation information (grades at T0 and T4, final stability call, and any text annotation). These are accessible at:
+
+- `/substance-annotations/[id|casrn|dtxsid|tox21-id|ncgc-id|bottle-barcode]/[query]` (single substance annotation)
+- `/substance-annotations?pageNo=[no]&pageSize=[size]` (all substance annotations, paginated)
+- `/sample-annotations/[id|tox21-id|ncgc-id|bottle-barcode]/[query]` (single sample annotation)
+- `/sample-annotations?pageNo=[no]&pageSize=[size]` (all sample annotations, paginated)
+
 ## Important
 
 ### Adding files
