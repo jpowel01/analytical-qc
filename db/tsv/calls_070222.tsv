@@ -1,0 +1,5 @@
+﻿"id"	"name"	"description"
+1	"S"	"Stable"
+2	"T"	"CAUTION Chemical transformation"
+3	"L"	"CAUTION Physical loss"
+4	"X"	"CAUTION Unstable, reason undetermined"
