@@ -27,10 +27,10 @@ A frontend interface in Vue.js, running on an nginx server, by default on port 8
 
 Summary API endpoints are provided for substance- and sample-level annotation information (grades at T0 and T4, final stability call, and any text annotation). These are accessible at:
 
-- `/substance-annotations/[id|casrn|dtxsid|tox21-id|ncgc-id|bottle-barcode]/[query]` (single substance annotation)
-- `/substance-annotations?pageNo=[no]&pageSize=[size]` (all substance annotations, paginated)
-- `/sample-annotations/[id|tox21-id|ncgc-id|bottle-barcode]/[query]` (single sample annotation)
-- `/sample-annotations?pageNo=[no]&pageSize=[size]` (all sample annotations, paginated)
+- `[backend]/api/substance-annotations/[id|casrn|dtxsid|tox21-id|ncgc-id|bottle-barcode]/[query]` (single substance annotation)
+- `[backend]/api/substance-annotations?pageNo=[no]&pageSize=[size]` (all substance annotations, paginated)
+- `[backend]/api/sample-annotations/[id|tox21-id|ncgc-id|bottle-barcode]/[query]` (single sample annotation)
+- `[backend]/api/sample-annotations?pageNo=[no]&pageSize=[size]` (all sample annotations, paginated)
 
 ## Important
 
@@ -48,14 +48,16 @@ Files can be copied onto a remote server using scp (https://linuxize.com/post/ho
 
 ### Moving the database/redeploying
 
-This application is set up to deploy in Docker using docker-compose. It is now deployed on the v2626umcth819.rtord.epa.gov server. If the database is transferred to a different location or a different user account is used to access it, the app credentials will need to be altered and the services rebuilt. The current environment variable values are in a .env.local file provided to Tony Williams.
+This application is set up to deploy in Docker using docker-compose. It is now deployed on the v2626umcth819.rtord.epa.gov server. If the database is transferred to a different location or a different user account is used to access it, the app credentials will need to be altered and the services restarted. The current environment variable values are in a .env.local file provided to Tony Williams.
 
 0. Clone this repository into the desired deployment location.
 0.5. Extract the static files into the content-server/static directory of this repository.
 1. Place the .env.local file in the root directory of this repository.
 2. Change the `DB_` variables in the .env.local file as needed.
 3. Run `export $(cat .env.local | xargs)` to export the variables in .env.local to your environment.
-4. Run `docker-compose up --build --force-recreate -d` to build and run the services in detached mode.
+4. Run `docker-compose up --build -d` to build and run the services in detached mode.
+
+If the deployment location is not changed, then the services only need to be restarted, not rebuilt, for the changed environment variables to take effect.
 
 ### Server environment variables
 
