@@ -1,5 +1,6 @@
 package gov.epa.analyticalqc.controller;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,17 +13,60 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import gov.epa.analyticalqc.entity.Sample;
 import gov.epa.analyticalqc.entity.SampleAnnotation;
 import gov.epa.analyticalqc.repository.SampleAnnotationRepository;
+import gov.epa.analyticalqc.repository.SampleRepository;
 
 @RestController
 @RequestMapping("/api/sample-annotations")
 public class SampleAnnotationController {
     
     @Autowired SampleAnnotationRepository sampleAnnotationRepository;
+    @Autowired SampleRepository sampleRepository;
+
+    @GetMapping()
+    public ResponseEntity<SampleAnnotation> getSampleAnnotation(@RequestParam("type") String type, @RequestParam("query") String query) {
+        Sample sample = null;
+        type = type.toLowerCase();
+
+        switch (type) {
+            case "id":
+                Integer queryInt = Integer.parseInt(query.replaceAll("[^0-9]",""));
+                sample = sampleRepository.findById(queryInt).orElse(null);
+                break;
+            case "tox21":
+            case "tox21-id":
+                Long queryLong = Long.parseLong(query.replaceAll("Tox21_",""));
+                sample = sampleRepository.findByTox21Id(queryLong).orElse(null);
+                break;
+            case "ncgc":
+            case "ncgc-id":
+                sample = sampleRepository.findByNcgcId(query).orElse(null);
+                break;
+            case "barcode":
+            case "bottle-barcode":
+                sample = sampleRepository.findByBottleBarcode(query).orElse(null);
+                break;
+            default:
+                sample = null;
+                break;
+        }
+
+        if (sample != null) {
+            try {
+                return new ResponseEntity<>(sampleAnnotationRepository.findBySampleId(sample.getId()).orElseThrow(), HttpStatus.OK);
+            } catch (NoSuchElementException e) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sample annotation not found");
+            }
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sample not found");
+        }
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<SampleAnnotation> getSampleAnnotation(@PathVariable("id") Integer id) {
