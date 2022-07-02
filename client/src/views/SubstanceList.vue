@@ -4,7 +4,6 @@
       <div class="text-h4">{{ state.title }}</div>
       <v-spacer />
       <v-text-field
-        v-if="!$route.params.id"
         label="Search"
         append-icon="mdi-magnify"
         v-model="state.search"
@@ -49,6 +48,27 @@
               >{{ value }}</a
             ><v-icon x-small class="ml-1">mdi-open-in-new</v-icon>
           </template>
+          <template v-slot:item.t0Grade="{ item }">
+            <GradeCallChip v-if="item.t0Grade"
+              :data="item.t0Grade"
+              :validated="item.validated"
+              :use-tripod-colors="false"
+            />
+          </template>
+          <template v-slot:item.t4Grade="{ item }">
+            <GradeCallChip v-if="item.t4Grade"
+              :data="item.t4Grade"
+              :validated="item.validated"
+              :use-tripod-colors="false"
+            />
+          </template>
+          <template v-slot:item.call="{ item }">
+            <GradeCallChip v-if="item.call"
+              :data="item.call"
+              :validated="item.validated"
+              :use-tripod-colors="false"
+            />
+          </template>
           <template v-slot:item.pubchemCid="{ value }">
             <div v-if="value">
                 <a
@@ -68,6 +88,7 @@
 <script>
 import SubstanceDataService from "../services/SubstanceDataService";
 import ListDataService from "../services/ListDataService"
+import GradeCallChip from "../components/GradeCallChip"
 import {
   DASHBOARD_DETAILS_URL,
   DASHBOARD_IMAGE_URL,
@@ -75,6 +96,10 @@ import {
 } from "@/store";
 
 export default {
+  components: {
+    GradeCallChip,
+  },
+
   data() {
     return {
       substances: [],
@@ -85,6 +110,9 @@ export default {
         { text: "", value: "structure", sortable: false, width: "1%" },
         { text: "DTXSID", value: "dtxsid", sortable: false },
         { text: "Preferred Name", value: "preferredName", sortable: false },
+        { text: "T0", value: "t0Grade", sortable: false },
+        { text: "T4", value: "t4Grade", sortable: false },
+        { text: "Call", value: "call", sortable: false },
         { text: "CASRN", value: "casrn", sortable: false },
         { text: "Mol. Formula", value: "molFormula", sortable: false },
         { text: "Mol. Weight", value: "molWeight", sortable: false },
@@ -137,8 +165,9 @@ export default {
       this.state.loading = true;
       if (!this.$route.params.id) {
         this.state.title = "Substances";
-        SubstanceDataService.searchPaged(
+        SubstanceDataService.getRowsPaged(
           this.state.search,
+          null,
           this.state.options.page - 1,
           this.state.options.itemsPerPage
         )
@@ -153,12 +182,12 @@ export default {
             this.state.loading = false;
           });
         } else {
-          ListDataService.getDetail(this.$route.params.id)
+          ListDataService.get(this.$route.params.id)
             .then((response) => {
-              const substanceIds = response.data.substanceIds;
-              this.state.title = response.data.list.name;
-              SubstanceDataService.listPaged(
-                substanceIds,
+              this.state.title = response.data.name;
+              SubstanceDataService.getRowsPaged(
+                this.state.search,
+                this.$route.params.id,
                 this.state.options.page - 1,
                 this.state.options.itemsPerPage
               )

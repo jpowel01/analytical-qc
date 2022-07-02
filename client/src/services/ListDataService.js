@@ -9,6 +9,10 @@ class ListDataService {
     return http.get(`lists/${id}/detail`);
   }
 
+  get(id) {
+    return http.get(`lists/${id}`);
+  }
+
   post(request) {
     return http.post(`lists`, request);
   }

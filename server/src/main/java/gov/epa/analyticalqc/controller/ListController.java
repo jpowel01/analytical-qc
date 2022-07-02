@@ -44,17 +44,15 @@ public class ListController {
         return new ResponseEntity<>(listRepository.findAll(), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}/detail")
-    public ResponseEntity<ListDetail> getListDetail(@PathVariable("id") Integer id) {
-        gov.epa.analyticalqc.entity.List list = null;
+    @GetMapping("/{id}")
+    public ResponseEntity<gov.epa.analyticalqc.entity.List> getList(@PathVariable("id") Integer id) {
         try {
-            list = listRepository.findById(id).orElseThrow();
+            gov.epa.analyticalqc.entity.List list = listRepository.findById(id).orElseThrow();
+            return new ResponseEntity<>(list, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "List not found");
         }
         
-        List<Integer> substanceIds = listSubstanceRepository.findSubstanceIdsByListId(id);
-        return new ResponseEntity<>(new ListDetail(list, substanceIds), HttpStatus.OK);
     }
 
     @DeleteMapping("/name/{name}")

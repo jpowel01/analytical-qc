@@ -127,7 +127,7 @@
       <v-col>
         <v-expansion-panels multiple>
           <SamplePanel
-            v-for="sampleDetail in detail.sampleDetails"
+            v-for="sampleDetail in detail.sampleDetails.filter((sd) => { return sd.experiments.length > 0 })"
             :key="sampleDetail.sample.id"
             :sample="sampleDetail.sample"
             :experiments="sampleDetail.experiments"

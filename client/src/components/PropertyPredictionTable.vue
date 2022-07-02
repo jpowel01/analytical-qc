@@ -47,7 +47,8 @@
                   <AmenabilityChip
                     v-if="amenabilityPrediction && amenabilityPrediction.lcmsAmenNeg"
                     threshold="0.5"
-                    :prob="amenabilityPrediction.lcmsAmenNeg"
+                    :pred="amenabilityPrediction.lcmsAmenNeg"
+                    :true="amenabilityPrediction.lcmsAmenNegTrue"
                   />
                 </td>
               </tr>
@@ -57,7 +58,8 @@
                   <AmenabilityChip
                     v-if="amenabilityPrediction && amenabilityPrediction.lcmsAmenPos"
                     threshold="0.5"
-                    :prob="amenabilityPrediction.lcmsAmenPos"
+                    :pred="amenabilityPrediction.lcmsAmenPos"
+                    :true="amenabilityPrediction.lcmsAmenPosTrue"
                   />
                 </td>
               </tr>

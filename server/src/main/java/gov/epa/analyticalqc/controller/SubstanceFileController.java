@@ -77,6 +77,7 @@ public class SubstanceFileController {
                             "NOCAS_" + dtxsid, 
                             null, 
                             null,
+                            null,
                             null);
                     } else {
                         DashboardResponse response = responses[0];
@@ -91,7 +92,8 @@ public class SubstanceFileController {
                             response.getCasrn(), 
                             response.getMolFormula(), 
                             response.getAverageMass(),
-                            pubchemCid);
+                            pubchemCid,
+                            null);
                     }
                     substance = substanceRepository.save(newSubstance);
                 }

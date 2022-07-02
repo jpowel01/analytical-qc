@@ -30,6 +30,7 @@ import gov.epa.analyticalqc.dto.SampleDto;
 import gov.epa.analyticalqc.dto.SubstanceDetail;
 import gov.epa.analyticalqc.dto.SubstanceFileDto;
 import gov.epa.analyticalqc.dto.SubstanceListRequest;
+import gov.epa.analyticalqc.dto.SubstanceRow;
 import gov.epa.analyticalqc.entity.Grade;
 import gov.epa.analyticalqc.entity.Sample;
 import gov.epa.analyticalqc.entity.Substance;
@@ -54,21 +55,20 @@ public class SubstanceController {
     @Autowired SubstanceFileRepository substanceFileRepository;
 
     @GetMapping()
-    public ResponseEntity<Page<Substance>> getAllSubstances(@RequestParam(name="search", required=false) String search,
+    public ResponseEntity<Page<SubstanceRow>> getAllSubstances(@RequestParam(name="search", required=false) String search,
+        @RequestParam(name="listId", required=false) Integer listId,
         @RequestParam(name="pageNo", defaultValue="0") Integer pageNo, 
         @RequestParam(name="pageSize", defaultValue="100") Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("id").ascending());
-        if (search != null) {
-            return new ResponseEntity<>(substanceRepository.findByPreferredNameContainingIgnoreCase(search, pageable), HttpStatus.OK);
+        if (search != null && listId != null) {
+            return new ResponseEntity<>(substanceRepository.findRowsByListIdAndPreferredNameContainingIgnoreCase(search, listId, pageable), HttpStatus.OK);
+        } else if (search != null) {
+            return new ResponseEntity<>(substanceRepository.findRowsByPreferredNameContainingIgnoreCase(search, pageable), HttpStatus.OK);
+        } else if (listId != null) {
+            return new ResponseEntity<>(substanceRepository.findRowsByListId(listId, pageable), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(substanceRepository.findAll(pageable), HttpStatus.OK);
+            return new ResponseEntity<>(substanceRepository.findAllRows(pageable), HttpStatus.OK);
         }
-    }
-
-    @PostMapping("/list")
-    public ResponseEntity<Page<Substance>> getListSubstances(@RequestBody SubstanceListRequest request) {
-        Pageable pageable = PageRequest.of(request.getPageNo(), request.getPageSize(), Sort.by("id").ascending());
-        return new ResponseEntity<>(substanceRepository.findByIdIn(request.getIds(), pageable), HttpStatus.OK);
     }
 
     @GetMapping({"/{id}", "/id/{id}"})

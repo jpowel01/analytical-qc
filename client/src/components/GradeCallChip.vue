@@ -1,5 +1,5 @@
 <template>
-  <v-tooltip top>
+  <v-tooltip top :disabled="!data.description">
     <template v-slot:activator="{ on, attrs }">
       <span v-if="title" class="text-body-1 text--secondary">{{ title }} </span>
       <v-chip
@@ -10,7 +10,7 @@
         v-bind="attrs"
         v-on="on"
       >
-        <strong>{{ data.name }}</strong>
+        <strong>{{ data.name ? data.name : data }}</strong>
       </v-chip>
     </template>
     <span v-if="validated">Validated: </span>
@@ -27,7 +27,11 @@ export default {
 
   computed: {
     color() {
-      return ColorByName.colorByName(this.data.name, this.useTripodColors);
+      if (this.data.name) {
+        return ColorByName.colorByName(this.data.name, this.useTripodColors);
+      } else {
+        return ColorByName.colorByName(this.data, this.useTripodColors);
+      }
     },
   },
 };

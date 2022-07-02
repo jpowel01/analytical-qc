@@ -8,20 +8,20 @@
         v-bind="attrs"
         v-on="on"
       >
-        <v-icon>{{ prob > threshold ? 'mdi-check' : 'mdi-close' }}</v-icon>
+        <v-icon>{{ pred > threshold ? 'mdi-check' : 'mdi-close' }}</v-icon>
       </v-chip>
     </template>
-    <span>{{ "Prediction: " + prob.toPrecision(3) }}</span>
+    <span>{{ "Prediction: " + pred.toPrecision(3) }}</span>
   </v-tooltip>
 </template>
 
 <script>
 export default {
-  props: ["prob", "threshold"],
+  props: ["pred", "threshold", "true"],
 
   computed: {
     color() {
-      if (this.prob > this.threshold) {
+      if (this.pred > this.threshold) {
         return "green";
       } else {
         return "red";
@@ -29,7 +29,7 @@ export default {
     },
 
     tooltip() {
-      if (this.prob > this.threshold) {
+      if (this.pred > this.threshold) {
         return "Amenable";
       } else {
         return "Unamenable";
