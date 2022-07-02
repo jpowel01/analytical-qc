@@ -27,10 +27,10 @@ A frontend interface in Vue.js, running on an nginx server, by default on port 8
 
 Summary API endpoints are provided for substance- and sample-level annotation information (grades at T0 and T4, final stability call, and any text annotation). These are accessible at:
 
-- `/substance-annotations/[id|casrn|dtxsid|tox21-id|ncgc-id|bottle-barcode]/[query]` (single substance annotation)
-- `/substance-annotations?pageNo=[no]&pageSize=[size]` (all substance annotations, paginated)
-- `/sample-annotations/[id|tox21-id|ncgc-id|bottle-barcode]/[query]` (single sample annotation)
-- `/sample-annotations?pageNo=[no]&pageSize=[size]` (all sample annotations, paginated)
+- `[backend]/api/substance-annotations/[id|casrn|dtxsid|tox21-id|ncgc-id|bottle-barcode]/[query]` (single substance annotation)
+- `[backend]/api/substance-annotations?pageNo=[no]&pageSize=[size]` (all substance annotations, paginated)
+- `[backend]/api/sample-annotations/[id|tox21-id|ncgc-id|bottle-barcode]/[query]` (single sample annotation)
+- `[backend]/api/sample-annotations?pageNo=[no]&pageSize=[size]` (all sample annotations, paginated)
 
 ## Important
 
