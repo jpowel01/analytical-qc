@@ -304,15 +304,15 @@ export default {
 
     saveAmenabilityPrediction(newAmenabilityPrediction) {
       this.saveNewAmenabilityPrediction(newAmenabilityPrediction)
-        .then(() => { this.setSubstanceData(this.$route.params.query, this.$route.params.type) })
+        .then((response) => { this.detail.amenabilityPrediction = response.data })
     },
 
     saveNewAmenabilityPrediction(newAmenabilityPrediction) {
       let savedAmenabilityPrediction = this.detail.substance.amenabilityPrediction;
-      if (!this.detail.substance.amenabilityPrediction && newAmenabilityPrediction.nmrAmenFlag) {
+      if (!this.detail.substance.amenabilityPrediction && newAmenabilityPrediction) {
         newAmenabilityPrediction.substance = this.detail.substance;
         savedAmenabilityPrediction = AmenabilityPredictionDataService.post(newAmenabilityPrediction);
-      } else if (newAmenabilityPrediction.nmrAmenFlag) {
+      } else if (newAmenabilityPrediction) {
         savedAmenabilityPrediction = AmenabilityPredictionDataService.put(
           this.detail.substance.amenabilityPrediction.id,
           newAmenabilityPrediction

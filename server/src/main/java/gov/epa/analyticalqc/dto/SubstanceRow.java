@@ -1,5 +1,7 @@
 package gov.epa.analyticalqc.dto;
 
+import gov.epa.analyticalqc.entity.Call;
+import gov.epa.analyticalqc.entity.Grade;
 import lombok.Value;
 
 @Value
@@ -19,11 +21,11 @@ public class SubstanceRow {
 
     private Long pubchemCid;
 
-    private String t0Grade;
+    private Grade t0Grade;
 
-    private String t4Grade;
+    private Grade t4Grade;
 
-    private String call;
+    private Call call;
 
     private Boolean validated;
     

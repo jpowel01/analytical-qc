@@ -45,10 +45,12 @@
                 <th scope="row">LCMS (ESI-)</th>
                 <td>
                   <AmenabilityChip
-                    v-if="amenabilityPrediction && amenabilityPrediction.lcmsAmenNeg"
+                    v-if="newAmenabilityPrediction && newAmenabilityPrediction.lcmsAmenNeg"
                     threshold="0.5"
-                    :pred="amenabilityPrediction.lcmsAmenNeg"
-                    :true="amenabilityPrediction.lcmsAmenNegTrue"
+                    :pred="newAmenabilityPrediction.lcmsAmenNeg"
+                    :trueVal="newAmenabilityPrediction.lcmsAmenNegTrue"
+                    @validate="validateNeg(0.5)"
+                    @override="overrideNeg(0.5)"
                   />
                 </td>
               </tr>
@@ -56,10 +58,12 @@
                 <th scope="row">LCMS (ESI+)</th>
                 <td>
                   <AmenabilityChip
-                    v-if="amenabilityPrediction && amenabilityPrediction.lcmsAmenPos"
+                    v-if="newAmenabilityPrediction && newAmenabilityPrediction.lcmsAmenPos"
                     threshold="0.5"
-                    :pred="amenabilityPrediction.lcmsAmenPos"
-                    :true="amenabilityPrediction.lcmsAmenPosTrue"
+                    :pred="newAmenabilityPrediction.lcmsAmenPos"
+                    :trueVal="newAmenabilityPrediction.lcmsAmenPosTrue"
+                    @validate="validatePos(0.5)"
+                    @override="overridePos(0.5)"
                   />
                 </td>
               </tr>
@@ -112,6 +116,10 @@ export default {
       tab: null,
       nmrAmenFlags: [],
       newAmenabilityPrediction: {
+        lcmsAmenNeg: null,
+        lcmsAmenPos: null,
+        lcmsAmenNegTrue: null,
+        lcmsAmenPosTrue: null,
         nmrAmenFlag: {},
       }
     }
@@ -119,6 +127,25 @@ export default {
 
   components: {
     AmenabilityChip,
+  },
+
+  methods: {
+    validatePos(threshold) {
+      this.newAmenabilityPrediction.lcmsAmenPosTrue = (this.newAmenabilityPrediction.lcmsAmenPos > threshold);
+      this.$emit('changed', this.newAmenabilityPrediction);
+    },
+    validateNeg(threshold) {
+      this.newAmenabilityPrediction.lcmsAmenNegTrue = (this.newAmenabilityPrediction.lcmsAmenNeg > threshold);
+      this.$emit('changed', this.newAmenabilityPrediction);
+    },
+    overridePos(threshold) {
+      this.newAmenabilityPrediction.lcmsAmenPosTrue = !(this.newAmenabilityPrediction.lcmsAmenPos > threshold);
+      this.$emit('changed', this.newAmenabilityPrediction);
+    },
+    overrideNeg(threshold) {
+      this.newAmenabilityPrediction.lcmsAmenNegTrue = !(this.newAmenabilityPrediction.lcmsAmenNeg > threshold);
+      this.$emit('changed', this.newAmenabilityPrediction);
+    },
   },
 
   mounted() {
