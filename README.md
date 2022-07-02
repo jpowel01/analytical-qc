@@ -48,14 +48,16 @@ Files can be copied onto a remote server using scp (https://linuxize.com/post/ho
 
 ### Moving the database/redeploying
 
-This application is set up to deploy in Docker using docker-compose. It is now deployed on the v2626umcth819.rtord.epa.gov server. If the database is transferred to a different location or a different user account is used to access it, the app credentials will need to be altered and the services rebuilt. The current environment variable values are in a .env.local file provided to Tony Williams.
+This application is set up to deploy in Docker using docker-compose. It is now deployed on the v2626umcth819.rtord.epa.gov server. If the database is transferred to a different location or a different user account is used to access it, the app credentials will need to be altered and the services restarted. The current environment variable values are in a .env.local file provided to Tony Williams.
 
 0. Clone this repository into the desired deployment location.
 0.5. Extract the static files into the content-server/static directory of this repository.
 1. Place the .env.local file in the root directory of this repository.
 2. Change the `DB_` variables in the .env.local file as needed.
 3. Run `export $(cat .env.local | xargs)` to export the variables in .env.local to your environment.
-4. Run `docker-compose up --build --force-recreate -d` to build and run the services in detached mode.
+4. Run `docker-compose up --build -d` to build and run the services in detached mode.
+
+If the deployment location is not changed, then the services only need to be restarted, not rebuilt, for the changed environment variables to take effect.
 
 ### Server environment variables
 
