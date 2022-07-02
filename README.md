@@ -59,3 +59,11 @@ This application is set up to deploy in Docker using docker-compose. It is now d
 
 - VUE_APP_SERVER_URL: URL of server deployment
 - VUE_APP_CONTENT_SERVER_URL: URL of content-server deployment
+
+### Adding new grade/call/structure flag/NMR amenability flag options
+
+New options for grades, calls, structure flags, and NMR amenability flags can be added to the database and will be shown immediately in the interface:
+
+`INSERT INTO sbox_analytical_qc.[grades|calls|structure_flags|nmr_amen_flags] (name, description) VALUES ('newname', 'newdescription')`
+
+New additions will be automatically colored gray when shown.
