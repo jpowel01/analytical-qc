@@ -1,9 +1,13 @@
 package gov.epa.analyticalqc.dto;
 
 import gov.epa.analyticalqc.entity.NmrAmenFlag;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.Value;
 
-@Value
+@Value @Getter @Setter
 public class AmenabilityPredictionDto {
 
     private Integer id;
@@ -17,5 +21,20 @@ public class AmenabilityPredictionDto {
     private Boolean lcmsAmenPosTrue;
 
     private NmrAmenFlag nmrAmenFlag;
+    
+    public AmenabilityPredictionDto() {
+    	
+    }
+    
+    public AmenabilityPredictionDto(Integer id, double lcmsAmenNeg, double lcmsAmenPos, boolean lcmsAmenNegTrue, boolean lcmsAmenPosTrue, NmrAmenFlag nmrAmenFlag) {
+    	this.id=id;
+    	this.lcmsAmenNeg=lcmsAmenNeg;
+    	this.lcmsAmenPos=lcmsAmenPos;
+    	this.lcmsAmenNegTrue=lcmsAmenNegTrue;
+    	this.lcmsAmenPosTrue=lcmsAmenPosTrue;
+    	this.nmrAmenFlag=nmrAmenFlag;
+    }
+
+
     
 }

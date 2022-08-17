@@ -9,4 +9,14 @@ public class SubstanceFileDto {
 
     private String note;
     
+    public SubstanceFileDto() {
+    	
+    }
+    
+    public SubstanceFileDto(String fileName, String note) {
+    	this.fileName=fileName;
+    	this.note=note;
+    }
+
+    
 }
