@@ -32,6 +32,10 @@ public class SampleDto {
     	this.bottleBarcode=bottleBarcode;
     	this.withdrawn=withdrawn;
     }
+    
+    public Integer getId() {
+    	return this.id;
+    }
 
     
 }

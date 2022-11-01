@@ -1,5 +1,10 @@
 <template>
   <v-container fluid v-if="detail && detail.substance">
+    <v-img
+          :src="`${DASHBOARD_IMAGE_URL}/${detail.substance.dtxsid}`"
+          :key="detail.substance.dtxsid"
+          @error="state.missingImage = true"
+        />
     <v-row class="ma-2" align="center">
       <div class="text-h4 mr-2">
         {{ detail.substance.preferredName }}
@@ -121,11 +126,20 @@
             hide-details
           />
         </div>
+        <div class="d-inline-flex align-center mx-2">
+          <v-switch
+            v-model="state.showEvotecFiles"
+            :label="
+              (state.showEvotecFiles ? 'Showing' : 'Hiding') + ' Evotec files'
+            "
+            hide-details
+          />
+        </div>
       </v-col>
     </v-row>
     <v-row>
       <v-col>
-        <v-expansion-panels multiple>
+        <v-expansion-panels v-model="panel" multiple>
           <SamplePanel
             v-for="sampleDetail in detail.sampleDetails.filter((sd) => { return sd.experiments.length > 0 })"
             :key="sampleDetail.sample.id"
@@ -146,15 +160,20 @@
             </v-expansion-panel-header>
             <v-expansion-panel-content>
               <v-list>
+
                 <v-list-item v-for="file in detail.substanceFiles" :key="file.id">
-                  <a
+                
+                   <a
                     target="_blank"
                     rel="noreferrer noopener"
                     :href="`${CONTENT_SERVER_URL}/${file.fileName}`"
-                    >{{ file.fileName }}</a
+                    >{{ file.fileName }}
+                    
+                  </a
                   ><v-icon x-small class="ml-1">mdi-open-in-new</v-icon>
                   &nbsp;({{ file.note }})
                 </v-list-item>
+                
               </v-list>
             </v-expansion-panel-content>
           </v-expansion-panel>
@@ -194,6 +213,7 @@ export default {
 
   data() {
     return {
+      panel: [0],
       detail: null,
       annotation: {},
       substanceStructureFlags: [],
@@ -206,6 +226,7 @@ export default {
         missingImage: false,
         useTripodColors: false,
         showSpectrusFiles: false,
+        showEvotecFiles: true,
         next: null,
         previous: null,
       },
@@ -391,4 +412,5 @@ export default {
 .v-data-table-header th {
   white-space: nowrap;
 }
+
 </style>

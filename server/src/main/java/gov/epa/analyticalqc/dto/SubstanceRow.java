@@ -11,27 +11,27 @@ import lombok.Value;
 @Value @Getter @Setter
 public class SubstanceRow {
 
-    private Integer id;
+    public Integer id;
 
-    private String dtxsid;
+    public String dtxsid;
 
-    private String preferredName;
+    public String preferredName;
 
-    private String casrn;
+    public String casrn;
 
-    private String molFormula;
+    public String molFormula;
 
-    private Double molWeight;
+    public Double molWeight;
 
-    private Long pubchemCid;
+    public Long pubchemCid;
 
-    private Grade t0Grade;
+    public Grade t0Grade;
 
-    private Grade t4Grade;
+    public Grade t4Grade;
 
-    private Call call;
+    public Call call;
 
-    private Boolean validated;
+    public Boolean validated;
     
     
     public SubstanceRow() {

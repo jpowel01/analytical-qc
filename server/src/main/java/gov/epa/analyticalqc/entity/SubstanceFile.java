@@ -31,4 +31,52 @@ public class SubstanceFile {
 
     private String note;
     
+    public SubstanceFile() {
+    	
+    }
+    
+    
+
+	public SubstanceFile(Integer id, Substance substance, File file, String note) {
+		super();
+		this.id = id;
+		this.substance = substance;
+		this.file = file;
+		this.note = note;
+	}
+
+
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Substance getSubstance() {
+		return substance;
+	}
+
+	public void setSubstance(Substance substance) {
+		this.substance = substance;
+	}
+
+	public File getFile() {
+		return file;
+	}
+
+	public void setFile(File file) {
+		this.file = file;
+	}
+
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
+    
 }

@@ -15,5 +15,37 @@ public class CreateSubstanceFilesRequest {
     private String name;
 
     private String description;
+
+	public String getFiles() {
+		return files;
+	}
+
+	public void setFiles(String files) {
+		this.files = files;
+	}
+
+	public Boolean getCreateSubstances() {
+		return createSubstances;
+	}
+
+	public void setCreateSubstances(Boolean createSubstances) {
+		this.createSubstances = createSubstances;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
     
 }

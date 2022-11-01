@@ -26,6 +26,17 @@ public class List {
     private Boolean hidden;
     
     
+    public List() {
+    	
+    }
+    
+    public List(Integer id, String name, String description, Boolean hidden) {
+    	this.id = id;
+    	this.name = name;
+    	this.description = description;
+    	this.hidden = hidden;
+    }
+    
 	public Integer getId() {
 		return id;
 	}

@@ -29,4 +29,14 @@ public class ListSubstance {
 	@JoinColumn(name="list_id")
 	private List list;
     
+    public ListSubstance() {
+    	
+    }
+    
+    public ListSubstance(Integer id, Substance substance, List list) {
+    	this.id = id;
+    	this.substance = substance;
+    	this.list = list;
+    }
+    
 }

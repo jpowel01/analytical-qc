@@ -29,4 +29,9 @@ public class ExperimentGrade {
 	@JoinColumn(name="grade_id")
 	private Grade grade;
     
+    public Grade getGrade() {
+    	return this.grade;
+    }
 }
+
+	

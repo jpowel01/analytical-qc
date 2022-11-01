@@ -40,4 +40,34 @@ public class Sample {
 
     private boolean withdrawn;
     
+    public Sample() {
+    	
+    }
+    
+    public Sample(Integer id, Substance substance, String ncgcId, Long tox21Id, Long pubchemSid,
+    		String bottleBarcode, boolean withdrawn) {
+    	this.id = id;
+    	this.substance = substance;
+    	this.ncgcId = ncgcId;
+    	this.tox21Id = tox21Id;
+    	this.pubchemSid = pubchemSid;
+    	this.bottleBarcode = bottleBarcode;
+    	this.withdrawn = withdrawn;
+    }
+    
+    public void SetId(Integer id) {
+    	this.id = id;
+    }
+    
+    public Integer getId() {
+    	return this.id;
+    }
+    
+    public void SetSubstance(Substance substance) {
+    	this.substance = substance;
+    }
+    
+    public Substance getSubstance() {
+    	return this.substance;
+    }
 }

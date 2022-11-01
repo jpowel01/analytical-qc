@@ -14,4 +14,12 @@ public class SampleDetail {
 
     private List<ExperimentDetail> experiments;
 
+    public SampleDetail() {
+    	
+    }
+    
+    public SampleDetail(SampleDto sample, List<ExperimentDetail> experiments) {
+    	this.sample = sample;
+    	this.experiments = experiments;
+    }
 }

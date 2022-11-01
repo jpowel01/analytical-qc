@@ -1,5 +1,5 @@
 <template>
-  <v-expansion-panel>
+  <v-expansion-panel expand>
     <v-expansion-panel-header class="text-h6">
       <v-row align="center">
         <div :class="titleClass" v-if="sample.tox21Id">
@@ -73,17 +73,25 @@
       </v-row>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
-      <v-data-table
+       <v-data-table
         :headers="experimentHeaders"
         :items="experiments"
         disable-pagination
         hide-default-footer
         sort-by="experiment.timepoint"
-        :search="showSpectrusFiles ? '' : '.pdf'"
       >
         <template v-slot:item.experiment.id="{ item }">
           <ExperimentAnnotationChip :experiment="item.experiment" />
         </template>
+
+       <template  v-slot:item.experiment.study="{ value }">
+          <!-- <div "> -->
+          <!-- <span style="color: changeStudyColor(value)"> -->
+          <span class="red -- text">
+
+          {{ value }}
+          </span>
+       </template>
 
         <template v-slot:item.experiment.experimentDate="{ value }">
           {{ value | formatDate }}
@@ -113,7 +121,7 @@
           />
         </template>
       </v-data-table>
-      <div class="text-caption text--secondary my-2">
+       <div class="text-caption text--secondary my-2">
         <span class="mx-1" v-if="sample.tox21Id"
           ><strong>Tox21 ID:</strong> Tox21_{{ sample.tox21Id }} ({{
             library
@@ -167,6 +175,8 @@ export default {
   },
 
   computed: {
+
+
     PUBCHEM_SID_URL() {
       return PUBCHEM_SID_URL;
     },
@@ -230,7 +240,8 @@ export default {
 
   data() {
     return {
-      annotation: {}
+      annotation: {},
+      panel: [0]
     };
   },
 
@@ -245,6 +256,25 @@ export default {
           console.log(err);
         });
     },
+      
+  changeStudyColor(study) {
+      try {
+        if (study === "NIST GCMS") {
+        return "red -- text";
+        } else if (study === "OPANS LCMS") {
+          return "green -- text"
+        }
+        else {
+          return "green -- text";
+        }
+      } catch (error) {
+        return "black -- text";
+      }
+    },
+  
+
+
+
 
     save(edited) {
       this.saveAnnotation(edited.annotation)
@@ -274,6 +304,10 @@ export default {
 
   mounted() {
     this.setSampleAnnotation(this.sample.id);
+    console.log("this.experiments:", this.experiments)
   },
 };
 </script>
+
+
+

@@ -28,4 +28,39 @@ public class File {
     @Column(name="file_date")
     private Date fileDate;
     
+    public File() {
+    	
+    }
+
+	public File(Integer id, String fileName, Date fileDate) {
+		super();
+		this.id = id;
+		this.fileName = fileName;
+		this.fileDate = fileDate;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public Date getFileDate() {
+		return fileDate;
+	}
+
+	public void setFileDate(Date fileDate) {
+		this.fileDate = fileDate;
+	}
+    
 }

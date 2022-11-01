@@ -97,6 +97,10 @@ public class ExperimentDto {
     	this.origFilesContentId = origFilesContentId;
     	this.isTripod=isTripod;
     }
+    
+    public Integer getId() {
+    	return this.id;
+    }
 
 
 }

@@ -20,5 +20,18 @@ public class SubstanceDetail {
     private List<SampleDetail> sampleDetails;
 
     private List<SubstanceFileDto> substanceFiles;
+    
+    public SubstanceDetail() {
+    	
+    }
+    
+    public SubstanceDetail(Substance substance, PropertyPredictionDto propertyPrediction,
+    		AmenabilityPredictionDto amenabilityPrediction, List<SampleDetail> sampleDetails, List<SubstanceFileDto> substanceFiles) {
+    	this.substance = substance;
+    	this.propertyPrediction = propertyPrediction;
+    	this.amenabilityPrediction = amenabilityPrediction;
+    	this.sampleDetails = sampleDetails;
+    	this.substanceFiles = substanceFiles;
+    }
 
 }
