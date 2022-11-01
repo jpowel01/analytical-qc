@@ -241,7 +241,6 @@ export default {
   data() {
     return {
       annotation: {},
-      panel: [0]
     };
   },
 
