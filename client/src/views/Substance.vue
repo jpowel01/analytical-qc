@@ -1,10 +1,6 @@
 <template>
+<div>
   <v-container fluid v-if="detail && detail.substance">
-    <v-img
-          :src="`${DASHBOARD_IMAGE_URL}/${detail.substance.dtxsid}`"
-          :key="detail.substance.dtxsid"
-          @error="state.missingImage = true"
-        />
     <v-row class="ma-2" align="center">
       <div class="text-h4 mr-2">
         {{ detail.substance.preferredName }}
@@ -81,11 +77,18 @@
     </v-row>
     <v-row>
       <v-col cols="2">
+        <div class="container" @click="overlay = !overlay">
         <v-img
           :src="`${DASHBOARD_IMAGE_URL}/${detail.substance.dtxsid}`"
           :key="detail.substance.dtxsid"
           @error="state.missingImage = true"
         />
+          <MagnifyIcon class="test">
+              
+          </MagnifyIcon>
+
+        </div>
+
         <v-alert type="error" v-if="state.missingImage"
           >Image unavailable</v-alert
         >
@@ -121,16 +124,7 @@
           <v-switch
             v-model="state.showSpectrusFiles"
             :label="
-              (state.showSpectrusFiles ? 'Showing' : 'Hiding') + ' Spectrus files'
-            "
-            hide-details
-          />
-        </div>
-        <div class="d-inline-flex align-center mx-2">
-          <v-switch
-            v-model="state.showEvotecFiles"
-            :label="
-              (state.showEvotecFiles ? 'Showing' : 'Hiding') + ' Evotec files'
+              (state.showSpectrusFiles ? 'Showing' : 'Hiding') + ' Spectrus and Evotec files'
             "
             hide-details
           />
@@ -181,6 +175,19 @@
       </v-col>
     </v-row>
   </v-container>
+<!-- overlay to accomplish the image pop up -->
+    <v-overlay :value="overlay">
+      <div v-click-outside="onClickOutside">
+          <v-img
+          :src="`${DASHBOARD_IMAGE_URL}/${detail.substance.dtxsid}`"
+          :key="detail.substance.dtxsid"
+          @error="state.missingImage = true"
+        />
+      </div>
+
+    </v-overlay>
+
+</div>
 </template>
 
 <script>
@@ -199,6 +206,10 @@ import SubstanceStructureFlagDataService from "../services/SubstanceStructureFla
 import SubstanceAnnotationDataService from "../services/SubstanceAnnotationDataService";
 import AmenabilityPredictionDataService from "../services/AmenabilityPredictionDataService";
 import { DASHBOARD_IMAGE_URL, CONTENT_SERVER_URL } from "@/store";
+import vClickOutside from 'v-click-outside';
+import MagnifyIcon from 'vue-material-design-icons/Magnify.vue';
+
+
 
 export default {
   components: {
@@ -209,6 +220,7 @@ export default {
     SamplePanel,
     EditDialog,
     AnnotationChip,
+    MagnifyIcon
   },
 
   data() {
@@ -226,10 +238,14 @@ export default {
         missingImage: false,
         useTripodColors: false,
         showSpectrusFiles: false,
-        showEvotecFiles: true,
         next: null,
         previous: null,
       },
+      overlay:false,
+      directives: {
+        clickOutside: vClickOutside.directive
+        },
+
     };
   },
 
@@ -247,6 +263,13 @@ export default {
     getDetail(query, type) {
       return SubstanceDataService.getDetailAlternate(query, type);
     },
+
+
+    onClickOutside (event) {
+      this.overlay = false;
+      console.log('Clicked outside. Event: ', event)
+    },
+
 
     setSubstanceStructureFlags(id) {
       this.substanceStructureFlags = [];
@@ -412,5 +435,15 @@ export default {
 .v-data-table-header th {
   white-space: nowrap;
 }
+
+.container {
+    position:relative;
+}
+.test {
+   position:absolute;
+   top:0;
+   left:0;
+}
+
 
 </style>

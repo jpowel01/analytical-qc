@@ -1,4 +1,5 @@
 <template>
+  <div class="FullTemplate">
   <v-expansion-panel expand>
     <v-expansion-panel-header class="text-h6">
       <v-row align="center">
@@ -20,49 +21,43 @@
             :annotation="annotation"
             @edited="save"
           />
-          <div
-            class="ma-0 d-inline-flex"
-            v-if="annotation"
-          >
-          <div
-            v-if="annotation.annotation"
-            class="mx-1 d-inline-flex align-center"
-          >
-            <AnnotationChip :annotation="annotation.annotation" />
+          <div class="ma-0 d-inline-flex" v-if="annotation">
+            <div
+              v-if="annotation.annotation"
+              class="mx-1 d-inline-flex align-center"
+            >
+              <AnnotationChip :annotation="annotation.annotation" />
+            </div>
+            <div
+              v-if="annotation.t0Grade"
+              class="mx-1 d-inline-flex align-center"
+            >
+              <GradeCallChip
+                :data="annotation.t0Grade"
+                :validated="annotation.validated"
+                title="T0"
+                :use-tripod-colors="useTripodColors"
+              />
+            </div>
+            <div
+              v-if="annotation.t4Grade"
+              class="mx-1 d-inline-flex align-center"
+            >
+              <GradeCallChip
+                :data="annotation.t4Grade"
+                :validated="annotation.validated"
+                title="T4"
+                :use-tripod-colors="useTripodColors"
+              />
+            </div>
+            <div v-if="annotation.call" class="mx-1 d-inline-flex align-center">
+              <GradeCallChip
+                :data="annotation.call"
+                :validated="annotation.validated"
+                title="Call"
+              />
+            </div>
           </div>
-          <div
-            v-if="annotation.t0Grade"
-            class="mx-1 d-inline-flex align-center"
-          >
-            <GradeCallChip
-              :data="annotation.t0Grade"
-              :validated="annotation.validated"
-              title="T0"
-              :use-tripod-colors="useTripodColors"
-            />
-          </div>
-          <div
-            v-if="annotation.t4Grade"
-            class="mx-1 d-inline-flex align-center"
-          >
-            <GradeCallChip
-              :data="annotation.t4Grade"
-              :validated="annotation.validated"
-              title="T4"
-              :use-tripod-colors="useTripodColors"
-            />
-          </div>
-          <div
-            v-if="annotation.call"
-            class="mx-1 d-inline-flex align-center"
-          >
-            <GradeCallChip
-              :data="annotation.call"
-              :validated="annotation.validated"
-              title="Call"
-            />
-          </div>
-        </div>
         </div>
         <div class="mx-2" v-if="sample.withdrawn">
           <ExperimentGradeChip
@@ -73,35 +68,35 @@
       </v-row>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
-       <v-data-table
+      <v-data-table
         :headers="experimentHeaders"
         :items="experiments"
         disable-pagination
         hide-default-footer
         sort-by="experiment.timepoint"
+        :search="showSpectrusFiles ? '' : '.pdf'"
       >
-        <template v-slot:item.experiment.id="{ item }">
+        <template v-slot:[`item.experiment.id`]="{ item }">
           <ExperimentAnnotationChip :experiment="item.experiment" />
         </template>
+ 
+        <template v-slot:[`item.experiment.study`]="{ value }">
+          <span :class="changeStudyColor(value)">
 
-       <template  v-slot:item.experiment.study="{ value }">
-          <!-- <div "> -->
-          <!-- <span style="color: changeStudyColor(value)"> -->
-          <span class="red -- text">
-
-          {{ value }}
+            {{ value }}
           </span>
-       </template>
-
-        <template v-slot:item.experiment.experimentDate="{ value }">
+        </template>
+        <!-- CR 11/15/22: need brackets on the object for vuetify tables or linting error -->
+        <!-- https://stackoverflow.com/questions/73170422/vue-js-how-to-use-template-v-slot-on-props -->
+        <template v-slot:[`item.experiment.experimentDate`]="{ value }">
           {{ value | formatDate }}
         </template>
 
-        <template v-slot:item.experiment.file.fileDate="{ value }">
+        <template v-slot:[`item.experiment.file.fileDate`]="{ value }">
           {{ value | formatDate }}
         </template>
 
-        <template v-slot:item.experiment.file.fileName="{ value }">
+        <template v-slot:[`item.experiment.file.fileName`]="{ value }">
           <span v-if="value">
             <a
               target="_blank"
@@ -111,8 +106,9 @@
             ><v-icon x-small class="ml-1">mdi-open-in-new</v-icon>
           </span>
         </template>
-
-        <template v-slot:item.experiment.grade="{ item }">
+        <!-- need ` after brackets if it's the item -->
+        <!-- see: https://vuetifyjs.com/en/components/data-tables/#expandable-rows -->
+        <template v-slot:[`item.experiment.grade`]="{item}">
           <ExperimentGradeChip
             v-for="grade in item.grades"
             :key="grade.id"
@@ -121,7 +117,7 @@
           />
         </template>
       </v-data-table>
-       <div class="text-caption text--secondary my-2">
+      <div class="text-caption text--secondary my-2">
         <span class="mx-1" v-if="sample.tox21Id"
           ><strong>Tox21 ID:</strong> Tox21_{{ sample.tox21Id }} ({{
             library
@@ -145,7 +141,10 @@
       </div>
     </v-expansion-panel-content>
   </v-expansion-panel>
+  </div>
 </template>
+
+
 
 <script>
 import ExperimentGradeChip from "./ExperimentGradeChip";
@@ -175,8 +174,6 @@ export default {
   },
 
   computed: {
-
-
     PUBCHEM_SID_URL() {
       return PUBCHEM_SID_URL;
     },
@@ -206,7 +203,8 @@ export default {
       return null;
     },
 
-    experimentHeaders() { return [
+    experimentHeaders() {
+      return [
         {
           text: "",
           value: "experiment.id",
@@ -231,16 +229,17 @@ export default {
         { text: "Timepoint", value: "experiment.timepoint", sortable: true },
         { text: "Batch", value: "experiment.batch", sortable: true },
         { text: "Well", value: "experiment.well", sortable: true },
-        { text: "Grade", value: "experiment.grade", sortable: true, },
+        { text: "Grade", value: "experiment.grade", sortable: true },
         { text: "Purity", value: "experiment.purity", sortable: true },
         { text: "Pass/Fail", value: "experiment.passFail", sortable: true },
         { text: "Comment", value: "experiment.comment", sortable: true },
-      ]},
+      ];
+    },
   },
 
   data() {
     return {
-      annotation: {},
+      annotation: {}
     };
   },
 
@@ -255,25 +254,24 @@ export default {
           console.log(err);
         });
     },
-      
-  changeStudyColor(study) {
+
+    changeStudyColor(study) {
+      console.log("study is: ", study);
       try {
         if (study === "NIST GCMS") {
-        return "red -- text";
+          return "red--text";
+        } else if (study === "") {
+          return "orange--text"
+        
         } else if (study === "OPANS LCMS") {
-          return "green -- text"
-        }
-        else {
-          return "green -- text";
+          return "green--text";
+        } else {
+          return "blue--text";
         }
       } catch (error) {
-        return "black -- text";
+        return "black--text";
       }
     },
-  
-
-
-
 
     save(edited) {
       this.saveAnnotation(edited.annotation)
@@ -284,6 +282,15 @@ export default {
           console.log(err);
         });
     },
+
+    filterOutSpectrusEvotec (value, search, item) {
+        return value != null &&
+          search != null &&
+          typeof value === 'string' &&
+          value.toString().toLocaleUpperCase().indexOf(search) !== -1
+
+      },
+
 
     saveAnnotation(editedAnnotation) {
       let savedAnnotation = this.annotation;
@@ -301,12 +308,10 @@ export default {
     },
   },
 
+
   mounted() {
     this.setSampleAnnotation(this.sample.id);
-    console.log("this.experiments:", this.experiments)
-  },
-};
+    console.log("this.experiments:", this.experiments);
+  }
+}
 </script>
-
-
-

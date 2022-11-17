@@ -11,7 +11,9 @@
     "axios": "^0.27.2",
     "core-js": "^3.6.5",
     "moment": "^2.29.3",
+    "v-click-outside": "^3.2.0",
     "vue": "^2.6.11",
+    "vue-material-design-icons": "^5.1.2",
     "vue-property-decorator": "^8.0.0",
     "vue-router": "^3.2.0",
     "vuetify": "^2.6.0",
@@ -35,6 +37,4 @@
     "vue-template-compiler": "^2.6.11",
     "vuetify-loader": "^1.7.0"
   }
-
-
 }
