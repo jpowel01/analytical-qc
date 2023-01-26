@@ -8,7 +8,6 @@ import gov.epa.analyticalqc.dto.BatchSearchRequestDto;
 import gov.epa.analyticalqc.dto.ExcelDownloadDto;
 import gov.epa.analyticalqc.entity.Substance;
 import gov.epa.analyticalqc.entity.SubstanceAnnotation;
-import gov.epa.analyticalqc.repository.ExcelDownloadRepository;
 import gov.epa.analyticalqc.repository.SubstanceRepository;
 import gov.epa.analyticalqc.service.ExcelDownloadService;
 import org.apache.poi.ss.usermodel.*;
