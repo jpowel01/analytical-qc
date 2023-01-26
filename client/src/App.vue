@@ -1,6 +1,19 @@
 <template>
+  <div id="app">
   <v-app>
-    <v-navigation-drawer app v-model="state.drawer" dark color="secondary">
+        <epa-header></epa-header>
+
+
+    <v-app-bar class="flex-grow-0" color="primary" dark id="bar">
+      <v-app-bar-nav-icon @click.stop="state.drawer = !state.drawer" />
+      <v-toolbar-title>Analytical QC Viewer</v-toolbar-title>
+    </v-app-bar>
+
+  
+  <v-container fluid id ="router-content">
+    <v-row no-gutters>
+      <v-col cols="2">
+      <v-navigation-drawer v-if="state.drawer === true" v-model="state.drawer" dark color="secondary">
       <v-card light class="ma-2">
         <v-card-title class="pb-0">Go to record</v-card-title>
         <v-card-text>
@@ -65,34 +78,62 @@
               Manage
             </v-col>
             <v-col class="col-auto">
-              <v-btn icon to="/manage" color="primary">
+              <v-btn icon to= "/manage" color="primary">
                 <v-icon>
                   mdi-arrow-right
                 </v-icon>
               </v-btn>
+              </v-col>
+            </v-row>
+          </v-card-title>
+        </v-card>
+        <v-card light class="ma-2">
+        <v-card-title>
+          <v-row>
+            <v-col class="mr-auto col-auto">
+              Batch Search
             </v-col>
-          </v-row>
-        </v-card-title>
-      </v-card>
-    </v-navigation-drawer>
+            <v-col class="col-auto">
+              <v-btn icon to="/batch-search" color="primary">
+                <v-icon>
+                  mdi-arrow-right
+                </v-icon>
+              </v-btn>
+              </v-col>
+            </v-row>
+          </v-card-title>
+        </v-card>
 
-    <v-app-bar app color="primary" dark>
-      <v-app-bar-nav-icon @click.stop="state.drawer = !state.drawer" />
-      <v-toolbar-title>Analytical QC</v-toolbar-title>
-    </v-app-bar>
+      </v-navigation-drawer>
+    </v-col>
 
-    <v-main>
-      <router-view @update="fetchLists" />
-    </v-main>
+    <v-col cols="9">
+            <v-main>
+        <router-view @update="fetchLists" />
+            </v-main>
+      </v-col>
+
+    </v-row>
+    </v-container>
+
   </v-app>
+
+      <epa-footer></epa-footer>
+
+  </div>
 </template>
 
 <script>
 import ListDataService from "./services/ListDataService";
+import EpaHeader from "./components/EpaHeader.vue";
+import EpaFooter from "./components/EpaFooter.vue";
 
 export default {
   name: "App",
-
+  components: {
+    EpaHeader,
+    EpaFooter
+  },
   data() {
     return {
       search: {
@@ -113,7 +154,7 @@ export default {
       },
 
       state: {
-        drawer: null,
+        drawer: true,
       }
     };
   },
@@ -151,3 +192,11 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+
+  v-app-bar.bar{
+    position: fixed;
+    height: 0.5rem !important;
+  }
+</style>

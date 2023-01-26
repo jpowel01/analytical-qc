@@ -36,6 +36,11 @@ const routes = [
     name: "error",
     component: () => import("../views/Error.vue"),
   },
+  {
+    path: "/batch-search",
+    name: "batch-search",
+    component: () => import("../views/BatchSearch.vue")
+  }
 ];
 
 const router = new VueRouter({

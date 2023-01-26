@@ -21,7 +21,7 @@
           :server-items-length="totalSubstances"
           :loading="state.loading"
         >
-          <template v-slot:item.id="{ value }">
+          <template v-slot:[`item.id`]="{ value }">
             <v-btn
               :to="`/substances/id/${value}`"
               class="ma-2"
@@ -33,14 +33,14 @@
               <v-icon> mdi-eye </v-icon>
             </v-btn>
           </template>
-          <template v-slot:item.structure="{ item }">
+          <template v-slot:[`item.structure`]="{ item }">
             <v-img
               max-height="150"
               max-width="150"
               :src="`${DASHBOARD_IMAGE_URL}/${item.dtxsid}`"
             />
           </template>
-          <template v-slot:item.dtxsid="{ value }">
+          <template v-slot:[`item.dtxsid`]="{ value }">
             <a
               target="_blank"
               rel="noreferrer noopener"
@@ -48,28 +48,28 @@
               >{{ value }}</a
             ><v-icon x-small class="ml-1">mdi-open-in-new</v-icon>
           </template>
-          <template v-slot:item.t0Grade="{ item }">
+          <template v-slot:[`item.t0Grade`]="{ item }">
             <GradeCallChip v-if="item.t0Grade"
               :data="item.t0Grade"
               :validated="item.validated"
               :use-tripod-colors="false"
             />
           </template>
-          <template v-slot:item.t4Grade="{ item }">
+          <template v-slot:[`item.t4Grade`]="{ item }">
             <GradeCallChip v-if="item.t4Grade"
               :data="item.t4Grade"
               :validated="item.validated"
               :use-tripod-colors="false"
             />
           </template>
-          <template v-slot:item.call="{ item }">
+          <template v-slot:[`item.call`]="{ item }">
             <GradeCallChip v-if="item.call"
               :data="item.call"
               :validated="item.validated"
               :use-tripod-colors="false"
             />
           </template>
-          <template v-slot:item.pubchemCid="{ value }">
+          <template v-slot:[`item.pubchemCid`]="{ value }">
             <div v-if="value">
                 <a
                   target="_blank"
@@ -122,7 +122,6 @@ export default {
       state: {
         loading: false,
         options: {},
-        search: "",
         title: "Substances",
       },
     };
@@ -159,7 +158,7 @@ export default {
       return PUBCHEM_CID_URL;
     },
   },
-
+ 
   methods: {
     setSubstances() {
       this.state.loading = true;
@@ -205,5 +204,12 @@ export default {
         }
     }
   },
-};
+
+  mounted() {
+    console.log("this.experiments:", this.experiments);
+  }
+
+
+}
+
 </script>
