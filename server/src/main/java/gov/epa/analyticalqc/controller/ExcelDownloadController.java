@@ -83,7 +83,7 @@ public class ExcelDownloadController {
             String[] fields = new String[] {"id","dtxsid","preferredName","casrn","T0","T4","call"};
             bytes = createExcel2(json,fields);
             String timeStamp = new SimpleDateFormat("yyyy_MM_dd").format(Calendar.getInstance().getTime());
-            ContentDisposition contentDisposition = ContentDisposition.builder("inline")
+            ContentDisposition contentDisposition = ContentDisposition.builder("attachment")
                     .filename("substances_batchquery_" + timeStamp +  "_.xlsx")
                     .build();
 
