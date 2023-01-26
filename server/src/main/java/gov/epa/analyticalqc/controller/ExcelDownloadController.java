@@ -16,10 +16,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.ContentDisposition;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.data.domain.Page;
@@ -88,6 +85,7 @@ public class ExcelDownloadController {
                     .build();
 
             headers.setContentDisposition(contentDisposition);
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         } catch ( Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
         }
