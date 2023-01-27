@@ -41,6 +41,13 @@
 </style>
 
 <script>
+import http from "../http-common";
+import {saveAs} from 'file-saver';
+import FileSaver from 'file-saver';
+import { SERVER_URL } from "@/store";
+import axios from "axios";
+
+
 export default {
       data() {
       return {
@@ -50,7 +57,34 @@ export default {
 
       methods: {
         async batch_search() {
+          if(this.search_box != ""){
+          const search_terms = this.search_box.split("\n")
+          const response = await axios.post(SERVER_URL + `excel-download/`, {dtxsids: search_terms }, 
+          { 
+            // headers:
+            // {
+            //     'Content-Disposition': "attachment; filename=substances_batchquery_2023_01_26_.xlsx",
+            //     'Content-Type': 'application/octet-stream'
+            // },
+            responseType: 'arraybuffer',
+          },
+          )
+          if (response.data !== null) {
+            // var bytes = new Uint8Array(response.data)
+            // const url = window.URL.createObjectURL(new Blob(bytes), { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+          var blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+          saveAs(blob, 'fixi.xlsx');
+
+            // console.log(response.data)
+            // const link = document.createElement('a');
+            // link.href = url;
+            // link.setAttribute('download', 'substances_batchquery_2023_01_26_.xlsx');
+            // document.body.appendChild(link);
+            // link.click();
+
+          }
         }
       }
+    }
 }
 </script>
