@@ -3,17 +3,25 @@
   <v-app>
         <epa-header></epa-header>
 
+    <!-- <a href="https://comptox.epa.gov/dashboard/">CompTox Chemicals Dashboard</a>
+    <a href="https://comptox.epa.gov/genra/">Generalized Read-Across (GenRA)</a>
+    <a href="https://comptox.epa.gov/dashboard/chemical/pubmed-abstract-sifter/">Literature Abstract Sifter</a>
+    <a href="https://www.epa.gov/chemical-research/cheminformatics">Cheminformatics PoC Modules</a>
+    <a href="http://v2626umcth819.rtord.epa.gov:9414/#/">Chemical Transformations Database</a>
+    <a href="http://v2626umcth819.rtord.epa.gov:5173/">Spectral and Methods Database</a>
+    <a href="http://v2626umcth819.rtord.epa.gov:9004/molmass_web.py">Molecular Mass Calculator</a> -->
 
-    <v-app-bar class="flex-grow-0" color="primary" dark id="bar">
+
+    <!-- <v-app-bar class="flex-grow-0" color="primary" dark id="bar">
       <v-app-bar-nav-icon @click.stop="state.drawer = !state.drawer" />
       <v-toolbar-title>Analytical QC Viewer</v-toolbar-title>
-    </v-app-bar>
+    </v-app-bar> -->
 
   
   <v-container fluid id ="router-content">
     <v-row no-gutters>
       <v-col cols="2">
-      <v-navigation-drawer v-if="state.drawer === true" v-model="state.drawer" dark color="secondary">
+      <!-- <v-navigation-drawer v-if="state.drawer === true" v-model="state.drawer" dark color="secondary"> -->
       <v-card light class="ma-2">
         <v-card-title class="pb-0">Go to record</v-card-title>
         <v-card-text>
@@ -103,15 +111,33 @@
             </v-row>
           </v-card-title>
         </v-card>
+      <!-- </v-navigation-drawer> -->
 
-      </v-navigation-drawer>
+      <v-card light class="ma-2">
+        <v-card-title class="pb-0">Additional Apps</v-card-title>
+        <v-card-text>
+            <v-select v-model="defaultSelected" :items="body" item-text="name" item-value="name" hide-details>
+
+            <template v-slot:item="{ item }">
+              <template>
+                <v-list-item-content>
+                  <v-list-item :href="item.link" target="_blank">{{ item.name }}</v-list-item>
+                  <v-list-item-subtitle>{{
+                    item.description
+                  }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </template>
+            </template>
+          </v-select>
+        </v-card-text>
+      </v-card>
     </v-col>
 
     <v-col cols="9">
             <v-main>
-        <router-view @update="fetchLists" />
+              <router-view @update="fetchLists" />
             </v-main>
-      </v-col>
+    </v-col>
 
     </v-row>
     </v-container>
@@ -132,8 +158,9 @@ export default {
   name: "App",
   components: {
     EpaHeader,
-    EpaFooter
-  },
+    EpaFooter,
+    
+    },
   data() {
     return {
       search: {
@@ -146,6 +173,8 @@ export default {
         ],
         type: "dtxsid",
         query: "",
+        show: false
+
       },
 
       list: {
@@ -155,7 +184,57 @@ export default {
 
       state: {
         drawer: true,
-      }
+      },
+      defaultSelected: {
+        name: "John",
+        last: "Doe"
+      },
+
+      selected: '',
+      body: [
+        {
+          name: "CompTox Chemicals Dashboard",
+          last: "one",
+          link: "https://comptox.epa.gov/dashboard/",
+          description: "dashboard description"
+        },
+        {
+          name: "Generalized Read-Across (GenRA)",
+          last: "Dylan",
+          link: "https://comptox.epa.gov/genra/",
+          description: "genra description"
+        },
+        {
+          name: "Literature Abstract Sifter",
+          last: "Wen",
+          link: "https://comptox.epa.gov/dashboard/chemical/pubmed-abstract-sifter/",
+          description: "Abstract Sifter description"
+        },
+         {
+          name: "Cheminformatics PoC Modules",
+          last: "Wen2",
+          link: "https://www.epa.gov/chemical-research/cheminformatics",
+          description: "Cheminformatics Modules description"
+
+        }, {
+          name: "Chemical Transformations Database",
+          last: "Wen3",
+          link: "http://v2626umcth819.rtord.epa.gov:9414/#/",
+          description: "CTD description"
+
+        }, {
+          name: "Spectral and Methods Database",
+          last: "Wen4",
+          link: "http://v2626umcth819.rtord.epa.gov:5173/",
+          description: "Spectrum & Methods app description"
+
+        }, {
+          name: "Molecular Mass Calculator",
+          last: "Wen5",
+          link: "http://v2626umcth819.rtord.epa.gov:9004/molmass_web.py",
+          description: "Calculate Mass Composition of a substance"
+        },
+      ]
     };
   },
 
@@ -171,6 +250,7 @@ export default {
       this.search.query = "";
     },
 
+
     fetchLists() {
       ListDataService.getAll()
       .then((response) => {
@@ -183,6 +263,12 @@ export default {
     "list.id"() {
       if (this.list.id) {
         this.$router.push(`/substances/lists/${this.list.id}`);
+      }
+    },
+
+    "selected"() {
+      if (this.selected) {
+        window.location = this.body.link;
       }
     }
   },

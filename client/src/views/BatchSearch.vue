@@ -47,7 +47,6 @@ import FileSaver from 'file-saver';
 import { SERVER_URL } from "@/store";
 import axios from "axios";
 
-
 export default {
       data() {
       return {
@@ -73,7 +72,7 @@ export default {
             // var bytes = new Uint8Array(response.data)
             // const url = window.URL.createObjectURL(new Blob(bytes), { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
           var blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-          saveAs(blob, 'fixi.xlsx');
+          saveAs(blob, 'substance_report.xlsx');
 
             // console.log(response.data)
             // const link = document.createElement('a');

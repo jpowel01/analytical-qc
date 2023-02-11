@@ -3,10 +3,10 @@ module.exports = {
   env: {
     node: true,
   },
-  plugins: ["import"],
+  plugins: ["import", "prettier"],
 
 
-  extends: ["plugin:vue/essential", "eslint:recommended", "@vue/prettier"],
+  extends: ["plugin:vue/essential", "eslint:recommended", "@vue/prettier", "prettier"],
   parserOptions: {
     parser: "babel-eslint",
   },
@@ -22,6 +22,13 @@ module.exports = {
          "peerDependencies": false, 
          "packageDir": "./"
       }
-    ]  
+    ],
+    'prettier/prettier': [
+      "warn",
+      {
+        "endOfLine": "auto"
+      }
+    ]
+  
   },
 };

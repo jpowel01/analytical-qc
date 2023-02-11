@@ -1,6 +1,7 @@
 <template>
+  <v-container fluid>
   <div class="FullTemplate">
-  <v-expansion-panel expand>
+  <v-expansion-panel class="px-5" expand>
     <v-expansion-panel-header class="text-h6">
       <v-row align="center">
         <div :class="titleClass" v-if="sample.tox21Id">
@@ -15,12 +16,12 @@
         <div :class="titleClass" v-else>No sample number</div>
         <v-spacer />
         <div class="mx-2">
-          <EditDialog
+          <!-- <EditDialog
             :grades="grades"
             :calls="calls"
             :annotation="annotation"
             @edited="save"
-          />
+          /> -->
           <div class="ma-0 d-inline-flex" v-if="annotation">
             <div
               v-if="annotation.annotation"
@@ -142,6 +143,7 @@
     </v-expansion-panel-content>
   </v-expansion-panel>
   </div>
+  </v-container>
 </template>
 
 
@@ -150,9 +152,9 @@
 import ExperimentGradeChip from "./ExperimentGradeChip";
 import GradeCallChip from "./GradeCallChip";
 import AnnotationChip from "./AnnotationChip";
-import EditDialog from "./EditDialog";
+// import EditDialog from "./EditDialog";
 import SampleAnnotationDataService from "../services/SampleAnnotationDataService";
-import ExperimentAnnotationChip from "../components/ExperimentAnnotationChip";
+// import ExperimentAnnotationChip from "../components/ExperimentAnnotationChip";
 import { PUBCHEM_SID_URL, CONTENT_SERVER_URL } from "@/store";
 
 export default {
@@ -166,11 +168,11 @@ export default {
   ],
 
   components: {
-    EditDialog,
+    // EditDialog,
     ExperimentGradeChip,
     GradeCallChip,
     AnnotationChip,
-    ExperimentAnnotationChip,
+    // ExperimentAnnotationChip,
   },
 
   computed: {

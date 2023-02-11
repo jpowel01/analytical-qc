@@ -35,12 +35,27 @@
         </div>
       </div>
     </header>
+
+    
     <nav class="nav main-nav clearfix" role="navigation">
+        
       <div class="nav__inner">
         <h2 class="element-invisible">
           Main menu
         </h2>
+        
         <ul class="menu" role="menu">
+          <li class="menu-item" role="presentation">
+            <a
+              id="homepage"
+              class="menu-link"
+              :href='menu-link'
+              role="menuitem"
+              title="Go back to homepage"
+            > Analytical QC Viewer</a>
+          </li>
+
+
           <li class="menu-item" role="presentation">
             <a
               id="envtopics"
@@ -116,7 +131,13 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {mapGetters} from 'vuex'
 
+
 export default {
+  data() {
+    return {
+        baseUrl: window.location.origin
+    }
+  },
   computed: {
     ...mapGetters({
       currentStep: 'getStep',

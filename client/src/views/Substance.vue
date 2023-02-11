@@ -54,7 +54,8 @@
           />
         </div>
       <v-spacer />
-      <EditDialog
+      <!-- edit dialog removed in viewer-only version -->
+      <!--       <EditDialog
         :grades="grades"
         :calls="calls"
         :structure-flags="structureFlags"
@@ -62,7 +63,7 @@
         :substance-structure-flags="substanceStructureFlags"
         show-structure-flags="true"
         @edited="save"
-      />
+      /> -->
       <v-btn
         class="ma-1"
         dark
@@ -90,8 +91,8 @@
         </div>
 
         <v-alert type="error" v-if="state.missingImage"
-          >Image unavailable</v-alert
-        >
+          >Image unavailable
+        </v-alert>
       </v-col>
 
       <v-col cols="5" class="d-flex flex-column">
@@ -131,8 +132,7 @@
         </div>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col>
+    
         <v-expansion-panels v-model="panel" multiple>
           <SamplePanel
             v-for="sampleDetail in detail.sampleDetails.filter((sd) => { return sd.experiments.length > 0 })"
@@ -172,8 +172,7 @@
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
-      </v-col>
-    </v-row>
+    
   </v-container>
 <!-- overlay to accomplish the image pop up -->
     <v-overlay :value="overlay">
@@ -198,7 +197,7 @@ import SubstanceDataService from "../services/SubstanceDataService";
 import GradeCallChip from "../components/GradeCallChip";
 import StructureFlagChip from "../components/StructureFlagChip";
 import AnnotationChip from "../components/AnnotationChip";
-import EditDialog from "../components/EditDialog";
+/* import EditDialog from "../components/EditDialog"; */
 import SubstanceInfoTable from "../components/SubstanceInfoTable";
 import PropertyPredictionTable from "../components/PropertyPredictionTable";
 import SamplePanel from "../components/SamplePanel";
@@ -218,7 +217,7 @@ export default {
     SubstanceInfoTable,
     PropertyPredictionTable,
     SamplePanel,
-    EditDialog,
+    // EditDialog,
     AnnotationChip,
     MagnifyIcon
   },
@@ -444,6 +443,7 @@ export default {
    top:0;
    left:0;
 }
+
 
 
 </style>
