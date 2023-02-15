@@ -19,7 +19,7 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Integer>
     @Query("SELECT new gov.epa.analyticalqc.dto.ExperimentDto(e.id, f, e.experimentDate, e.study, e.timepoint, e.msDetector, "
         + "e.plate, e.batch, e.well, e.row, e.col, e.grade, e.purity, e.purityFraction, e.expectedConc, e.nmrConc, e.measuredConc, "
         + "e.passFail, e.passFailBackup, e.comment, e.notes, e.origId, e.origFilesId, e.origFilesContentId, e.isTripod) "
-        + "from Experiment e left join e.file f where e.sample.id = :sampleId")
+        + "from Experiment e left join e.file f where e.sample.id = :sampleId and e.study != 'Evotec LCMS'")
     List<ExperimentDto> findDtoBySampleId(@Param("sampleId") Integer sampleId);
 
 }
