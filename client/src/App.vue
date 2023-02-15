@@ -196,37 +196,37 @@ export default {
           name: "CompTox Chemicals Dashboard",
           last: "one",
           link: "https://comptox.epa.gov/dashboard/",
-          description: "dashboard description"
+          description: "Suite of databases and web applications providing public access to chemical data"
         },
         {
           name: "Generalized Read-Across (GenRA)",
           last: "Dylan",
           link: "https://comptox.epa.gov/genra/",
-          description: "genra description"
+          description: "Application to make reproducible read-across predictions of toxicity outcomes"
         },
         {
           name: "Literature Abstract Sifter",
           last: "Wen",
           link: "https://comptox.epa.gov/dashboard/chemical/pubmed-abstract-sifter/",
-          description: "Abstract Sifter description"
+          description: "Find journal articles from PubMed related to a substance, domain, or phenomenon"
         },
          {
           name: "Cheminformatics PoC Modules",
           last: "Wen2",
           link: "https://www.epa.gov/chemical-research/cheminformatics",
-          description: "Cheminformatics Modules description"
+          description: "Information on chemical structure, properties, fate and transport"
 
         }, {
           name: "Chemical Transformations Database",
           last: "Wen3",
           link: "http://v2626umcth819.rtord.epa.gov:9414/#/",
-          description: "CTD description"
+          description: "Curated compilation of observed organic chemical transformation pathways reported in literature"
 
         }, {
           name: "Spectral and Methods Database",
           last: "Wen4",
           link: "http://v2626umcth819.rtord.epa.gov:5173/",
-          description: "Spectrum & Methods app description"
+          description: "Browse collection of mass spectra, monograph, and analytical methods"
 
         }, {
           name: "Molecular Mass Calculator",
