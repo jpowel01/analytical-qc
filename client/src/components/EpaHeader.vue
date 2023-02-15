@@ -38,18 +38,21 @@
 
     
     <nav class="nav main-nav clearfix" role="navigation">
-        
+          
+          <!-- <ul class="menu" role="menu">
+          </ul> -->
+
       <div class="nav__inner">
-        <h2 class="element-invisible">
-          Main menu
-        </h2>
+        
         
         <ul class="menu" role="menu">
+
           <li class="menu-item" role="presentation">
+                  
             <a
               id="homepage"
               class="menu-link"
-              :href='menu-link'
+              :href='baseUrl'
               role="menuitem"
               title="Go back to homepage"
             > Analytical QC Viewer</a>

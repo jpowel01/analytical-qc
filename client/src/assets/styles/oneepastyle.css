@@ -1053,7 +1053,7 @@ input[type='radio']:disabled + label:before {
       }
       @media screen and (min-width:35em), print and (min-width:35em) {
           header .main-nav>.nav__inner, header.masthead, header .region-alert>.block-alert, header .secondary-nav, header .main-content, header .main-footer>.main-footer__inner {
-              max-width: 60em;
+              max-width: 100%;
           }
       }
       header.masthead {
@@ -1360,12 +1360,12 @@ input[type='radio']:disabled + label:before {
       }
       nav .main-content, nav .main-footer>.main-footer__inner, nav.main-nav>.nav__inner, nav .masthead, .region-alert>.block-alert, nav .secondary-nav {
           margin: 0 auto;
-          max-width: 35em;
+          max-width: 100%;
           padding: 0 1em
       }
       @media screen and (min-width:35em), print and (min-width:35em) {
           nav.main-nav>.nav__inner, nav .masthead, nav .region-alert>.block-alert, nav .secondary-nav, nav .main-content, nav .main-footer>.main-footer__inner {
-              max-width: 60em;
+              max-width: 100%;
           }
       }
       @media screen {
@@ -1387,10 +1387,10 @@ input[type='radio']:disabled + label:before {
           position: absolute !important
       }
       nav.main-nav>.nav__inner>.menu {
-          /** float: left */
+          float: left;
       }
       nav.main-nav>.nav__inner>.menu>.menu-item {
-          float: left
+          float: left;
       }
       nav .menu-link, .pipeline>li>a, nav .tabs>li>a {
           display: block;
@@ -2299,7 +2299,7 @@ table {
 }
 .nav__inner
 {
-  text-align: center !important;
+  text-align: left !important;
 }
 .masthead
 {
