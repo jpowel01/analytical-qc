@@ -38,7 +38,13 @@
               ><v-icon x-small class="ml-1">mdi-open-in-new</v-icon>
             </div>
           </td>
+        <tr>
+          <th scope="row">MSDS</th>
+          <td><a href="https://ccte-chemtrack-stg.epa.gov/api/uploads/msd_sheets/file/7143/B02678006_MSDS.pdf">link</a></td>
         </tr>
+
+              
+            
       </tbody>
     </v-simple-table>
   </v-card>

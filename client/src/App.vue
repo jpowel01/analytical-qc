@@ -79,7 +79,7 @@
           </v-row>
         </v-card-title>
       </v-card>
-      <v-card light class="ma-2">
+      <!-- <v-card light class="ma-2">
         <v-card-title>
           <v-row>
             <v-col class="mr-auto col-auto">
@@ -94,7 +94,7 @@
               </v-col>
             </v-row>
           </v-card-title>
-        </v-card>
+        </v-card> -->
         <v-card light class="ma-2">
         <v-card-title>
           <v-row>

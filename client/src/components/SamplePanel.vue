@@ -7,6 +7,9 @@
         <div :class="titleClass" v-if="sample.tox21Id">
           Tox21_{{ sample.tox21Id }}
         </div>
+        <div :class="titleClass" v-if="sample.tox21Id='Tox21_300526'">
+          <a href="https://ccte-chemtrack-stg.epa.gov/api/uploads/coas/file/6969/B02678006_CoA.pdf">CoA</a>
+        </div>
         <div :class="titleClass" v-else-if="sample.ncgcId">
           {{ sample.ncgcId }}
         </div>
