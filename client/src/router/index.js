@@ -1,6 +1,8 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
+import SubstanceList from "../views/SubstanceList.vue";
+import Substance from "../views/Substance.vue";
 
 Vue.use(VueRouter);
 
@@ -13,7 +15,7 @@ const routes = [
   {
     path: "/substances", 
     name: "substances",
-    component: () => import("../views/SubstanceList.vue"),
+    component: SubstanceList,
   },
   {
     path: "/manage", 
@@ -23,13 +25,13 @@ const routes = [
   {
     path: "/substances/lists/:id", 
     name: "substance-list",
-    component: () => import("../views/SubstanceList.vue"),
+    component: SubstanceList,
   },
   
   {
     path: "/substances/:type/:query",
     name: "substance",
-    component: () => import("../views/Substance.vue"),
+    component: Substance,
   },
   {
     path: "/error",
