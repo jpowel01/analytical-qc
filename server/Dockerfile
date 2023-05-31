@@ -1,5 +1,11 @@
-FROM maven:3.8.5-openjdk-18-slim AS build
-COPY src /usr/src/app/src
-COPY pom.xml /usr/src/app
-RUN ["mvn", "-f", "/usr/src/app/pom.xml", "clean", "package", "-Dmaven.test.skip.exec"]
-ENTRYPOINT ["java", "-jar", "/usr/src/app/target/analytical-qc-0.0.1-SNAPSHOT.jar"]
+# Build Stage
+FROM maven:3.9.1-amazoncorretto-11 AS build
+COPY src /home/app/src
+COPY pom.xml /home/app
+RUN mvn -f /home/app/pom.xml clean package -DskipTests
+
+# Package stage
+FROM amazoncorretto:11.0.19-alpine
+COPY --from=build /home/app/target/analytical-qc-0.0.1-SNAPSHOT.jar /usr/local/lib/analytical-qc-0.0.1-SNAPSHOT.jar
+
+ENTRYPOINT ["java", "-jar", "/usr/local/lib/analytical-qc-0.0.1-SNAPSHOT.jar"]
