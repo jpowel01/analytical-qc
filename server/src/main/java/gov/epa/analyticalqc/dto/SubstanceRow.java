@@ -2,11 +2,7 @@ package gov.epa.analyticalqc.dto;
 
 import gov.epa.analyticalqc.entity.Call;
 import gov.epa.analyticalqc.entity.Grade;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.Value;
+import lombok.*;
 
 @Data
 public class SubstanceRow {
