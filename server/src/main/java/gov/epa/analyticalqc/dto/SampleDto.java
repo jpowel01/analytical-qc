@@ -1,12 +1,8 @@
 package gov.epa.analyticalqc.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.Value;
+import lombok.*;
 
-@Value
-@Getter
-@Setter
+@Data
 public class SampleDto {
 
     private Integer id;
