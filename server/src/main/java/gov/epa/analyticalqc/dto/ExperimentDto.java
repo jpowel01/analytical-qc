@@ -3,19 +3,15 @@ package gov.epa.analyticalqc.dto;
 import java.util.Date;
 
 import gov.epa.analyticalqc.entity.File;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.Value;
+import lombok.*;
 
-@Value @Getter @Setter
+@Data
 public class ExperimentDto {
 
     private Integer id;
 
 	private File file;
-    
+
     private Date experimentDate;
 
     private String study;
@@ -61,11 +57,11 @@ public class ExperimentDto {
     private Integer origFilesContentId;
 
     private Integer isTripod;
-    
+
     public ExperimentDto() {
-    	
+
     }
-    
+
     public ExperimentDto(Integer id, File file, Date experimentDate, String study, String timepoint, String msDetector,
     		Integer plate, String batch, String well, String row, Integer col, String grade, String purity,
     		Double purityFraction, Double expectedConc, Double nmrConc, Double measuredConc, String passFail,

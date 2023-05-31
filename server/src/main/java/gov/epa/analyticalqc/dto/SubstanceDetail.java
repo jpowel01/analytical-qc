@@ -3,12 +3,9 @@ package gov.epa.analyticalqc.dto;
 import java.util.List;
 
 import gov.epa.analyticalqc.entity.Substance;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@Data @NoArgsConstructor @AllArgsConstructor
 public class SubstanceDetail {
 
     private Substance substance;

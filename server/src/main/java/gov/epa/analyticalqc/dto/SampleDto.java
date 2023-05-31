@@ -4,7 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.Value;
 
-@Value @Getter @Setter
+@Value
+@Getter
+@Setter
 public class SampleDto {
 
     private Integer id;
@@ -18,12 +20,12 @@ public class SampleDto {
     private String bottleBarcode;
 
     private Boolean withdrawn;
-    
-    
+
+
     public SampleDto() {
-    	
+
     }
-    
+
     public SampleDto(Integer id, String ncgcId, Long tox21Id, Long pubchemSid, String bottleBarcode, Boolean withdrawn) {
     	this.id=id;
     	this.ncgcId=ncgcId;
@@ -33,5 +35,5 @@ public class SampleDto {
     	this.withdrawn=withdrawn;
     }
 
-    
+
 }

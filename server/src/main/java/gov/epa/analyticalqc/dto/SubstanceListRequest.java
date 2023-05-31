@@ -2,14 +2,11 @@ package gov.epa.analyticalqc.dto;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@Data @NoArgsConstructor @AllArgsConstructor
 public class SubstanceListRequest {
-    
+
     private List<Integer> ids;
 
     private Integer pageNo;

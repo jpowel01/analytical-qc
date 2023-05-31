@@ -1,11 +1,8 @@
 package gov.epa.analyticalqc.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@Data @NoArgsConstructor @AllArgsConstructor
 public class CreateSubstanceFilesRequest {
 
     private String files;
@@ -15,5 +12,5 @@ public class CreateSubstanceFilesRequest {
     private String name;
 
     private String description;
-    
+
 }

@@ -2,12 +2,9 @@ package gov.epa.analyticalqc.dto;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@Data @NoArgsConstructor @AllArgsConstructor
 public class CreateListRequest {
 
     private String name;
@@ -31,5 +28,5 @@ public class CreateListRequest {
     private Boolean hasText;
 
     private Boolean hasNoText;
-    
+
 }
