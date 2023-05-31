@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.Value;
 
-@Value @Getter @Setter
+@Data
 public class SubstanceRow {
 
     private Integer id;
@@ -32,12 +32,12 @@ public class SubstanceRow {
     private Call call;
 
     private Boolean validated;
-    
-    
+
+
     public SubstanceRow() {
-    	
+
     }
-    
+
     public SubstanceRow(Integer id, String dtxsid, String preferredName, String casrn, String molFormula, Double molWeight, Long pubchemCid, Grade t0Grade, Grade t4Grade, Call call, Boolean validated) {
     	this.id=id;
     	this.dtxsid=dtxsid;
@@ -52,5 +52,5 @@ public class SubstanceRow {
     	this.validated=validated;
     }
 
-    
+
 }
