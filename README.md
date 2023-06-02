@@ -1,7 +1,7 @@
 ## README
 
 The Analytical QC application consists of four components:
-
+ 
 - Database
 - Static content
 - Backend
