@@ -46,7 +46,8 @@ import gov.epa.analyticalqc.repository.SubstanceRepository;
 @RequestMapping("/api/substances")
 public class SubstanceController {
     
-    @Autowired SubstanceRepository substanceRepository;
+    @Autowired
+    SubstanceRepository substanceRepository;
     @Autowired SampleRepository sampleRepository;
     @Autowired PropertyPredictionRepository propertyPredictionRepository;
     @Autowired AmenabilityPredictionRepository amenabilityPredictionRepository;
@@ -153,4 +154,5 @@ public class SubstanceController {
 
         return new SubstanceDetail(substance, propertyPrediction, amenabilityPrediction, sampleDetails, substanceFiles);
     }
+
 }

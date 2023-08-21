@@ -78,7 +78,11 @@ public class SubstanceFileController {
                             null, 
                             null,
                             null,
-                            null);
+                            null,
+                                null,
+                                null,
+                                null,
+                                null);
                     } else {
                         DashboardResponse response = responses[0];
                         Integer pubchemCidInt = response.getPubchemCid();
@@ -93,6 +97,10 @@ public class SubstanceFileController {
                             response.getMolFormula(), 
                             response.getAverageMass(),
                             pubchemCid,
+                            null,
+                            null,
+                            null,
+                            null,
                             null);
                     }
                     substance = substanceRepository.save(newSubstance);
